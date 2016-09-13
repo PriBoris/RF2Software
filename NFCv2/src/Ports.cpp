@@ -1,13 +1,16 @@
 
 #include "Ports.h"
 
+//=================================================================================================
 void Ports::start(){
 	
 	RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
 	
 	
+	
+	
 }
-
+//=================================================================================================
 void Ports::initOutput(
 	GPIO_TypeDef *  GPIOx,  
 	uint32_t pin,
@@ -52,7 +55,7 @@ void Ports::initOutput(
 	
 	
 }
-
+//=================================================================================================
 void Ports::initAnalogInput(
 	GPIO_TypeDef *  GPIOx,  
 	uint32_t pin
@@ -60,11 +63,8 @@ void Ports::initAnalogInput(
 
 	GPIOx->MODER &= ~((uint32_t)(3<<(2*pin)));
 	GPIOx->MODER |= ((uint32_t)(3<<(2*pin)));
-
-		
-		
 }		
-
+//=================================================================================================
 void Ports::initInput(
 	GPIO_TypeDef *  GPIOx,  
 	uint32_t pin,
@@ -89,7 +89,7 @@ void Ports::initInput(
 		
 
 }		
-
+//=================================================================================================
 void Ports::initAlternate(
 	GPIO_TypeDef *  GPIOx,  
 	uint32_t pin,
@@ -137,12 +137,14 @@ void Ports::initAlternate(
 	
 		
 }
-
+//=================================================================================================
 void Ports::gpioPinSet(GPIO_TypeDef *GPIOx,uint32_t pin){
 	GPIOx->BSRR |= (1<<pin);
 }
+//=================================================================================================
 void Ports::gpioPinReset(GPIO_TypeDef *GPIOx,uint32_t pin){
 	GPIOx->BSRR |= (1<<(16+pin));
 }
+//=================================================================================================
 
 

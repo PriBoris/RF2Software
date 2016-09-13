@@ -441,6 +441,26 @@
               <FileType>5</FileType>
               <FilePath>.\src\Clock.h</FilePath>
             </File>
+            <File>
+              <FileName>MFRC522.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\src\MFRC522.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>MFRC522.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\MFRC522.h</FilePath>
+            </File>
+            <File>
+              <FileName>Indicator.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\src\Indicator.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Indicator.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\Indicator.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

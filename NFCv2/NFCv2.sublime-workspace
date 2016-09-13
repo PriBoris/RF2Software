@@ -1,0 +1,642 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"t2",
+				"t2Failed"
+			],
+			[
+				"mi",
+				"min-width"
+			],
+			[
+				"al",
+				"text-align"
+			],
+			[
+				"d",
+				"div	Tag"
+			],
+			[
+				"get",
+				"getItem"
+			],
+			[
+				"bo",
+				"border"
+			],
+			[
+				"margin-",
+				"margin-left"
+			],
+			[
+				"w",
+				"widgetText"
+			],
+			[
+				"tab",
+				"table-row"
+			],
+			[
+				"inli",
+				"inline-block"
+			],
+			[
+				"table-c",
+				"table-cell"
+			],
+			[
+				"align",
+				"text-align"
+			],
+			[
+				"div",
+				"DIV	Tag"
+			],
+			[
+				"m",
+				"month"
+			],
+			[
+				"padding-",
+				"padding-top"
+			],
+			[
+				"n",
+				"nth-child"
+			],
+			[
+				"act",
+				"activeProfile"
+			],
+			[
+				"l",
+				"length"
+			],
+			[
+				"s",
+				"stringify"
+			],
+			[
+				"t",
+				"text-align"
+			],
+			[
+				"ali",
+				"vertical-align"
+			],
+			[
+				"values",
+				"valuesTihd"
+			],
+			[
+				"len",
+				"length"
+			],
+			[
+				"font",
+				"font-weight"
+			],
+			[
+				"margin",
+				"margin-top"
+			],
+			[
+				"u",
+				"ul	Tag"
+			],
+			[
+				"min",
+				"min-height"
+			],
+			[
+				"mar",
+				"margin-bottom"
+			],
+			[
+				"padding",
+				"padding-bottom"
+			],
+			[
+				"i",
+				"italic"
+			],
+			[
+				"fon",
+				"font-variant"
+			],
+			[
+				"text",
+				"text-decoration"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 416.0
+	},
+	"console":
+	{
+		"height": 146.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/D/WORK/RF2Software/NFCv2/src",
+		"/D/WORK/RF2Software/NFCv2/Temp"
+	],
+	"file_history":
+	[
+		"/D/WORK/RF2Software/NFCv2/src/MFRC522.h",
+		"/D/WORK/RF2Software/NFCv2/src/Indicator.h",
+		"/D/WORK/RF2Software/NFCv2/src/main.cpp",
+		"/D/WORK/RF2Software/NFCv2/src/Indicator.cpp",
+		"/D/WORK/RF2Software/NFCv2/src/Clock.cpp",
+		"/D/WORK/RF2Software/NFCv2/src/Ports.cpp",
+		"/D/WORK/RF2Software/NFCv2/src/MFRC522.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/actual/getWidgets.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/time/LocalTimestamp.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/calendar/calendar.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/getPQ.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/DUResultTable.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/DUResultTablePdf.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/version.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/Step10SecInfo.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/energy/Energy.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/energy/EnergyAccumulator.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/ave/getAve.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/energy/getEnergy.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/dsp/dsp.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/actual/Snapshot.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/actual/WidgetValues.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/actual/SnapshotPDF.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/formatter/Formatter.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/json/JsonWriter.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/ave/resultPower.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/json/JsonWriter.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/WebServer/response.json",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/actual/getSnapshot.cpp",
+		"/C/Users/Administrator/Google Drive/Телефоннайа книга.csv",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/actual/SnapshotCSV.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/actual/actual.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/processBrowserRequest.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/pdf/Pdf.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/pdf/Pdf.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/KUnResultTablePdf.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/KUResultTablePdf.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/KUnResultTable.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/DFResultTable.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/DFResultTablePdf.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/KUResultTable.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/KxUResultTablePdf.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/debugger/Progress.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/Step10MinInfo.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/utils/local.json",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/SimpleXlsxWriter/xmlwriter.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/SimpleXlsxWriter/Xlsx/Chartsheet.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/SimpleXlsxWriter/Xlsx/Chartsheet.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/SimpleXlsxWriter/Xlsx/Worksheet.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/SimpleXlsxWriter/Xlsx/Worksheet.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/time/LocalTimestamp.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/SimpleXlsxWriter/Xlsx/SimpleXlsxDef.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/csv/csv.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/Frequency.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/System.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/KxUResultTable.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/pq/PhaseHsgIhg.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/ave/resultAngles.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/formatter/Formatter.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/ave/resultVoltage.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/ave/resultUnbalance.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/dsp/angles.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/ave/filter.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/ave/DspData3s.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/archive/ave/result.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/csv/csv.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeWEB/ProcessRequestV2/Embedded/exceptions.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/GainDecimationDelay.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/Window3s.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/_15window.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/mcu/settings.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/Window200ms.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/adc/adc.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/mcu/settings.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/version.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/mcu/mcuDownload.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/mcu/mcuDownload.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/Window3sQueue.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/Window3sQueue.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/DSPResult.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/mcu/mcu.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/cubeDSP.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/Window3s.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/mcu/mcuUpload.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/mcu/mcuUpload.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/_15window.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/Window3sCalculator.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/dsp_init.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/GainDecimationDelay.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/Window3sCalculator.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/Window200ms.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/sync/sync.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/TimeDomain.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/TimeDomain_.asm",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/_1window.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/_1window.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/TimeDomain.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/powerCore.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/DSPResult.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/powerCore1.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/powerCore2.asm",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/DSPData.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/DSPData.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/system/ports.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/system/ports.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/FastMemory.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/_1window_getHsgIhg.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/complexBins.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/halfPeriod.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/cubeDSP.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/FreqDomain.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/FreqDomain.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/WindowFactory200ms.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/interpolation.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/FastMemory.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/interpolation.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/MainTone.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/calculated.asm",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/dsp_step3.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/interpolation2.asm",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/branch.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/Branch.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/WindowFactory200ms.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/branch.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/Calibration.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/dsp_step2.cpp",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/MainTone.h",
+		"/D/EM32A_ETPKEA/MarsenSoftwareV1V2_WC/FirmwareV2/CubeDSP/src/dsp/dsp_step1.cpp"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded\\actual",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded\\archive\\pq",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded\\archive\\pq",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded\\SimpleXlsxWriter",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded\\SimpleXlsxWriter",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded\\archive\\pq",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded\\archive\\ave",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded\\archive\\ave",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeWEB\\ProcessRequestV2\\Embedded",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeDSP\\src",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\scripts",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\style",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\scripts",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\style",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\scripts",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\style",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\scripts",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\style",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\scripts",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\style",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\scripts",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\style",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\scripts",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\style",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1_branch1\\web\\public\\scripts",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1\\web\\public\\style",
+			"D:\\EM32A_ETPKEA\\MarsenSoftwareV1\\web\\public\\scripts",
+			"D:\\EM32A_ETPKEA\\Web\\1\\public\\scripts"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"PCD_Reset",
+			"localDateTime",
+			"dataBaseInfo",
+			"math>",
+			"-*",
+			"\"-**\"",
+			"f (ma",
+			"\"-**\"",
+			"-**",
+			"legend2enabled",
+			"legend1enabled",
+			"phases",
+			"maxValueStr",
+			"mainsFreq",
+			"accuWeight",
+			"step10MinIt->isFlagged()=",
+			"step10MinInfos",
+			"comprisesIBCalculated",
+			"15",
+			"subwindowDataQueue",
+			"EnergyAccumulator",
+			"actualData",
+			"widget_Text_Voltage_UaUbUc",
+			"2sensorsIBcalculated",
+			"\"voltageConnection\"",
+			"for(auto",
+			"powerFactorToUnicodeString",
+			"powerAppa",
+			"valueType",
+			"objectTailToStream",
+			"objectKeyToStream",
+			"powerActiveToStream",
+			"widget_Text_Power_PQS_A",
+			"sum2to50",
+			"getSnapshot",
+			",10,",
+			"yColumnRect",
+			"yColumnAVG",
+			"yColumnRMS",
+			"yColumnName",
+			"pdf->columnToMm(COLUMN_RMS)pdf->columnToMm(COLUMN_RMS)",
+			"\n	",
+			"yColumnName",
+			"legend",
+			"pdf->testYCursor(2*yStepMm);",
+			",,",
+			"pdf->stepYCursor(yStepMm);",
+			"epochToCalendar",
+			"channelCount",
+			"\n				",
+			"wss",
+			"<<",
+			"t2StartTag",
+			"COLUMN_RESULT",
+			"posCOLUMN_RESULT5Str",
+			"negCOLUMN_RESULT5Str",
+			"columnToMm",
+			"9",
+			"16",
+			"23",
+			"26",
+			"columnToMm(0)",
+			"columnToMm",
+			"columnToMm(0)",
+			"columnToMm",
+			"9",
+			"16",
+			"23",
+			"26",
+			"columnToMm",
+			"16",
+			"23",
+			"9",
+			"unicodeStringToUTF8",
+			"KxUResultTable",
+			"<td>df",
+			"t2Fail",
+			"t1Fail",
+			"Таблица 2",
+			"highLoadTime1Enabled",
+			"\n}",
+			"Таблица 1",
+			"Progress::report",
+			"ofstream",
+			"getRelativeVoltageDeviationPercent",
+			"pdf",
+			"actual",
+			"fileNamePDF",
+			"XmlStream",
+			"template",
+			"xmlstream",
+			"xmlstream::operator",
+			"xmlstream",
+			"AddCellRoutine",
+			"CellDataDbl",
+			"style_id",
+			"CellDataTime",
+			"time",
+			"excelDateTimeFormat",
+			"BeginRow",
+			"CWorksheet ",
+			"CellDataDbl",
+			"PQ95List",
+			"system",
+			"Phase",
+			"marginalDF",
+			"SYstem.h",
+			"freq",
+			"formatter",
+			"addHsg",
+			"50",
+			"U_CHANNEL_COUNT",
+			"angle",
+			"angleToStream",
+			"angleU2",
+			"angles",
+			"actualData",
+			"actualData.",
+			"angleUnit",
+			"getAngleFromBin",
+			"angle",
+			"getAngleFromBin",
+			"angles",
+			"filterFrequency",
+			"BYTEOFFSET_",
+			"\"----\"",
+			"----",
+			"catch("
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"Regular",
+			"DULow",
+			"DUHighMarginal",
+			"DUHighRegular",
+			"Stop",
+			"ReportTable_",
+			"Swell",
+			"Interruption",
+			"interruption",
+			"Interruption",
+			"voltageMax",
+			"ValiditySystem",
+			"stopTimeUsSystemSwell",
+			"startTimesUsSystemSwell",
+			"worstValueSystemSwell",
+			"stateSystemSwell",
+			"",
+			"/td><td></td><td></td><td></td><td></td><td></td></tr>",
+			"CurrentIhg",
+			"</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>",
+			"Current",
+			"<td></td><td></td><td></td><td></td><td>",
+			"<td></td><td></td><td></td><td></td><td></td></tr>",
+			"<td class=\"value\"></td><td class=\"value\"></td><td class=\"value\"></td><td class=\"value\"></td></tr>",
+			"PQS_SumSum1",
+			"PQS_Sum1",
+			"PQS_Sum",
+			"PQS_ABCSum",
+			"PQS_N",
+			"PQS_C",
+			"PQS_B",
+			"colorSum",
+			"IaIbIcInIn1",
+			"IaIbIb1Ic",
+			"IaIb1Ic",
+			"IaIbIcIn1",
+			"IaIbIcIn",
+			"IaIbIc",
+			"In",
+			"Ic",
+			"Ib",
+			"Current",
+			"widget_Diagram_VoltageCurrentHsg_AxisEnum",
+			"Ihg",
+			"Current"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 34.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "NFCv2.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"D:\\EM32A_ETPKEA\\MarsenSoftwareV1V2_WC\\FirmwareV2\\CubeDSP\\CubeDSP.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 229.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

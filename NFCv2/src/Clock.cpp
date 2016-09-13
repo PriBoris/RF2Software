@@ -1,12 +1,13 @@
 
 #include "Clock.h"
 
-#include "stm32f0xx.h"
+//#include "stm32f0xx.h"
+#include "stm32f030x6.h"
 
 
 uint32_t Clock::heartbeatCounter = 0;
 
-
+//=================================================================================================
 void Clock::start(){
 	
 	RCC->CR |= RCC_CR_HSEBYP;// HSE crystal oscillator bypass
@@ -47,13 +48,14 @@ void Clock::start(){
 		0;
 	
 }
-
+//=================================================================================================
 extern "C" {void SysTick_Handler(void){
 	Clock::heartbeatTick();
 }}
 void Clock::heartbeatTick(){
 	heartbeatCounter++;
 }
+//=================================================================================================
 
 
 
