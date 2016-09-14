@@ -2,7 +2,7 @@
 #include "MFRC522.h"
 
 #include "Ports.h"
-#include "stm32f030x6.h"
+#include "stm32f0xx.h"
 
 //=================================================================================================
 void MFRC522::start(){

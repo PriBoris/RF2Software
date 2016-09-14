@@ -3,6 +3,7 @@
 del NFCv2\Listings\*.* /q
 del NFCv2\Objects\*.* /q
 del NFCv2\*.Administrator /q
+del NFCv2\log.txt /q
 
 del ILDAv1\Listings\*.* /q
 del ILDAv1\Objects\*.* /q

@@ -1,8 +1,7 @@
 
 #include "Clock.h"
 
-//#include "stm32f0xx.h"
-#include "stm32f030x6.h"
+#include "stm32f0xx.h"
 
 
 uint32_t Clock::heartbeatCounter = 0;
@@ -10,11 +9,12 @@ uint32_t Clock::heartbeatCounter = 0;
 //=================================================================================================
 void Clock::start(){
 	
+	RCC->CR &= ~RCC_CR_HSEON;//  HSE clock enable
 	RCC->CR |= RCC_CR_HSEBYP;// HSE crystal oscillator bypass
 	RCC->CR |= RCC_CR_HSEON;//  HSE clock enable
 	while(true){
-		if ((RCC->CR&RCC_CR_HSERDY)==RCC_CR_HSERDY){
-			break;// HSE clock ready flag
+		if((RCC->CR&RCC_CR_HSERDY)==RCC_CR_HSERDY){
+			break;//1: HSE oscillator ready 
 		}
 	}
 	
@@ -26,7 +26,7 @@ void Clock::start(){
 		}
 	}
 	
-	SystemCoreClockUpdate();
+	//SystemCoreClockUpdate(); returns wrong result
 	
 	RCC->CFGR &= ~RCC_CFGR_HPRE;// AHB clock not divided
 	RCC->CFGR &= ~RCC_CFGR_PPRE;// APB clock not divided

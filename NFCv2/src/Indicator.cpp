@@ -1,7 +1,7 @@
 
 #include "Indicator.h"
 
-#include "stm32f030x6.h"
+#include "stm32f0xx.h"
 
 void Indicator::start(){
 
@@ -9,9 +9,9 @@ void Indicator::start(){
 
 	TIM1->PSC = 0;// Prescaler value-1
 	TIM1->ARR = 240;
-	TIM1->CCR1 = 80;
+	TIM1->CCR1 = 20;
 	TIM1->CCER = 
-		(0<<1)+// 0: OC1 active high 
+		(1<<1)+// 0: OC1 active high 
 		(1<<0)+// OC1 signal is output
 		0;
 	TIM1->CCMR1 = 
@@ -25,6 +25,7 @@ void Indicator::start(){
 		(0<<3)+//0: Counter is not stopped at update event
 		(1<<0)+//1: Counter enabled
 		0;
+	TIM1->BDTR = (1<<15);// MOE: Main output enable
 
 
 	//ADC start
