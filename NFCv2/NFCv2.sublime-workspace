@@ -142,6 +142,22 @@
 				"buffer_size": 1643,
 				"line_ending": "Windows"
 			}
+		},
+		{
+			"file": "src/MFRC522.cpp",
+			"settings":
+			{
+				"buffer_size": 2666,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/MFRC522.h",
+			"settings":
+			{
+				"buffer_size": 6576,
+				"line_ending": "Windows"
+			}
 		}
 	],
 	"build_system": "",
@@ -181,7 +197,8 @@
 	},
 	"expanded_folders":
 	[
-		"/D/Work/RF2Software/NFCv2/src"
+		"/D/WORK/RF2Software/NFCv2/src",
+		"/D/WORK/RF2Software/NFCv2/Temp"
 	],
 	"file_history":
 	[
@@ -555,7 +572,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -571,8 +588,37 @@
 						"selection":
 						[
 							[
-								462,
-								462
+								1205,
+								1205
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 324.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/MFRC522.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2666,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								190,
+								190
 							]
 						],
 						"settings":
@@ -582,6 +628,35 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/MFRC522.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6576,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								176,
+								176
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": -0.0,
+						"translation.y": 54.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,

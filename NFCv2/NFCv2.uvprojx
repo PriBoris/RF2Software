@@ -15,7 +15,7 @@
         <TargetCommonOption>
           <Device>STM32F030K6</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F0xx_DFP.1.4.0</PackID>
+          <PackID>Keil.STM32F0xx_DFP.1.5.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x8000) IRAM(0x20000000,0x1000) CPUTYPE("Cortex-M0") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -497,8 +497,8 @@
           <targetInfo name="NFCv2 MCU"/>
         </targetInfos>
       </component>
-      <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.5.0" condition="STM32F030 CMSIS">
-        <package name="STM32F0xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="1.4.0"/>
+      <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="2.2.3" condition="STM32F030x6 CMSIS">
+        <package name="STM32F0xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="1.5.0"/>
         <targetInfos>
           <targetInfo name="NFCv2 MCU"/>
         </targetInfos>
@@ -506,23 +506,23 @@
     </components>
     <files>
       <file attr="config" category="sourceAsm" condition="Compiler ARMCC" name="Device\Source\ARM\startup_stm32f030.s" version="1.5.0">
-        <instance index="0">RTE\Device\STM32F030K6\startup_stm32f030.s</instance>
+        <instance index="0" removed="1">RTE\Device\STM32F030K6\startup_stm32f030.s</instance>
         <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.5.0" condition="STM32F030 CMSIS"/>
         <package name="STM32F0xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="1.4.0"/>
+        <targetInfos/>
+      </file>
+      <file attr="config" category="sourceAsm" condition="Compiler ARMCC" name="Device\Source\ARM\startup_stm32f030x6.s" version="2.2.3">
+        <instance index="0">RTE\Device\STM32F030K6\startup_stm32f030x6.s</instance>
+        <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="2.2.3" condition="STM32F030x6 CMSIS"/>
+        <package name="STM32F0xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="1.5.0"/>
         <targetInfos>
           <targetInfo name="NFCv2 MCU"/>
         </targetInfos>
       </file>
-      <file attr="config" category="sourceAsm" condition="Compiler ARMCC" name="Device\Source\ARM\startup_stm32f030x6.s" version="2.2.3">
-        <instance index="0" removed="1">RTE\Device\STM32F030K6\startup_stm32f030x6.s</instance>
+      <file attr="config" category="sourceC" name="Device\Source\system_stm32f0xx.c" version="2.2.3">
+        <instance index="0">RTE\Device\STM32F030K6\system_stm32f0xx.c</instance>
         <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="2.2.3" condition="STM32F030x6 CMSIS"/>
         <package name="STM32F0xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="1.5.0"/>
-        <targetInfos/>
-      </file>
-      <file attr="config" category="sourceC" name="Device\Source\system_stm32f0xx.c" version="1.5.0">
-        <instance index="0">RTE\Device\STM32F030K6\system_stm32f0xx.c</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.5.0" condition="STM32F030 CMSIS"/>
-        <package name="STM32F0xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="1.4.0"/>
         <targetInfos>
           <targetInfo name="NFCv2 MCU"/>
         </targetInfos>

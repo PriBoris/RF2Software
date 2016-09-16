@@ -13,6 +13,7 @@ void MFRC522::start(){
 
 	
 	SPI1->CR2 = 
+		(7<<8)+//0111: 8-bit
 		//(1<<6)+//1: RXNE interrupt not masked. Used to generate an interrupt request when the RXNE flag is set.
 		0;
 	SPI1->CR1 = 
@@ -29,6 +30,15 @@ void MFRC522::start(){
 		(0<<0)+//0: The first clock transition is the first data capture edge
 		0;
 	 //NVIC_EnableIRQ(SPI1_IRQn);
+
+
+	while(true){
+		uint8_t version = spiReadRegister(Register::Version);
+		__asm("	nop");
+
+	}
+
+
 
 	
 }
@@ -51,7 +61,8 @@ void MFRC522::spiInterrupt(){
 }
 //=================================================================================================
 uint8_t MFRC522::spiRxTxByte(uint8_t tx){
-	SPI1->DR = tx;
+	*(uint8_t*)&SPI1->DR = tx;
+	*(uint8_t*)&SPI1->DR = tx;
 	while((SPI1->SR&SPI_SR_RXNE)==0);
 	return SPI1->DR;
 }

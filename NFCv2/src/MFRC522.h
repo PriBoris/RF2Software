@@ -11,8 +11,8 @@ class MFRC522{
 
 private:
 
-	static const uint8_t WRITE_COMMAND = 0;
-	static const uint8_t READ_COMMAND = 1;
+	static const uint8_t WRITE_COMMAND = (0<<7);
+	static const uint8_t READ_COMMAND = (1<<7);
 
 	class Register{
 	public:
