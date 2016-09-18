@@ -1,9 +1,13 @@
 
 
+#include <string.h>
+
 #include "Clock.h"
 #include "Ports.h"
 #include "MFRC522.h"
 #include "Indicator.h"
+#include "RTCU.h"
+
 
 
 uint32_t profileDetection = 0;
@@ -23,13 +27,12 @@ int main(){
 	Ports::initAlternate(GPIOA,6,Ports::GPIO_AF0_SPI1,Ports::GPIO_OType_PP,Ports::GPIO_Medium_Speed,Ports::GPIO_PuPd_NOPULL);//RFID_MISO
 	Ports::initAlternate(GPIOA,7,Ports::GPIO_AF0_SPI1,Ports::GPIO_OType_PP,Ports::GPIO_Medium_Speed,Ports::GPIO_PuPd_NOPULL);//RFID_MOSI
 	
-	//uart::start()
-	
 	MFRC522::start();
 
-	
 	Indicator::start();
 	Ports::initAlternate(GPIOA,8,Ports::GPIO_AF2_TIM1,Ports::GPIO_OType_PP,Ports::GPIO_Medium_Speed,Ports::GPIO_PuPd_NOPULL);//LED_PWM 
+	
+	RTCU::init();
 	
 	Clock::startMainTick(50);
 	
@@ -43,6 +46,18 @@ int main(){
 			if ((true==MFRC522::Tag::isDetected())&&(true==MFRC522::Tag::readSerial())){
 				profileDetection = Clock::getHeartbeat() - profileStart;
 				Indicator::flash();
+				
+				uint8_t uidMessage[4+10];	
+				memset(uidMessage,0,sizeof(uidMessage));
+				
+				uidMessage[0] = MFRC522::uid.size;
+				memcpy(&uidMessage[4],MFRC522::uid.uidByte,MFRC522::uid.size);
+				if (uidMessage[0]!=0){
+					RTCU::protocol.sendPacket(Protocol::TAG_RfidProximity,uidMessage,4+MFRC522::uid.size);
+				}
+				
+				
+				
 				__asm("	nop");
 			}else{
 				profileTimeout = Clock::getHeartbeat() - profileStart;
@@ -53,7 +68,7 @@ int main(){
 		}
 		
 		
-	
+		RTCU::process();
 
 		
 	}

@@ -373,7 +373,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath></IncludePath>
+              <IncludePath>..\CommonSrc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -460,6 +460,41 @@
               <FileName>Indicator.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\Indicator.h</FilePath>
+            </File>
+            <File>
+              <FileName>RTCU.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\src\RTCU.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>RTCU.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\RTCU.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>CommonSrc</GroupName>
+          <Files>
+            <File>
+              <FileName>protocol.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\CommonSrc\protocol.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>protocol.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\CommonSrc\protocol.h</FilePath>
+            </File>
+            <File>
+              <FileName>crc32.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\CommonSrc\crc32.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>crc32.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\CommonSrc\crc32.h</FilePath>
             </File>
           </Files>
         </Group>
