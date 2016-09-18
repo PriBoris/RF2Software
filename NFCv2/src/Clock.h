@@ -8,7 +8,7 @@ private:
 	static const uint32_t HSE_FREQUENCY = 24000000;
 	static const uint32_t SYSCLK_FREQUENCY = HSE_FREQUENCY;
 
-	static uint32_t heartbeatCounter;
+	static uint32_t heartbeat;
 public:	
 	
 	static void start();
@@ -16,4 +16,5 @@ public:
 	
 	static void heartbeatTick();
 	
+	static uint32_t getHeartbeat();
 };

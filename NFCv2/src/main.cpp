@@ -6,6 +6,9 @@
 #include "Indicator.h"
 
 
+uint32_t profileDetection = 0;
+uint32_t profileTimeout = 0;
+
 int main(){
 
 	Clock::start();
@@ -32,9 +35,18 @@ int main(){
 	while(true){
 		__asm("	nop");
 
-		if (true==MFRC522::isNewCardPresent()){
+		
+		
+		uint32_t profileStart = Clock::getHeartbeat();
+		if ((true==MFRC522::Tag::isDetected())&&(true==MFRC522::Tag::readSerial())){
+			profileDetection = Clock::getHeartbeat() - profileStart;
+			__asm("	nop");
+		}else{
+			profileTimeout = Clock::getHeartbeat() - profileStart;
 			__asm("	nop");
 		}
+		
+	
 
 		
 	}

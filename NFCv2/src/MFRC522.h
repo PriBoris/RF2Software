@@ -8,19 +8,39 @@
 
 
 class MFRC522{
-
+public:
+	class Uid{
+	public:
+		uint8_t size;			// Number of bytes in the UID. 4, 7 or 10.
+		uint8_t uidByte[10];
+		uint8_t sak;			// The SAK (Select acknowledge) byte returned from the PICC after successful selection.
+	};
+	static Uid uid;	
+	
 private:
 
-	static const uint8_t WRITE_COMMAND = (0<<7);
-	static const uint8_t READ_COMMAND = (1<<7);
+	class SPI{
+	public:
+		static void init();
+		static void csAssert();
+		static void csDeassert();
+		static uint8_t rxTxByte(uint8_t tx);
+	};
+
 
 	class Register{
+	private:
+		static const uint8_t WRITE_COMMAND = (0<<7);
+		static const uint8_t READ_COMMAND = (1<<7);
+
 	public:
 		
 		static uint8_t read(uint8_t reg);
+		static void read(uint8_t reg, uint8_t count, uint8_t *values, uint8_t rxAlign = 0);
 		static void write(uint8_t reg,uint8_t val);
-		void setBitMask(uint8_t reg,uint8_t mask);
-		void clearBitMask(uint8_t reg,uint8_t mask);
+		static void write(uint8_t reg, uint8_t count, uint8_t *values);
+		static void setBitMask(uint8_t reg,uint8_t mask);
+		static void clearBitMask(uint8_t reg,uint8_t mask);
 	
 	
 		const static uint8_t Command = 0x01;//  starts and stops command execution Table 23 on page 38
@@ -49,7 +69,8 @@ private:
 		const static uint8_t MfTx = 0x1C;//  controls some MIFARE communication transmit parameters Table 77 on page 55
 		const static uint8_t MfRx = 0x1D;//  controls some MIFARE communication receive parameters Table 79 on page 55
 		const static uint8_t SerialSpeed = 0x1F;//  selects the speed of the serial UART interface Table 83 on page 55
-		const static uint8_t CRCResult = 0x21;//  shows the MSB and LSB values of the CRC calculation Table 87 on page 57
+		const static uint8_t CRCResultH = 0x21;//  shows the MSB and LSB values of the CRC calculation Table 87 on page 57
+		const static uint8_t CRCResultL = 0x22;//  shows the MSB and LSB values of the CRC calculation Table 87 on page 57
 		const static uint8_t ModWidth = 0x24;//  controls the ModWidth setting Table 93 on page 58
 		const static uint8_t RFCfg = 0x26;//  configures the receiver gain Table 97 on page 59
 		const static uint8_t GsN = 0x27;//  selects the conductance of the antenna driver pins TX1 and TX2 for modulation Table 99 on page 59
@@ -73,7 +94,7 @@ private:
 		const static uint8_t TestADC = 0x3B;//  shows the value of ADC I and Q channels Table 139 on page 68 = 0x3C;//  3Fh Reserved reserved for production tests Table 141 to Table 147 on page 69
 	};
 
-	class Command{
+	class ReaderCommand{
 	public:
 		const static uint8_t Idle = 0;// 0000 no action, cancels current command execution
 		const static uint8_t Mem = 1;// 0001 stores 25 bytes into the internal buffer
@@ -87,14 +108,8 @@ private:
 		const static uint8_t SoftReset = 15;// 1111 resets the MFRC522		
 	};
 
-	class SPI{
-	public:
-		static void csAssert();
-		static void csDeassert();
-		static uint8_t rxTxByte(uint8_t tx);
-	};
-
 	static uint8_t chipSoftwareVersion;
+
 	static void reset(void);
 	static void antennaOn(void);
 
@@ -112,65 +127,80 @@ private:
 
 	enum TagCommand {
 		// The commands used by the PCD to manage communication with several PICCs (ISO 14443-3, Type A, section 6.4)
-		PICC_CMD_REQA			= 0x26,		// REQuest command, Type A. Invites PICCs in state IDLE to go to READY and prepare for anticollision or selection. 7 bit frame.
-		PICC_CMD_WUPA			= 0x52,		// Wake-UP command, Type A. Invites PICCs in state IDLE and HALT to go to READY(*) and prepare for anticollision or selection. 7 bit frame.
-		PICC_CMD_CT				= 0x88,		// Cascade Tag. Not really a command, but used during anti collision.
-		PICC_CMD_SEL_CL1		= 0x93,		// Anti collision/Select, Cascade Level 1
-		PICC_CMD_SEL_CL2		= 0x95,		// Anti collision/Select, Cascade Level 2
-		PICC_CMD_SEL_CL3		= 0x97,		// Anti collision/Select, Cascade Level 3
-		PICC_CMD_HLTA			= 0x50,		// HaLT command, Type A. Instructs an ACTIVE PICC to go to state HALT.
+		TAG_CMD_REQA			= 0x26,		// REQuest command, Type A. Invites PICCs in state IDLE to go to READY and prepare for anticollision or selection. 7 bit frame.
+		TAG_CMD_WUPA			= 0x52,		// Wake-UP command, Type A. Invites PICCs in state IDLE and HALT to go to READY(*) and prepare for anticollision or selection. 7 bit frame.
+		TAG_CMD_CT				= 0x88,		// Cascade Tag. Not really a command, but used during anti collision.
+		TAG_CMD_SEL_CL1		= 0x93,		// Anti collision/Select, Cascade Level 1
+		TAG_CMD_SEL_CL2		= 0x95,		// Anti collision/Select, Cascade Level 2
+		TAG_CMD_SEL_CL3		= 0x97,		// Anti collision/Select, Cascade Level 3
+		TAG_CMD_HLTA			= 0x50,		// HaLT command, Type A. Instructs an ACTIVE PICC to go to state HALT.
 		// The commands used for MIFARE Classic (from http://www.mouser.com/ds/2/302/MF1S503x-89574.pdf, Section 9)
 		// Use PCD_MFAuthent to authenticate access to a sector, then use these commands to read/write/modify the blocks on the sector.
 		// The read/write commands can also be used for MIFARE Ultralight.
-		PICC_CMD_MF_AUTH_KEY_A	= 0x60,		// Perform authentication with Key A
-		PICC_CMD_MF_AUTH_KEY_B	= 0x61,		// Perform authentication with Key B
-		PICC_CMD_MF_READ		= 0x30,		// Reads one 16 byte block from the authenticated sector of the PICC. Also used for MIFARE Ultralight.
-		PICC_CMD_MF_WRITE		= 0xA0,		// Writes one 16 byte block to the authenticated sector of the PICC. Called "COMPATIBILITY WRITE" for MIFARE Ultralight.
-		PICC_CMD_MF_DECREMENT	= 0xC0,		// Decrements the contents of a block and stores the result in the internal data register.
-		PICC_CMD_MF_INCREMENT	= 0xC1,		// Increments the contents of a block and stores the result in the internal data register.
-		PICC_CMD_MF_RESTORE		= 0xC2,		// Reads the contents of a block into the internal data register.
-		PICC_CMD_MF_TRANSFER	= 0xB0,		// Writes the contents of the internal data register to a block.
+		TAG_CMD_MF_AUTH_KEY_A	= 0x60,		// Perform authentication with Key A
+		TAG_CMD_MF_AUTH_KEY_B	= 0x61,		// Perform authentication with Key B
+		TAG_CMD_MF_READ		= 0x30,		// Reads one 16 byte block from the authenticated sector of the PICC. Also used for MIFARE Ultralight.
+		TAG_CMD_MF_WRITE		= 0xA0,		// Writes one 16 byte block to the authenticated sector of the PICC. Called "COMPATIBILITY WRITE" for MIFARE Ultralight.
+		TAG_CMD_MF_DECREMENT	= 0xC0,		// Decrements the contents of a block and stores the result in the internal data register.
+		TAG_CMD_MF_INCREMENT	= 0xC1,		// Increments the contents of a block and stores the result in the internal data register.
+		TAG_CMD_MF_RESTORE		= 0xC2,		// Reads the contents of a block into the internal data register.
+		TAG_CMD_MF_TRANSFER	= 0xB0,		// Writes the contents of the internal data register to a block.
 		// The commands used for MIFARE Ultralight (from http://www.nxp.com/documents/data_sheet/MF0ICU1.pdf, Section 8.6)
-		// The PICC_CMD_MF_READ and PICC_CMD_MF_WRITE can also be used for MIFARE Ultralight.
-		PICC_CMD_UL_WRITE		= 0xA2		// Writes one 4 byte page to the PICC.
+		// The TAG_CMD_MF_READ and TAG_CMD_MF_WRITE can also be used for MIFARE Ultralight.
+		TAG_CMD_UL_WRITE		= 0xA2		// Writes one 4 byte page to the PICC.
 	};
 
+	static StatusCode transceiveData(	uint8_t *sendData,		///< Pointer to the data to transfer to the FIFO.
+														uint8_t sendLen,		///< Number of bytes to transfer to the FIFO.
+														uint8_t *backData,		///< NULL or pointer to buffer if data should be read back after executing the command.
+														uint8_t *backLen,		///< In: Max number of bytes to write to *backData. Out: The number of bytes returned.
+														uint8_t *validBits = 0,	///< In/Out: The number of valid bits in the last byte. 0 for 8 valid bits. Default NULL.
+														uint8_t rxAlign = 0,		///< In: Defines the bit position in backData[0] for the first bit received. Default 0.
+														bool checkCRC = false		///< In: True => The last two bytes of the response is assumed to be a CRC_A that must be validated.
+									 );
 
-	MFRC522::StatusCode requestA(	uint8_t *bufferATQA,	///< The buffer to store the ATQA (Answer to request) in
+	static StatusCode communicate(	uint8_t command,		///< The command to execute. One of the PCD_Command enums.
+															uint8_t waitIRq,		///< The bits in the ComIrqReg register that signals successful completion of the command.
+															uint8_t *sendData,		///< Pointer to the data to transfer to the FIFO.
+															uint8_t sendLen,		///< Number of bytes to transfer to the FIFO.
+															uint8_t *backData = 0,		///< NULL or pointer to buffer if data should be read back after executing the command.
+															uint8_t *backLen = 0,		///< In: Max number of bytes to write to *backData. Out: The number of bytes returned.
+															uint8_t *validBits = 0,	///< In/Out: The number of valid bits in the last byte. 0 for 8 valid bits.
+															uint8_t rxAlign = 0,		///< In: Defines the bit position in backData[0] for the first bit received. Default 0.
+															bool checkCRC = false		///< In: True => The last two bytes of the response is assumed to be a CRC_A that must be validated.
+										 );
+	
+	static StatusCode calculateCRC(uint8_t *data, uint8_t length, uint8_t *result);
+	
+	
+
+	static StatusCode requestA(	uint8_t *bufferATQA,	///< The buffer to store the ATQA (Answer to request) in
 												uint8_t *bufferSize	///< Buffer size, at least two bytes. Also number of bytes returned if STATUS_OK.
 											);
 
-	MFRC522::StatusCode REQA_or_WUPA(	uint8_t command, 		///< The command to send - PICC_CMD_REQA or PICC_CMD_WUPA
+	static StatusCode REQA_or_WUPA(	uint8_t command, 		///< The command to send - TAG_CMD_REQA or TAG_CMD_WUPA
 													uint8_t *bufferATQA,	///< The buffer to store the ATQA (Answer to request) in
 													uint8_t *bufferSize	///< Buffer size, at least two bytes. Also number of bytes returned if STATUS_OK.
 												);
 
-	MFRC522::StatusCode transceiveData(	uint8_t *sendData,		///< Pointer to the data to transfer to the FIFO.
-														uint8_t sendLen,		///< Number of bytes to transfer to the FIFO.
-														uint8_t *backData,		///< NULL or pointer to buffer if data should be read back after executing the command.
-														uint8_t *backLen,		///< In: Max number of bytes to write to *backData. Out: The number of bytes returned.
-														uint8_t *validBits,	///< In/Out: The number of valid bits in the last byte. 0 for 8 valid bits. Default NULL.
-														uint8_t rxAlign,		///< In: Defines the bit position in backData[0] for the first bit received. Default 0.
-														bool checkCRC		///< In: True => The last two bytes of the response is assumed to be a CRC_A that must be validated.
-									 );
+	static StatusCode select(Uid *uid, uint8_t validBits = 0);
 
-	MFRC522::StatusCode communicate(	uint8_t command,		///< The command to execute. One of the PCD_Command enums.
-															uint8_t waitIRq,		///< The bits in the ComIrqReg register that signals successful completion of the command.
-															uint8_t *sendData,		///< Pointer to the data to transfer to the FIFO.
-															uint8_t sendLen,		///< Number of bytes to transfer to the FIFO.
-															uint8_t *backData,		///< NULL or pointer to buffer if data should be read back after executing the command.
-															uint8_t *backLen,		///< In: Max number of bytes to write to *backData. Out: The number of bytes returned.
-															uint8_t *validBits,	///< In/Out: The number of valid bits in the last byte. 0 for 8 valid bits.
-															uint8_t rxAlign,		///< In: Defines the bit position in backData[0] for the first bit received. Default 0.
-															bool checkCRC		///< In: True => The last two bytes of the response is assumed to be a CRC_A that must be validated.
-										 );
 
 public:
 
 	static void start();
 	static void spiInterrupt();
 
-	static bool isNewCardPresent();
+	class Tag{
+	public:
+		static bool isDetected();
+		static bool readSerial();
+		static uint32_t detectionCounter;
+		static uint32_t readSerialCounter;
+	};
+
+
+	
 
 };
 

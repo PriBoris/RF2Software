@@ -4,7 +4,7 @@
 #include "stm32f0xx.h"
 
 
-uint32_t Clock::heartbeatCounter = 0;
+uint32_t Clock::heartbeat = 0;
 
 //=================================================================================================
 void Clock::start(){
@@ -39,7 +39,7 @@ void Clock::start(){
 #define SYST_RVR (*(volatile uint32_t*)0xE000E014)	//SysTick Reload Value Register
 #define SYST_CVR (*(volatile uint32_t*)0xE000E018)	//SysTick Current Value Register
 
-	heartbeatCounter = 0;
+	heartbeat = 0;
 	SYST_RVR = Clock::SYSCLK_FREQUENCY/1000;
 	SYST_CSR = 
 		(1<<0)|//Counter enabled.
@@ -53,15 +53,15 @@ extern "C" {void SysTick_Handler(void){
 	Clock::heartbeatTick();
 }}
 void Clock::heartbeatTick(){
-	heartbeatCounter++;
+	heartbeat++;
 }
 //=================================================================================================
 void Clock::pause(uint32_t ms){
 	
-	uint32_t now = heartbeatCounter;
+	uint32_t now = heartbeat;
 	uint32_t then = now + ms;
 	while(true){
-		uint32_t diff = heartbeatCounter - then;
+		uint32_t diff = heartbeat - then;
 		if (*(int32_t*)&diff >=0){
 			break;
 		}
@@ -70,6 +70,9 @@ void Clock::pause(uint32_t ms){
 	
 }
 //=================================================================================================
-
+uint32_t Clock::getHeartbeat(){
+	return heartbeat;
+}
+//=================================================================================================
 
 
