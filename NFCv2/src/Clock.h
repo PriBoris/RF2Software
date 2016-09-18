@@ -12,6 +12,7 @@ private:
 public:	
 	
 	static void start();
+	static void pause(uint32_t ms);
 	
 	static void heartbeatTick();
 	

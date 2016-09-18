@@ -31,6 +31,11 @@ int main(){
 	
 	while(true){
 		__asm("	nop");
+
+		if (true==MFRC522::isNewCardPresent()){
+			__asm("	nop");
+		}
+
 		
 	}
 

@@ -56,6 +56,20 @@ void Clock::heartbeatTick(){
 	heartbeatCounter++;
 }
 //=================================================================================================
+void Clock::pause(uint32_t ms){
+	
+	uint32_t now = heartbeatCounter;
+	uint32_t then = now + ms;
+	while(true){
+		uint32_t diff = heartbeatCounter - then;
+		if (*(int32_t*)&diff >=0){
+			break;
+		}
+		__asm("	nop");
+	}
+	
+}
+//=================================================================================================
 
 
 
