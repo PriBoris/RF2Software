@@ -29,22 +29,29 @@ int main(){
 
 	
 	Indicator::start();
-	//Ports::initAlternate(GPIOA,8,Ports::GPIO_AF2_TIM1,Ports::GPIO_OType_PP,Ports::GPIO_Medium_Speed,Ports::GPIO_PuPd_NOPULL);//LED_PWM 
+	Ports::initAlternate(GPIOA,8,Ports::GPIO_AF2_TIM1,Ports::GPIO_OType_PP,Ports::GPIO_Medium_Speed,Ports::GPIO_PuPd_NOPULL);//LED_PWM 
 	
+	Clock::startMainTick(50);
 	
 	while(true){
+
 		__asm("	nop");
 
-		
-		
-		uint32_t profileStart = Clock::getHeartbeat();
-		if ((true==MFRC522::Tag::isDetected())&&(true==MFRC522::Tag::readSerial())){
-			profileDetection = Clock::getHeartbeat() - profileStart;
-			__asm("	nop");
-		}else{
-			profileTimeout = Clock::getHeartbeat() - profileStart;
-			__asm("	nop");
+		if (Clock::getMainTick()==true){
+
+			uint32_t profileStart = Clock::getHeartbeat();
+			if ((true==MFRC522::Tag::isDetected())&&(true==MFRC522::Tag::readSerial())){
+				profileDetection = Clock::getHeartbeat() - profileStart;
+				Indicator::flash();
+				__asm("	nop");
+			}else{
+				profileTimeout = Clock::getHeartbeat() - profileStart;
+				__asm("	nop");
+			}
+			Indicator::tick();
+			
 		}
+		
 		
 	
 

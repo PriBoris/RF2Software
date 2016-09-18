@@ -3,13 +3,17 @@
 
 #include "stm32f0xx.h"
 
+
+uint32_t Indicator::downCounter = 0;
+
+
 void Indicator::start(){
 
 	RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;
 
 	TIM1->PSC = 0;// Prescaler value-1
 	TIM1->ARR = 240;
-	TIM1->CCR1 = 20;
+	TIM1->CCR1 = 5;
 	TIM1->CCER = 
 		(1<<1)+// 0: OC1 active high 
 		(1<<0)+// OC1 signal is output
@@ -32,6 +36,27 @@ void Indicator::start(){
 
 
 }
+
+void Indicator::tick(){
+
+	if (downCounter>0){
+		downCounter--;
+		if (downCounter==0){
+			TIM1->CCR1 = 5;
+		}
+	}else{
+		
+	}
+	
+}
+void Indicator::flash(){
+	
+	downCounter = 5;
+	TIM1->CCR1 = 60;
+
+}
+
+
 
 
 /*
