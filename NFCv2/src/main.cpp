@@ -8,7 +8,7 @@
 #include "Indicator.h"
 #include "RTCU.h"
 
-
+//#define LED_BACKLIGHT_ENABLED
 
 uint32_t profileDetection = 0;
 uint32_t profileTimeout = 0;
@@ -30,7 +30,9 @@ int main(){
 	MFRC522::start();
 
 	Indicator::start();
+#ifdef LED_BACKLIGHT_ENABLED	
 	Ports::initAlternate(GPIOA,8,Ports::GPIO_AF2_TIM1,Ports::GPIO_OType_PP,Ports::GPIO_Medium_Speed,Ports::GPIO_PuPd_NOPULL);//LED_PWM 
+#endif
 	
 	RTCU::init();
 	

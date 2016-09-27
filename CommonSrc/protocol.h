@@ -38,10 +38,6 @@ typedef enum
 
 class Protocol
 {
-public:
-
-		//static const uint32_t MAX_RX_VALUE_LEN = (4*1024);
-		static const uint32_t MAX_RX_VALUE_LEN = (256);//TODO: make it configurable from HMI/DEBUG/RTCU class
 
 private:
 
@@ -60,6 +56,9 @@ private:
 		uint32_t rxBufferLenMinus1;
 		uint32_t rxPtrReceived;
 		uint32_t rxPtrProcessed;
+
+		uint32_t rxValueLen;
+	
 	
 		TStuffState stuffState;
 		TProtocolState protocolState;
@@ -74,11 +73,16 @@ private:
 	
 	public:
 	
+		uint8_t *rxValue;
+
+	
 		void init(
 			uint8_t *txBuffer,
 			uint32_t txBufferLen,
 			uint8_t *rxBuffer,
-			uint32_t rxBufferLen
+			uint32_t rxBufferLen,
+			uint8_t *rxValue,
+			uint32_t rxValueLen
 			);
 	
 		void sendPacket(uint8_t tag,uint8_t *data,uint32_t dataLen);
@@ -94,7 +98,6 @@ private:
 		bool bytesPending();
 		uint8_t popTxByte();
 	
-		uint8_t rxValue[Protocol::MAX_RX_VALUE_LEN];
 		uint8_t rxTag;
 		uint32_t rxID;
 		uint32_t rxDataLen;
@@ -126,6 +129,7 @@ private:
 		static const uint8_t TAG_Cancel = 0x4E;
 		static const uint8_t TAG_TestStatic = 0x4F;
 
+		static const uint8_t TAG_CheckRfidProximity = 0x80;
 
 
 

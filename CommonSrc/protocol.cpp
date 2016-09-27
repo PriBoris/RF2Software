@@ -13,7 +13,9 @@ void Protocol::init(
 	uint8_t *txBuffer,
 	uint32_t txBufferLen,
 	uint8_t *rxBuffer,
-	uint32_t rxBufferLen
+	uint32_t rxBufferLen,
+	uint8_t *rxValue,
+	uint32_t rxValueLen
 	){
 		this->txBuffer = txBuffer;
 		this->txBufferLen = txBufferLen;
@@ -26,7 +28,11 @@ void Protocol::init(
 		rxBufferLenMinus1 = rxBufferLen-1;
 		rxPtrReceived = rxPtrProcessed = 0;
 		//memset(rxBuffer,0,rxBufferLen);
-	
+
+		this->rxValue = rxValue;
+		this->rxValueLen = rxValueLen;
+
+		
 		stuffState = STUFF_Waiting;
 		protocolState = PROTOCOL_Error;
 
@@ -152,16 +158,11 @@ bool Protocol::processRx(void){
 							rxDataLen |= ((uint16_t)newByte)<<8;
 						
 						
-							if (rxDataLen>Protocol::MAX_RX_VALUE_LEN)
-							{
+							if (rxDataLen>(this->rxValueLen)){
 								protocolState = PROTOCOL_Error;
-							}
-							else if (rxDataLen==0)
-							{
+							}else if (rxDataLen==0){
 								protocolState = PROTOCOL_CrcByte1Expected;
-							}
-							else
-							{
+							}else{
 								lengthReceived=0;
 								protocolState = PROTOCOL_ValueByteExpected;
 							}

@@ -1,0 +1,412 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"l",
+				"length"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 400.0
+	},
+	"console":
+	{
+		"height": 153.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/D/work/RF2Software/RTCUv2/Source",
+		"/D/work/RF2Software/RTCUv2/Source/business",
+		"/D/work/RF2Software/CommonSrc"
+	],
+	"file_history":
+	[
+		"/D/work/RF2Software/RTCUv2/Source/business/MachineSettings.cpp",
+		"/D/work/RF2Software/CommonSrc/RxMessageQueue.cpp",
+		"/D/work/RF2Software/RTCUv2/Source/business/MainTick.cpp",
+		"/D/work/RF2Software/RTCUv2/Source/business/ReportCurrentMode.cpp",
+		"/D/work/RF2Software/CommonSrc/RxMessageQueue.h",
+		"/D/work/RF2Software/RTCUv2/Source/nfc/nfc.h",
+		"/D/work/RF2Software/RTCUv2/Source/nfc/nfc.cpp",
+		"/D/work/RF2Software/RTCUv2/Source/system/heartbeat.cpp",
+		"/D/work/RF2Software/RTCUv2/Source/system/heartbeat.h",
+		"/D/work/RF2Software/RTCUv2/Source/main.cpp",
+		"/D/work/RF2Software/RTCUv2/Source/business/MainTick.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/PositionTask.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/ExcerciseSettings.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/Excercise.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/Excercise.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/MainTick.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/PositionTask.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/servo/Fieldbus.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/servo/Fieldbus.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/MainTick.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/hmi/hmi.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/hmi/diagnostics.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/hmi/MessageQueue.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/servo/servo.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/servo/servo.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/RangeAdjustment.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/servo/StrainGauge.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/servo/encoder.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/system/heartbeat.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/system/heartbeat.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/servo/StrainGauge.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/ReportCurrentMode.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/hmi/MessageQueue.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/SetSubmode.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/ForceTestStatic.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/ExcerciseSettings.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/actuators/actuators.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/actuators/actuators.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/MachineSettings.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/main.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/actuators/feedback.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/Errors.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/actuators/move.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/PersonalSettings.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/PersonalSettings.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/ForceTestDynamic.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/MachineSettings.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/ForceTestStatic.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/hmi/protocol.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/ForceTestDynamic.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/Parking.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/Parking.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/ForceTest.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/ForceTest.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/RangeAdjustment.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/servo/encoder.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/servo/USS.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/servo/USS.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/Errors.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/nv/bkpsram.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/hmi/debugConsole.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/hmi/debugConsole.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/hmi/hmi.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/Settings.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/Settings.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/ReportMachineSettings.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/nfc/nfc.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/nfc/nfc.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/system/ports.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/EmergencyStop.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/EmergencyStop.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/hmi/diagnostics.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/hmi/protocol.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/system/ports.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/Odometer.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/Odometer.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/nv/rtc.h",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/nv/rtc.cpp",
+		"/D/FitnessMachineController/FirmwareRTCU/RtcuV2/Source/business/settings.h",
+		"/C/Users/Administrator/Google Drive/Vtest/english1.vtest",
+		"/C/Users/Administrator/Google Drive/Vtest/fish",
+		"/C/Users/Administrator/Google Drive/Vtest/francais1.vtest",
+		"/D/EduSoftwareProjects/EduJavaWorkspace/MarsenUtils/settings(2).json",
+		"/D/EduSoftwareProjects/EduJavaWorkspace/MarsenUtils/settings.json",
+		"/C/Users/Administrator/Google Drive/Vtest/englishTest.vtest",
+		"/C/Users/Administrator/Google Drive/francais1.vtest",
+		"/C/Users/Administrator/Google Drive/english1.vtest",
+		"/C/Users/Administrator/Google Drive/english1.vtest.xml",
+		"/D/FitnessMachineController/RtcuHmiV1/RtcuV1Test1/Source/mode.cpp",
+		"/C/Users/Administrator/Google Drive/flashCardSet2.xml",
+		"/D/EduSoftwareProjects/FlashCardTool/flashCardSet2.xml",
+		"/D/EduSoftwareProjects/EduCpp/Test1/Test1/result.json",
+		"/D/EM32A_ETPKEA/web/public/index.html",
+		"/D/EM32A_ETPKEA/web/public/scripts/actualValues.js",
+		"/D/EM32A_ETPKEA/web/public/scripts/profile.js",
+		"/D/TempNotDelete/flashCardSet2.xml",
+		"/D/EM32A_ETPKEA/web/public/style/main.css",
+		"/D/EM32A_ETPKEA/web/public/style/mainMenu.css",
+		"/D/EM32A_ETPKEA/web/public/style/widgets.css",
+		"/D/EM32A_ETPKEA/web/server.js"
+	],
+	"find":
+	{
+		"height": 27.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"D:\\work\\RF2Software\\RTCUv2\\Source",
+			"D:\\FitnessMachineController\\FirmwareRTCU\\RtcuV2\\Source",
+			"D:\\FitnessMachineController\\FirmwareRTCU\\RtcuV2\\Source\\hmi",
+			"D:\\FitnessMachineController\\FirmwareRTCU\\RtcuV2\\Source"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"fromHMI",
+			"MessageQueue",
+			"PositionTask::checkPosition",
+			"saturate",
+			"getRelativePosition",
+			"if (Fieldbus::responseIsValid()==false){\n\t\t\tErrors::setFlag(Errors::FLAG_USS_RESPONSE);\n\t\t}\n\t\tFieldbus::pushUSSRequest(USS::makeInverterReadyRequest())",
+			"responseReceived",
+			"MessageQueue::push",
+			"fromHMI",
+			"stopOFF",
+			"stopON",
+			"moveLeftOFF",
+			"moveLeftON",
+			"moveRightON",
+			"moveRightO",
+			"moveRightOFF",
+			"BUTTONID_MAIN_PLUS",
+			"MSGPOS_EXCERCISE_Phase",
+			"force",
+			"start",
+			"actualSet",
+			"++",
+			"actualSet",
+			"repetitionStart",
+			"pauseCounterMsec",
+			"EXERCISE_Pause",
+			"pause",
+			"PreparingAux",
+			"PersonalSettings::",
+			"check",
+			"ExcerciseSettings",
+			"times",
+			"PERSONAL_MovingMain",
+			"validateActualPosition",
+			"Actuato",
+			"actua",
+			"PERSONAL_MovingMain",
+			"PERSONAL_Waiting",
+			"bridgeAssert",
+			"PARKING_MovingMain",
+			"FEEDBACK_VALUE_MIN",
+			"feedbackTargetValue",
+			"enabled",
+			"feedbackValue",
+			"cancel",
+			"WAITING_Waiting",
+			"absSpeedToFrequency",
+			"frequency",
+			"speedRelMainTestEccentric",
+			"MSGPOS_FTEST_STATIC_Force",
+			"reportCurrentModeHeader",
+			"pauseBeforeTestMsec",
+			"FORCE_TEST",
+			"ORCE_TEST",
+			"encode",
+			"debug",
+			"checkSetFrequencyResponse",
+			"PARKING_Starting",
+			"//TODO:check message length",
+			"personalMessageTimeoutCounter",
+			"validateActualServoPosition",
+			"PERSONAL_NEGATIVE_DIRECTION",
+			"PERSONAL_POSITIVE_DIRECTION",
+			"validateActualMainPosition",
+			"PERSONAL_POSITIVE_DIRECTION",
+			"req",
+			"responseReceived",
+			"FLAG_USS_RESPONSE",
+			"checkProtocolStruct",
+			"MachineSettings::init",
+			"getUID",
+			"nfcResult",
+			"nfcState",
+			"nfcPushByte",
+			"nfcState",
+			"nfc",
+			"::setFlag",
+			"PB7",
+			"Servo::stop",
+			"MessageQueue",
+			"powerOff",
+			"currentDateTime",
+			"MSGLEN_ReportCurrentMode_INITIALIZING",
+			"enum",
+			"led1on",
+			"field",
+			"filedbus",
+			"pe9",
+			"McuSrvOut1",
+			"PE1",
+			"feedbackValueReady",
+			"feedbackValueReadyFlag",
+			"Actuators::feedback",
+			"USART7",
+			"uart7",
+			"pe8",
+			"diagnosticsProtocol",
+			"TCurrentDateTime",
+			"Encoder::sendRequest",
+			"opt",
+			"</text1>",
+			"</text2>",
+			"<text2>",
+			"<text1>",
+			"</priority>",
+			"<priority>",
+			"</item>",
+			"<item>",
+			"flashCardTool",
+			"text2",
+			"text1",
+			"priority",
+			"item",
+			"surprisingly",
+			"item",
+			"isokineticSetIndex",
+			"isokineticSetSettings",
+			"rel",
+			"timeToTest",
+			"pause",
+			"<priority>10</priority>",
+			"widget_Text_Power_PQS_A",
+			"v",
+			"widget_Text_Power_PQS_A",
+			"Unbalance",
+			"actions",
+			"chooseActiveProfile",
+			"activeprofile="
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"<priority>0</priority>"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 27.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "RtcuV2.sublime-project",
+	"replace":
+	{
+		"height": 50.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 217.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
