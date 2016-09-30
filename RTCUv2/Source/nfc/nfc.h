@@ -27,7 +27,7 @@ private:
 public:
 
 	static void init();	
-	static void process();
+	static void processTx();
 
 	static Protocol protocol;
 

@@ -8,10 +8,9 @@
 #include "Indicator.h"
 #include "RTCU.h"
 
-//#define LED_BACKLIGHT_ENABLED
+#define LED_BACKLIGHT_ENABLED
 
-uint32_t profileDetection = 0;
-uint32_t profileTimeout = 0;
+
 
 int main(){
 
@@ -40,37 +39,33 @@ int main(){
 	
 	while(true){
 
-		__asm("	nop");
 
 		if (Clock::getMainTick()==true){
+			Indicator::tick();
+		}
+		
+		RTCU::processTx();
 
-			uint32_t profileStart = Clock::getHeartbeat();
-			if ((true==MFRC522::Tag::isDetected())&&(true==MFRC522::Tag::readSerial())){
-				profileDetection = Clock::getHeartbeat() - profileStart;
+		if (RTCU::processRx()==true){
+
+			if (
+				(true==MFRC522::Tag::isDetected())&&
+				(true==MFRC522::Tag::readSerial())&&
+				(MFRC522::uid.size!=0)
+				){
 				Indicator::flash();
 				
 				uint8_t uidMessage[4+10];	
 				memset(uidMessage,0,sizeof(uidMessage));
-				
 				uidMessage[0] = MFRC522::uid.size;
 				memcpy(&uidMessage[4],MFRC522::uid.uidByte,MFRC522::uid.size);
-				if (uidMessage[0]!=0){
-					RTCU::protocol.sendPacket(Protocol::TAG_RfidProximity,uidMessage,4+MFRC522::uid.size);
-				}
-				
-				
-				
-				__asm("	nop");
+				RTCU::protocol.sendPacket(Protocol::TAG_CheckRfidProximity,uidMessage,4+MFRC522::uid.size);
+					
 			}else{
-				profileTimeout = Clock::getHeartbeat() - profileStart;
-				__asm("	nop");
+				RTCU::protocol.sendPacket(Protocol::TAG_CheckRfidProximity,NULL,0);
 			}
-			Indicator::tick();
 			
 		}
-		
-		
-		RTCU::process();
 
 		
 	}

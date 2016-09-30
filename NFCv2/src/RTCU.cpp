@@ -7,8 +7,12 @@
 
 uint8_t RTCU::rxBuffer[RTCU::RX_BUFFER_LENGTH];
 uint8_t RTCU::txBuffer[RTCU::TX_BUFFER_LENGTH];
+uint8_t RTCU::rxValue[RTCU::RX_MAX_VALUE_LENGTH];
 
 Protocol RTCU::protocol;
+
+uint32_t RTCU::requestCounter = 0;
+
 
 void RTCU::init(){
 
@@ -27,8 +31,10 @@ void RTCU::init(){
 		txBuffer,
 		TX_BUFFER_LENGTH,
 		rxBuffer,
-		RX_BUFFER_LENGTH
-		);	
+		RX_BUFFER_LENGTH,
+		rxValue,
+		RX_MAX_VALUE_LENGTH		
+	);	
 		
 
 	USART1->CR2 = 0;
@@ -58,16 +64,25 @@ extern "C" {void USART1_IRQHandler(){
 	}
 }}
 
-
-void RTCU::process(){
-
+void RTCU::processTx(){
 	if (
 		(protocol.bytesPending()==true) && 
 		(USART1->ISR & (1<<7))// TXE: Transmit data register empty
 	){
 		USART1->TDR = protocol.popTxByte();
 	}
+}
 
+bool RTCU::processRx(){
+
+	if (protocol.processRx()==true){	
+		if (protocol.rxTag==Protocol::TAG_CheckRfidProximity){
+			requestCounter++;
+			return true;
+		}
+	}	
+	return false;
+	
 	
 }
 

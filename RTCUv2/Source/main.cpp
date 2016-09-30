@@ -91,7 +91,7 @@ int main(void){
 		//------------------------------------------------------------------------------------------
 		HMI::process();	
 		Diagnostics::process();
-		NFC::process();
+		NFC::processTx();
 
 		Fieldbus::processRx();
 		//------------------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ int main(void){
 			NV::RealTimeClock::poll();
 		}
 		if (Heartbeat::mainMidtick()){
-			MainTick::processMid();
+			//MainTick::processMid();
 		}
 
 		//------------------------------------------------------------------------------------------

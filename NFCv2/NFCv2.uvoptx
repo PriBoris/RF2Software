@@ -204,6 +204,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>protocol</ItemText>
         </Ww>
+        <Ww>
+          <count>7</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>requestCounter,0x0A</ItemText>
+        </Ww>
       </WatchWindow1>
       <MemoryWindow1>
         <Mm>

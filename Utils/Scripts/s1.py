@@ -34,7 +34,7 @@ with serial.Serial('COM5',115200,timeout=1) as ser:
 
     rxBytesCounter = 0
     for k in range(1,10):
-        x = ser.read()
+        x = ser.read(size=1024)
         rxBytesCounter = rxBytesCounter+len(x)
         print(rxBytesCounter,"bytes received so far")
 

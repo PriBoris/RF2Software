@@ -71,6 +71,8 @@ private:
 		static const uint8_t SLIP_ESC_END = 0xDC;
 		static const uint8_t SLIP_ESC_ESC = 0xDD;	
 	
+		uint32_t rxByteCounter;
+		
 	public:
 	
 		uint8_t *rxValue;

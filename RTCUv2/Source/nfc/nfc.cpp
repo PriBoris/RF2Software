@@ -56,7 +56,7 @@ extern "C" {void USART6_IRQHandler(){
 	}
 }}
 //==============================================================================================
-void NFC::process(){
+void NFC::processTx(){
 
 	if (
 		(protocol.bytesPending()==true) && 
@@ -64,20 +64,6 @@ void NFC::process(){
 	){
 		USART6->DR = protocol.popTxByte();
 	}
-
-	if (protocol.processRx()==true){	
-		
-/*		
-		RxMessageQueue::push(
-			protocol.rxTag,
-			protocol.rxDataLen,
-			protocol.rxID,
-			true,
-			protocol.rxValue
-		);	
-*/		
-	}
-
 
 }
 //==============================================================================================

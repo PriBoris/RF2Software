@@ -32,6 +32,7 @@ void Protocol::init(
 		this->rxValue = rxValue;
 		this->rxValueLen = rxValueLen;
 
+		this->rxByteCounter = 0;
 		
 		stuffState = STUFF_Waiting;
 		protocolState = PROTOCOL_Error;
@@ -52,7 +53,7 @@ bool Protocol::processRx(void){
 	{
 			uint8_t newByte = rxBuffer[rxPtrProcessed];
 			rxPtrProcessed = (rxPtrProcessed+1) & (rxBufferLenMinus1);
-		
+			rxByteCounter++;
 	
 			if (newByte==SLIP_END)
 			{
@@ -104,7 +105,7 @@ bool Protocol::processRx(void){
 					stuffState = STUFF_Waiting;
 				
 					static uint32_t lengthReceived;
-					static uint32_t crcExpected;
+					static uint32_t crcReceived;
 					static uint32_t crcCalculated;
 				
 				
@@ -182,26 +183,26 @@ bool Protocol::processRx(void){
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_CrcByte1Expected:
 							
-							crcExpected = (uint32_t)newByte;
+							crcReceived = (uint32_t)newByte;
 							protocolState = PROTOCOL_CrcByte2Expected;
 					
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_CrcByte2Expected:
-							crcExpected |= ((uint32_t)newByte)<<8;
+							crcReceived |= ((uint32_t)newByte)<<8;
 							protocolState = PROTOCOL_CrcByte3Expected;
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_CrcByte3Expected:
-							crcExpected |= ((uint32_t)newByte)<<16;
+							crcReceived |= ((uint32_t)newByte)<<16;
 							protocolState = PROTOCOL_CrcByte4Expected;
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_CrcByte4Expected:						
-							crcExpected |= ((uint32_t)newByte)<<24;
+							crcReceived |= ((uint32_t)newByte)<<24;
 							//protocolState = PROTOCOL_TagExpected;
 					
-							if (crcExpected==crcCalculated)
+							if (crcReceived==crcCalculated)
 							{
 								stuffState = STUFF_Waiting;
 								protocolState = PROTOCOL_Success;

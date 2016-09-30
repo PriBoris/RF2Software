@@ -72,6 +72,24 @@ void MainTick::process(){ //called every 100ms
 	}
 
 	{
+		for(uint32_t rx=0;rx<64;rx++){
+			if (NFC::protocol.processRx()==true){
+				
+				if (
+					(NFC::protocol.rxTag==Protocol::TAG_CheckRfidProximity)&&
+					(NFC::protocol.rxDataLen!=0)
+				){
+					Diagnostics::protocol.sendPacket(Protocol::TAG_RfidProximity,NFC::protocol.rxValue,NFC::protocol.rxDataLen);
+					HMI::protocol.sendPacket(Protocol::TAG_RfidProximity,NFC::protocol.rxValue,NFC::protocol.rxDataLen);				
+					
+				}
+				break;
+				
+			}else{
+				
+			}
+			
+		}
 		
 
 		NFC::protocol.sendPacket(Protocol::TAG_CheckRfidProximity,NULL,0);

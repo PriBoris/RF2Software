@@ -7,23 +7,16 @@ uint32_t Crc32::table[256];
 
 void Crc32::init(void){
 	
-    uint32_t c;
-    int32_t n, k;
-    for (n = 0; n < 256; n++)
-    {
-        c = (uint32_t) n;
-        for (k = 0; k < 8; k++)
-        {
-            if (c & 1)
-            {
+    for (int32_t n = 0; n < 256; n++){
+        uint32_t c = (uint32_t) n;
+        for (uint32_t k = 0; k < 8; k++){
+            if (c & 1){
                 c = 0xedb88320L ^ (c >> 1);
-            }
-            else
-            {
+            }else{
                 c = c >> 1;
             }
         }
-        //table[n] = c;
+        table[n] = c;
     }
 }
 
