@@ -1227,6 +1227,7 @@ void MainTick::process(){ //called every 100ms
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
 			setSubmode(EXERCISE_FirstInterruption);
+			Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
 
 		}else{
 
@@ -1236,6 +1237,7 @@ void MainTick::process(){ //called every 100ms
 			Servo::moveNegative(false);
 
 			setSubmode(EXERCISE_SecondMovement);
+			Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
 
 		}
 
@@ -1287,6 +1289,7 @@ void MainTick::process(){ //called every 100ms
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
 			setSubmode(EXERCISE_SecondInterruption);
+			Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
 
 		}else{
 
@@ -1314,6 +1317,7 @@ void MainTick::process(){ //called every 100ms
 				Excercise::repetitionStart();
 				setSubmode(EXERCISE_FirstMovement);
 			}
+			Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
 
 		}
 

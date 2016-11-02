@@ -106,9 +106,9 @@ uint32_t Odometer::getTimeMinutes(){
 
 }
 
-uint32_t Odometer::getDistanceMetresRotations(){
+uint32_t Odometer::getDistanceRotations(){
 
-	return (actualIndex==0) ? (struct0->distanceMillimetersDegrees) : (struct1->distanceMillimetersDegrees);//TODO: divide by smth
+	return (actualIndex==0) ? (struct0->distanceMillimetersDegrees/360) : (struct1->distanceMillimetersDegrees/360);
 
 
 }
@@ -133,6 +133,17 @@ void Odometer::updateStruct(){
 		memcpy(struct0,struct1,sizeof(Struct));
 	}
 	actualIndex ^= 1;
+}
+
+void Odometer::incrementDegrees(uint32_t degrees){
+
+	if (actualIndex==0){
+		(struct0->distanceMillimetersDegrees)+=degrees;
+	} else {
+		(struct1->distanceMillimetersDegrees)+=degrees;
+	}
+	updateStruct();	
+	
 }
 
 

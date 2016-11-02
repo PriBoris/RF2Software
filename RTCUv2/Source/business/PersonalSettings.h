@@ -44,6 +44,7 @@ public:
 
 
 	static int32_t getMainRange();
+	static int32_t getMainRangeDegrees();
 
 };
 

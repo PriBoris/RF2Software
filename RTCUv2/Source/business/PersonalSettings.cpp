@@ -165,6 +165,14 @@ int32_t PersonalSettings::getMainRange(){
 	}
 
 }
+
+int32_t PersonalSettings::getMainRangeDegrees(){
+
+	return getMainRange()/11;
+
+	// 4096/360=11
+}
+
 //=================================================================================================
 
 

@@ -18,8 +18,8 @@ void NV::RealTimeClock::init(){
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 	PWR_BackupAccessCmd(ENABLE);
 	RCC_LSEConfig(RCC_LSE_Bypass);
-//	while(RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET){
-//	};
+	while(RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET){
+	};
 	RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
 	RCC_RTCCLKCmd(ENABLE);
 	RTC_WaitForSynchro();
@@ -32,14 +32,14 @@ void NV::RealTimeClock::init(){
 		RTC_TimeTypeDef   RTC_TimeStructure;
 		RTC_DateTypeDef   RTC_DateStructure;
 
-		RTC_TimeStructure.RTC_Hours   = 0x01;
-		RTC_TimeStructure.RTC_Minutes = 0x40;
+		RTC_TimeStructure.RTC_Hours   = 0x20;
+		RTC_TimeStructure.RTC_Minutes = 0x42;
 		RTC_TimeStructure.RTC_Seconds = 0x00;
 
-		RTC_DateStructure.RTC_Month = RTC_Month_February;//1..12
-		RTC_DateStructure.RTC_Date = 0x08;  
+		RTC_DateStructure.RTC_Month = RTC_Month_November;//1..12
+		RTC_DateStructure.RTC_Date = 0x02;  
 		RTC_DateStructure.RTC_Year = 0x16; 
-		RTC_DateStructure.RTC_WeekDay = RTC_Weekday_Monday; //1..7
+		RTC_DateStructure.RTC_WeekDay = RTC_Weekday_Wednesday; //1..7
 		
 		RTC_InitStructure.RTC_AsynchPrediv = 127;
 		RTC_InitStructure.RTC_SynchPrediv =  255;
@@ -51,9 +51,8 @@ void NV::RealTimeClock::init(){
 		
 		RTC_WriteBackupRegister(RTC_BKP_DR0, RTC_INITIALIZED_CODE);
 
-	} else {
-		
 	}
+
 	NV::RealTimeClock::prevTRValue = RTC->TR;	
 	
 }

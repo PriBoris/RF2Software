@@ -36,9 +36,9 @@ public:
 
 	static void init();
 	static uint32_t getTimeMinutes();
-	static uint32_t getDistanceMetresRotations();
+	static uint32_t getDistanceRotations();
 	static void incrementSeconds();
-
+	static void incrementDegrees(uint32_t degrees);
 	
 };
 

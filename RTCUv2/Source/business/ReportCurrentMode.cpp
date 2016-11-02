@@ -584,8 +584,8 @@ void MainTick::reportCurrentModeHeader(uint8_t *message){
 	memcpy(&message[MSGPOS_CurrentDateTime],&currentDateTime,sizeof(currentDateTime));
 	uint32_t ododmeterMinutes = Odometer::getTimeMinutes();
 	memcpy(&message[MSGPOS_OdometerTime],&ododmeterMinutes,sizeof(ododmeterMinutes));
-	uint32_t ododmeterMms = 0;
-	memcpy(&message[MSGPOS_OdometerDistance],&ododmeterMms,sizeof(ododmeterMms));
+	uint32_t ododmeterRotations = Odometer::getDistanceRotations();
+	memcpy(&message[MSGPOS_OdometerDistance],&ododmeterRotations,sizeof(ododmeterRotations));
 
 
 }
