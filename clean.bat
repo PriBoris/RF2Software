@@ -15,3 +15,10 @@ del RTCUv2\Objects\*.* /q
 del RTCUv2\*.Administrator /q
 del RTCUv2\*.bak /q
 del RTCUv2\*.dep /q
+
+
+del RFSoftwareTest\*.sdf
+rd RFSoftwareTest\ipch /q /s
+rd RFSoftwareTest\Debug /q /s
+del RFSoftwareTest\*.cd
+del RFSoftwareTest\*.user

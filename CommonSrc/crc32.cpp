@@ -42,3 +42,9 @@ uint32_t Crc32::getInitValue(){
 	return CRC32_SEED;
 }
 
+uint32_t Crc32::getTableValue(uint8_t index){
+	return table[index];
+
+}
+
+
