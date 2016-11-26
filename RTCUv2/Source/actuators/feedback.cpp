@@ -119,6 +119,10 @@ bool Actuators::feedbackValueReady(){
 		
 		//TODO: check if disconnected
 		
+		feedbackValue[0] = 501;
+		feedbackValue[1] = 1300;
+		
+		
 		return true;
 	} else {
 		return false;
