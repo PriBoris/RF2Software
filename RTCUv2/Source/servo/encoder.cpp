@@ -6,6 +6,7 @@
 #include "../business/Errors.h"
 
 
+
 uint32_t Encoder::requestCounter = 0;
 uint32_t Encoder::replyCounter = 0;
 uint16_t Encoder::rawValue = 0;
@@ -59,22 +60,9 @@ void Encoder::getReply(){
 	
 	rawValue = SPI_I2S_ReceiveData(SPI4);
 	replyCounter++;
-	if ((rawValue&(1<<15))==0){
-		//encoder is absent, fatal error
-		//Errors::setFlag(Errors::FLAG_ENCODER);
-		
-		
-	} else if ((rawValue&0x000F)!= ((rawValue>>12)&0x000F)){
-		
-		//encoder value error
-		//Errors::setFlag(Errors::FLAG_ENCODER);
-	} else {
-//		value = (rawValue >> 3)&0x0FFF;
-//		value = ((rawValue >> 3)+512)&0x0FFF;
-//		value = ((rawValue >> 3)+1024)&0x0FFF;
-		value = (2048+2048-(rawValue >> 3))&0x0FFF;
-	}
-
+	value = rawValue & (uint16_t)0x7FFF;
+	
+	
 	
 	
 	
