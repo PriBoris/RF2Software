@@ -11,7 +11,7 @@
 uint32_t Heartbeat::counter = 0;
 uint8_t Heartbeat::mainTickCounter = 0;
 bool Heartbeat::mainTickReady = false;
-bool Heartbeat::mainMidtickReady = false;
+//bool Heartbeat::mainMidtickReady = false;
 bool Heartbeat::mainTickStarted = false;
 
 
@@ -51,9 +51,9 @@ void Heartbeat::tick(){
 		if (mainTickCounter==100){
 			mainTickCounter =0;
 			mainTickReady = true;
-		}else if (mainTickCounter==50){
+		}/*else if (mainTickCounter==50){
 			mainMidtickReady = true;
-		}
+		}*/
 	}
 	
 	Encoder::sendRequest();
@@ -88,7 +88,7 @@ bool Heartbeat::mainTick(){
 		return false;
 	}
 }
-bool Heartbeat::mainMidtick(){
+/*bool Heartbeat::mainMidtick(){
 
 	if (mainMidtickReady!=false){
 		mainMidtickReady = false;
@@ -97,7 +97,7 @@ bool Heartbeat::mainMidtick(){
 		return false;
 	}
 }
-//=================================================================================================
+*///=================================================================================================
 uint32_t Heartbeat::getCounterValue(){
 	return counter;
 }

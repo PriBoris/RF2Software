@@ -60,8 +60,12 @@ void Encoder::getReply(){
 	
 	rawValue = SPI_I2S_ReceiveData(SPI4);
 	replyCounter++;
-	value = rawValue & (uint16_t)0x7FFF;
 	
+	if (VALUE_SIGN>0){
+		value = (rawValue+VALUE_ADDEND-VALUE_SUBTRAHEND) & VALUE_MASK;
+	}else{
+		value = (VALUE_MASK+1-rawValue+VALUE_ADDEND-VALUE_SUBTRAHEND) & VALUE_MASK;
+	}
 	
 	
 	

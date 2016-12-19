@@ -30,6 +30,9 @@ bool PositionTask::checkPosition(int32_t taskPosition){
 //=================================================================================================
 bool PositionTask::checkPosition(int32_t taskPosition,int32_t taskSpeed){
 
+	return checkPosition(taskPosition);
+
+
 	int32_t actualPosition = Encoder::getValue();
 	
 	int32_t permissibleError = MachineSettings::getMainRange()/100; //1%

@@ -18,7 +18,7 @@
 #include "hmi/hmi.h"
 #include "hmi/diagnostics.h"
 #include "hmi/RxMessageQueue.h"
-#include "hmi/debugConsole.h"
+//#include "hmi/debugConsole.h"
 
 
 #include "nfc/nfc.h"
@@ -48,7 +48,7 @@ int main(void){
 	ports::led1on();
 	
 
-	DebugConsole::init(true);
+	//DebugConsole::init(true);
 
 
 	NV::RealTimeClock::init();
@@ -101,10 +101,10 @@ int main(void){
 			
 			NV::RealTimeClock::poll();
 		}
-		if (Heartbeat::mainMidtick()){
-			//MainTick::processMid();
+/*		if (Heartbeat::mainMidtick()){
+			MainTick::processMid();
 		}
-
+*/
 		//------------------------------------------------------------------------------------------
 		if (Actuators::feedbackValueReady()!=false){
 			Actuators::control();

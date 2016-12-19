@@ -6,7 +6,7 @@
 #include "business/Settings.h"
 #include "hmi/hmi.h"
 #include "hmi/diagnostics.h"
-#include "hmi/debugConsole.h"
+//#include "hmi/debugConsole.h"
 #include "servo/servo.h"
 #include "servo/encoder.h"
 
@@ -34,7 +34,7 @@ void MachineSettings::init(){
 	){
 		protocolStructValid = false;
 		memset(&protocolStruct,0,sizeof(protocolStruct));
-		DebugConsole::pushMessage(" #MachineSettings INVALID");
+		//DebugConsole::pushMessage(" #MachineSettings INVALID");
 
 
 	}else{
@@ -53,7 +53,7 @@ void MachineSettings::init(){
 		protocolStruct.speedAbsMainPersonal = settings->speedAbsMainPersonal;
 
 		protocolStructValid = true;
-		DebugConsole::pushMessage(" #MachineSettings VALID");
+		//DebugConsole::pushMessage(" #MachineSettings VALID");
 	}
 
 }
@@ -108,7 +108,7 @@ void MachineSettings::load(RxMessage *message){
 			memcpy(&protocolStruct,&newProtocolStruct,sizeof(ProtocolStruct));
 			protocolStructValid = true;
 
-			DebugConsole::pushMessage("MachineSettings were loaded \0");
+			//DebugConsole::pushMessage("MachineSettings were loaded \0");
 
 		}
 
@@ -128,10 +128,10 @@ bool MachineSettings::checkProtocolStruct(ProtocolStruct *protocolStruct){
 
 	if (
 		(protocolStruct->positionMainMax<0)||
-		(protocolStruct->positionMainMax>4095)||
+		//(protocolStruct->positionMainMax>4095)|| 
 		(protocolStruct->positionMainMin<0)||
 		(protocolStruct->positionMainMax<protocolStruct->positionMainMin)
-
+//TODO: should be dependent on encoder bits count
 
 		//...
 

@@ -18,7 +18,7 @@
 
 #include "hmi/diagnostics.h"
 #include "hmi/hmi.h"
-#include "hmi/debugConsole.h"
+//#include "hmi/debugConsole.h"
 #include "servo/servo.h"
 #include "servo/Fieldbus.h"
 #include "hmi/hmi.h"
@@ -67,7 +67,7 @@ void MainTick::process(){ //called every 100ms
 		
 		Errors::setFlag(Errors::FLAG_EMERGENCY_STOP);
 		Servo::parkingBrake(true);
-		DebugConsole::pushMessage(" #EmergencyStop\0");
+		//DebugConsole::pushMessage(" #EmergencyStop\0");
 		
 	}
 
@@ -123,7 +123,7 @@ void MainTick::process(){ //called every 100ms
 	//--------------------------------------------------------INITIALIZING---------------------------
 	case INITIALIZING_JustStarted:
 
-		DebugConsole::pushMessage(" #MainTick started\0");
+		//DebugConsole::pushMessage(" #MainTick started\0");
 
 		RxMessageQueue::flush();
 
@@ -274,7 +274,7 @@ void MainTick::process(){ //called every 100ms
 				case Protocol::TAG_Personal:
 					if (MachineSettings::protocolStructValid==true){
 						setSubmode(PERSONAL_Starting);//TODO:check message length
-						DebugConsole::pushMessage(" #Personal\0");
+						//DebugConsole::pushMessage(" #Personal\0");
 					}
 					break;
 				case Protocol::TAG_Parking: 
@@ -283,7 +283,7 @@ void MainTick::process(){ //called every 100ms
 						(PersonalSettings::protocolStructValid==true)
 					){
 						setSubmode(PARKING_Starting);//TODO:check message length
-						DebugConsole::pushMessage(" #Parking\0");
+						//DebugConsole::pushMessage(" #Parking\0");
 					}
 					break;
 				case Protocol::TAG_TestConcentric:
@@ -295,7 +295,7 @@ void MainTick::process(){ //called every 100ms
 						(true==ForceTestDynamic::load(message))
 					){
 						setSubmode(FTEST_DYNAMIC_Starting);
-						DebugConsole::pushMessage(" #ForceTestDynamic\0");
+						//DebugConsole::pushMessage(" #ForceTestDynamic\0");
 					}
 					break;
 
@@ -308,7 +308,7 @@ void MainTick::process(){ //called every 100ms
 						(true==ForceTestStatic::load(message))
 					){
 						setSubmode(FTEST_STATIC_Starting);
-						DebugConsole::pushMessage(" #ForceTestStatic\0");
+						//DebugConsole::pushMessage(" #ForceTestStatic\0");
 					}
 					break;
 				
@@ -320,7 +320,7 @@ void MainTick::process(){ //called every 100ms
 						(ExcerciseSettings::valid==true)
 					){
 						setSubmode(EXERCISE_Starting);
-						DebugConsole::pushMessage(" #ExcerciseIsokinetic\0");
+						//DebugConsole::pushMessage(" #ExcerciseIsokinetic\0");
 					}
 					break;
 				}
@@ -406,7 +406,7 @@ void MainTick::process(){ //called every 100ms
 							setSubmode(PERSONAL_MovingMain);
 							rangeAdjustmentTimeoutCounter = TIMEOUT_RangeAdjusmentMessage;
 						}else{
-							DebugConsole::pushMessage(" #unable to move further+\0");
+							//DebugConsole::pushMessage(" #unable to move further+\0");
 
 						}
 						break;
@@ -419,7 +419,7 @@ void MainTick::process(){ //called every 100ms
 							setSubmode(PERSONAL_MovingMain);
 							rangeAdjustmentTimeoutCounter = TIMEOUT_RangeAdjusmentMessage;
 						}else{
-							DebugConsole::pushMessage(" #unable to move further-\0");
+							//DebugConsole::pushMessage(" #unable to move further-\0");
 
 						}
 						break;
@@ -1387,7 +1387,7 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------------------------------------------
 	}
 
-	DebugConsole::process();
+	//DebugConsole::process();
 
 	profilerStop();
 
@@ -1519,7 +1519,7 @@ void MainTick::processFieldbus(){
 
 		if (Fieldbus::responseIsValid()==false){
 			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-			DebugConsole::pushMessage(" #FieldbusResponseLost\0");
+			//DebugConsole::pushMessage(" #FieldbusResponseLost\0");
 		}
 		Fieldbus::pushUSSRequest(USS::makeInverterReadyRequest());
 

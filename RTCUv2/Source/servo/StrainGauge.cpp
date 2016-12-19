@@ -309,8 +309,6 @@ int32_t StrainGauge::getFilteredValue(void)
 
 
 	//TODO: convert to grams
-	//return (int32_t)accu/(int32_t)4096;
-	return (int32_t)accu/(int32_t)4096+20000;
+	return ((int32_t)accu/(int32_t)4096)+VALUE_OFFSET;
 }
 //===================================================================================================
-
