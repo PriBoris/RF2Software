@@ -21,9 +21,11 @@ void Servo::parkingBrakeON(){
 */
 void Servo::parkingBrake(bool brake){
 	if (brake==false){
-		GPIOB->BSRRL = (1<<2);
+		// GPIOB->BSRRL = (1<<2);
+		GPIOD->BSRRL = (1<<14);
 	}else{
-		GPIOB->BSRRH = (1<<2);
+		// GPIOB->BSRRH = (1<<2);
+		GPIOD->BSRRH = (1<<14);
 	}
 }
 

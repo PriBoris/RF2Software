@@ -155,13 +155,22 @@ const TGpioConfig axGpioConfig[] = {
 	//---------------------------------------------------------------
 	//---------------------------------------------------------------
 	// PB2 McuRelay
-		GPIO_Mode_OUT,
+/*		GPIO_Mode_OUT,
 		GPIO_OType_PP,
 		2,
 		GPIO_PuPd_NOPULL,
 		GPIO_Low_Speed ,
 		GPIOB,
 		GPIO_AF_NotUsed,
+*/
+		GPIO_Mode_OUT,
+		GPIO_OType_PP,
+		14,
+		GPIO_PuPd_NOPULL,
+		GPIO_Low_Speed ,
+		GPIOD,
+		GPIO_AF_NotUsed,
+
 	
 	//---------------------------------------------------------------
 	// PE3 McuSrvOut1
