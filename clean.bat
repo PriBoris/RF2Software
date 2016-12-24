@@ -22,3 +22,9 @@ rd RFSoftwareTest\ipch /q /s
 rd RFSoftwareTest\Debug /q /s
 del RFSoftwareTest\*.cd
 del RFSoftwareTest\*.user
+
+
+del RTCUDiagnostic\*.user /q /s
+
+del *.sublime-workspace /q /s
+

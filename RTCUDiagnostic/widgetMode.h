@@ -71,7 +71,6 @@ class WidgetMode : public Widget
     QSignalMapper *signalMapperHold;
 
 
-    QTimer *debugTimer;
     QCustomPlot* plotForceVsPosition;
     QCustomPlot* plotForceVsTime;
     QPushButton* btnPlotForceReset;
@@ -89,17 +88,20 @@ class WidgetMode : public Widget
     QString name_;
     bool bbWidget_;
 
-
-    static const quint8 MODE_INITIALIZING = 0;
-    static const quint8 MODE_IDLE = 1;
-    static const quint8 MODE_WAITING = 2;
-    static const quint8 MODE_PARKING = 3;
-    static const quint8 MODE_PERSONAL = 4;
-    static const quint8 MODE_TEST_CONCENTRIC = 5;
-    static const quint8 MODE_TEST_ECCENTRIC = 6;
-    static const quint8 MODE_EXCERCISE_ISOKINETIC = 7;
-    static const quint8 MODE_ERROR = 8;
-    static const quint8 MODE_TEST_STATIC = 9;
+    class Mode{
+    public:
+        static const quint8 INITIALIZING = 0;
+        static const quint8 IDLE = 1;
+        static const quint8 WAITING = 2;
+        static const quint8 PARKING = 3;
+        static const quint8 PERSONAL = 4;
+        static const quint8 TEST_CONCENTRIC = 5;
+        static const quint8 TEST_ECCENTRIC = 6;
+        static const quint8 EXCERCISE_ISOKINETIC = 7;
+        static const quint8 FAULT = 8;
+        static const quint8 TEST_STATIC = 9;
+        static const quint8 GENERIC_EXERCISE_ISOKINETIC = 10;
+    };
 
     static const quint8 ERROR_ServoInternal = 0;
     static const quint8 ERROR_ServoConnectionLost = 1;
@@ -116,17 +118,24 @@ class WidgetMode : public Widget
     static const quint8 ERROR_Unknown=0xFF;
 
 
-    static const qint32 PHASE_HOMING=0;
-    static const qint32 PHASE_PAUSE=1;
-    static const qint32 PHASE_TEST_CONCENTRIC=2;
-    static const qint32 PHASE_TEST_ECCENTRIC=3;
-    static const qint32 PHASE_TEST_STATIC=8;
+    class Phase{
+    public:
+        static const qint32 HOMING=0;
+        static const qint32 PAUSE=1;
+        static const qint32 TEST_CONCENTRIC=2;
+        static const qint32 TEST_ECCENTRIC=3;
+        static const qint32 ISOKINETIC_FIRSTMOVE=4;
+        static const qint32 ISOKINETIC_FIRSTINTERRUPTION=5;
+        static const qint32 ISOKINETIC_SECONDMOVE=6;
+        static const qint32 ISOKINETIC_SECONDINTERRUPTION=7;
+        static const qint32 TEST_STATIC=8;
+        static const qint32 PAUSE1=9;
+        static const qint32 PAUSE2=10;
+        static const qint32 GENERIC_MOVE=11;
+    };
 
 
-    static const qint32 PHASE_ISOKINETIC_FIRSTMOVE=4;
-    static const qint32 PHASE_ISOKINETIC_FIRSTINTERRUPTION=5;
-    static const qint32 PHASE_ISOKINETIC_SECONDMOVE=6;
-    static const qint32 PHASE_ISOKINETIC_SECONDINTERRUPTION=7;
+
 
     qint32 getInt(QByteArray &array,int offset)
     {
@@ -173,8 +182,6 @@ public slots:
     void slotResetError();
     void slotExcerciseIsokineticStart();
     void slotCancel();
-
-    void debugTimerTimeout(void);
 
     void slotPlotForceReset();
 

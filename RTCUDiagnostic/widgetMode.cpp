@@ -1,18 +1,18 @@
 #include "widgetMode.h"
 
+#include <QDateTime>
 
+//=================================================================================================
 WidgetMode::~WidgetMode(){
     delete modeLogger;
 }
-
-
+//=================================================================================================
 WidgetMode::WidgetMode(
         SerialPortTransceiver *serialPortTransceiver,
         QString name,
         bool bbWidget,
         QWidget *parent
-        ) : Widget(parent)
-{
+        ) : Widget(parent){
 
     rxMessageCounter = 0;
 
@@ -254,58 +254,109 @@ WidgetMode::WidgetMode(
     connect(btnExcerciseIsokineticStart,SIGNAL(clicked(bool)),SLOT(slotExcerciseIsokineticStart()));
     connect(btnCancel,SIGNAL(clicked(bool)),SLOT(slotCancel()));
 
-
-    //debugTimer = new QTimer(this);
-    //connect(debugTimer, SIGNAL(timeout()), this, SLOT(debugTimerTimeout()));
-    //debugTimer->start(300);
-
     connect(btnPlotForceReset,SIGNAL(clicked(bool)),SLOT(slotPlotForceReset()));
 
 }
-//=========================================================================================================
-void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
-{
-    if (tag==TLV::TAG_ReportCurrentMode)
-    {
-        rxMessageCounter++;
-        lblRxMessageCounter->setText(
-                    "Сообщений: "+QString::number(rxMessageCounter)+" "
-                    +"(длина последнего="
-                    +QString::number(value.length())
-                    +")"
-                    );
-        (modeLogger->stream) << "id=" << QString::number(msgID) << ";";
+//=================================================================================================
+void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
+    if (tag==TLV::TAG_ReportCurrentMode){
+
+        {
+            rxMessageCounter++;
+            lblRxMessageCounter->setText(
+                        "Сообщений: "+QString::number(rxMessageCounter)+" "
+                        +"(длина последнего="
+                        +QString::number(value.length())
+                        +")"
+                        );
+            (modeLogger->stream) << "mdgID=" << QString::number(msgID) << ";";
+        }
+
+
+        {
+            lblDateTime->setText(
+                QString("%1").arg(2000+(quint32)value.at(1),4,10,QChar('0'))+
+                "/"+
+                QString("%1").arg(value.at(2),2,10,QChar('0'))+
+                "/"+
+                QString("%1").arg(value.at(3),2,10,QChar('0'))+
+                " "+
+                QString("%1").arg(value.at(4),2,10,QChar('0'))+
+                ":"+
+                QString("%1").arg(value.at(5),2,10,QChar('0'))+
+                ":"+
+                QString("%1").arg(value.at(6),2,10,QChar('0'))
+                );
+            QString machineTimeStr =
+                QString("%1").arg(value.at(4),2,10,QChar('0'))+
+                ":"+
+                QString("%1").arg(value.at(5),2,10,QChar('0'))+
+                ":"+
+                QString("%1").arg(value.at(6),2,10,QChar('0'))
+                ;
+
+            QDateTime dateTime(QDateTime::currentDateTime());
+            QString pcTimeStr = dateTime.toString("(HH:mm:ss.zzz)");
+            (modeLogger->stream) << machineTimeStr << pcTimeStr << ";";
+        }
+
+        {
+            qint32 odometerTime;
+            qint32 odometerWay;
+            memcpy(&odometerTime,&(value.data()[7]),sizeof(odometerTime));
+            memcpy(&odometerWay,&(value.data()[11]),sizeof(odometerWay));
+            lblOdometer->setText("Odometer: "+QString::number(odometerTime) + "min / " + QString::number(odometerWay)+"m");
+        }
 
         lblPhase->setText("");
-        lblDateTime->setText(
-            QString("%1").arg(2000+(quint32)value.at(1),4,10,QChar('0'))+
-            "/"+
-            QString("%1").arg(value.at(2),2,10,QChar('0'))+
-            "/"+
-            QString("%1").arg(value.at(3),2,10,QChar('0'))+
-            " "+
-            QString("%1").arg(value.at(4),2,10,QChar('0'))+
-            ":"+
-            QString("%1").arg(value.at(5),2,10,QChar('0'))+
-            ":"+
-            QString("%1").arg(value.at(6),2,10,QChar('0'))
-            );
-
-        qint32 odometerTime;
-        qint32 odometerWay;
-        memcpy(&odometerTime,&(value.data()[7]),sizeof(odometerTime));
-        memcpy(&odometerWay,&(value.data()[11]),sizeof(odometerWay));
-        lblOdometer->setText("Odometer: "+QString::number(odometerTime) + "min / " + QString::number(odometerWay)+"m");
 
 
-        switch(value.at(0))
-        {
+        uint8_t mode = value.at(0);
+
+        switch(mode){
+        default:
+        case (Mode::INITIALIZING):
+            lblPosition->setVisible(false);
+            lblPosition->setText("");
+            break;
+        case (Mode::IDLE):
+        case (Mode::WAITING):
+        case (Mode::PARKING):
+        case (Mode::PERSONAL):
+        case (Mode::TEST_CONCENTRIC):
+        case (Mode::TEST_ECCENTRIC):
+        case (Mode::EXCERCISE_ISOKINETIC):
+        case (Mode::FAULT):
+        case (Mode::TEST_STATIC):
+        case (Mode::GENERIC_EXERCISE_ISOKINETIC):
+            lblPosition->setVisible(true);
+            {
+                QString posStr = 
+                    QString::number(getInt(value,1+6+8+0*4))+"/"+
+                    QString::number(getInt(value,1+6+8+1*4))+"/"+
+                    QString::number(getInt(value,1+6+8+2*4))+"/"+
+                    QString::number(getInt(value,1+6+8+3*4))
+                    ;
+                    lblPosition->setText("Позиция: "+posStr); 
+                    (modeLogger->stream) << "pos=" << posStr << ";";
+            }
+            break;
+
+
+
+
+        }
+
+        switch(mode){
         //------------------------------------------------------------------------
         default:
-            lblMode->setText("Режим: ???");
-            lblError->setVisible(false);
-            lblPosition->setVisible(false);
+           {
+                QString modeStr = "???";
+                (modeLogger->stream) << "mode=" << modeStr << ";";
+                lblMode->setText("Режим: "+modeStr);
+            }
+           lblError->setVisible(false);
             btnEnableServo->setVisible(false);
             btnParking->setVisible(false);
             btnPersonalStart->setVisible(false);
@@ -320,13 +371,15 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnCancel->setVisible(false);
             break;
         //------------------------------------------------------------------------
-        case MODE_INITIALIZING:
+        case Mode::INITIALIZING:
 
-            (modeLogger->stream) << "mode=INITIALIZING" << ";";
+            {
+                QString modeStr = "INITIALIZING";
+                (modeLogger->stream) << "mode=" << modeStr << ";";
+                lblMode->setText("Режим: "+modeStr);
+            }
 
-            lblMode->setText("Режим: INITIALIZING");
             lblError->setVisible(false);
-            lblPosition->setVisible(false);
             lblPositionRel->setVisible(false);
             lblTimeToTest->setVisible(false);
             lblForceValue->setVisible(false);
@@ -348,13 +401,14 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnCancel->setVisible(false);
             break;
             //------------------------------------------------------------------------
-        case MODE_IDLE:
+        case Mode::IDLE:
 
-            (modeLogger->stream) << "mode=IDLE" << ";";
-
-            lblMode->setText("Режим: IDLE");
+            {
+                QString modeStr = "IDLE";
+                (modeLogger->stream) << "mode=" << modeStr << ";";
+                lblMode->setText("Режим: "+modeStr);
+            }
             lblError->setVisible(false);
-            lblPosition->setVisible(true);
             lblPositionRel->setVisible(false);
             lblTimeToTest->setVisible(false);
             lblForceValue->setVisible(false);
@@ -367,14 +421,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnTestEccentricStart->setVisible(false);
             btnTestStaticStart->setVisible(false);
 
-            lblPosition->setText(
-                        "Позиция: "+
-                        QString::number(getInt(value,1+6+8+0*4))+" / "+
-                        QString::number(getInt(value,1+6+8+1*4))+" / "+
-                        QString::number(getInt(value,1+6+8+2*4))+" / "+
-                        QString::number(getInt(value,1+6+8+3*4))
-                        );
-
+ 
             btnResetError->setVisible(false);
             btnExcerciseIsokineticStart->setVisible(false);
             lblSetIndex->setVisible(false);
@@ -384,13 +431,13 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnCancel->setVisible(false);
             break;
         //------------------------------------------------------------------------
-        case MODE_WAITING:
-            (modeLogger->stream) << "mode=WAITING" << ";";
-
-
-            lblMode->setText("Режим: WAITING");
+        case Mode::WAITING:
+             {
+                QString modeStr = "WAITING";
+                (modeLogger->stream) << "mode=" << modeStr << ";";
+                lblMode->setText("Режим: "+modeStr);
+            }
             lblError->setVisible(false);
-            lblPosition->setVisible(true);
             lblPositionRel->setVisible(false);
             lblTimeToTest->setVisible(false);
             lblForceValue->setVisible(false);
@@ -404,13 +451,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnTestEccentricStart->setVisible(true);
             btnTestStaticStart->setVisible(true);
 
-            lblPosition->setText(
-                        "Позиция: "+
-                        QString::number(getInt(value,1+6+8+0*4))+" / "+
-                        QString::number(getInt(value,1+6+8+1*4))+" / "+
-                        QString::number(getInt(value,1+6+8+2*4))+" / "+
-                        QString::number(getInt(value,1+6+8+3*4))
-                        );
             btnResetError->setVisible(false);
             btnExcerciseIsokineticStart->setVisible(true);
             lblSetIndex->setVisible(false);
@@ -420,13 +460,14 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnCancel->setVisible(false);
             break;
             //------------------------------------------------------------------------
-        case MODE_PARKING:
+        case Mode::PARKING:
 
-            (modeLogger->stream) << "mode=PARKING" << ";";
-
-            lblMode->setText("Режим: PARKING");
+            {
+                QString modeStr = "PARKING";
+                (modeLogger->stream) << "mode=" << modeStr << ";";
+                lblMode->setText("Режим: "+modeStr);
+            }
             lblError->setVisible(false);
-            lblPosition->setVisible(true);
             lblPositionRel->setVisible(false);
             lblTimeToTest->setVisible(false);
             lblForceValue->setVisible(false);
@@ -438,13 +479,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnTestEccentricStart->setVisible(false);
             btnTestStaticStart->setVisible(false);
             wgtPersonal->setVisible(false);
-            lblPosition->setText(
-                        "Позиция: "+
-                        QString::number(getInt(value,1+6+8+0*4))+" / "+
-                        QString::number(getInt(value,1+6+8+1*4))+" / "+
-                        QString::number(getInt(value,1+6+8+2*4))+" / "+
-                        QString::number(getInt(value,1+6+8+3*4))
-                        );
             btnResetError->setVisible(false);
             btnExcerciseIsokineticStart->setVisible(false);
             lblSetIndex->setVisible(false);
@@ -455,13 +489,14 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             break;
 
             //------------------------------------------------------------------------
-        case MODE_PERSONAL:
+        case Mode::PERSONAL:
 
-            (modeLogger->stream) << "mode=PERSONAL" << ";";
-
-            lblMode->setText("Режим: PERSONAL");
-            lblError->setVisible(false);
-            lblPosition->setVisible(true);
+             {
+                QString modeStr = "PERSONAL";
+                (modeLogger->stream) << "mode=" << modeStr << ";";
+                lblMode->setText("Режим: "+modeStr);
+            }
+           lblError->setVisible(false);
             lblPositionRel->setVisible(false);
             lblTimeToTest->setVisible(false);
             lblForceValue->setVisible(false);
@@ -473,13 +508,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnTestEccentricStart->setVisible(false);
             btnTestStaticStart->setVisible(false);
             wgtPersonal->setVisible(true);
-            lblPosition->setText(
-                        "Позиция: "+
-                        QString::number(getInt(value,1+6+8+0*4))+" / "+
-                        QString::number(getInt(value,1+6+8+1*4))+" / "+
-                        QString::number(getInt(value,1+6+8+2*4))+" / "+
-                        QString::number(getInt(value,1+6+8+3*4))
-                        );
 
             btnResetError->setVisible(false);
             btnExcerciseIsokineticStart->setVisible(false);
@@ -489,14 +517,15 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             lblRepDirection->setVisible(false);
             btnCancel->setVisible(false);
             break;
-            //------------------------------------------------------------------------
-        case MODE_TEST_CONCENTRIC:
+        //------------------------------------------------------------------------
+        case Mode::TEST_CONCENTRIC:
 
-            (modeLogger->stream) << "mode=TEST_CONCENTRIC" << ";";
-
-            lblMode->setText("Режим: TEST_CONCENTRIC");
+            {
+                QString modeStr = "TEST_CONCENTRIC";
+                (modeLogger->stream) << "mode=" << modeStr << ";";
+                lblMode->setText("Режим: "+modeStr);
+            }
             lblError->setVisible(false);
-            lblPosition->setVisible(true);
             btnEnableServo->setVisible(false);
             btnParking->setVisible(false);
             btnTestConcentricStart->setVisible(false);
@@ -506,39 +535,33 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnPersonalExit->setVisible(false);
             wgtPersonal->setVisible(false);
 
-            lblPosition->setText(
-                        "Позиция: "+
-                        QString::number(getInt(value,1+6+8+0*4))+" / "+
-                        QString::number(getInt(value,1+6+8+1*4))+" / "+
-                        QString::number(getInt(value,1+6+8+2*4))+" / "+
-                        QString::number(getInt(value,1+6+8+3*4))
-                        );
             {
-                QString phaseInfo = "Фаза: ";
-                switch(getInt(value,23+8)){
+                qint32 phase = getInt(value,23+8);
+                switch(phase){
                 default:
-                    lblPhase->setText(phaseInfo+"???");
+                    {
+                        QString phaseStr = "???";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
                     break;
-                case PHASE_HOMING:
-                    lblPhase->setText(phaseInfo+"PHASE_HOMING");
-                    break;
-                case PHASE_PAUSE:
-                    lblPhase->setText(phaseInfo+"PHASE_PAUSE");
-                    break;
-                case PHASE_TEST_CONCENTRIC:
-                    lblPhase->setText(phaseInfo+"PHASE_TEST_CONCENTRIC");
-                    break;
-                }
-            }
-
-            switch(value.length())
-            {
-                case 27+8:
+                case Phase::HOMING:
+                    {
+                        QString phaseStr = "HOMING";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
                     lblPositionRel->setVisible(false);
                     lblTimeToTest->setVisible(false);
                     lblForceValue->setVisible(false);
+
                     break;
-                case 31+8:
+                case Phase::PAUSE:
+                    {
+                        QString phaseStr = "PAUSE";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
                     lblPositionRel->setVisible(false);
                     lblTimeToTest->setVisible(true);
                     lblForceValue->setVisible(false);
@@ -547,20 +570,31 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
                                 "До начала теста осталось: "+
                                 QString::number(getInt(value,27+8))+" мс"
                                 );
+
                     break;
-                case 35+8:
+                case Phase::TEST_CONCENTRIC:
+                    {
+                        QString phaseStr = "TEST_CONCENTRIC";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
                     lblPositionRel->setVisible(true);
                     lblTimeToTest->setVisible(false);
                     lblForceValue->setVisible(true);
 
-                    lblPositionRel->setText(
-                                "Относительное положение: "+
-                                QString::number(getInt(value,27+8))+" ???"
-                                );
-                    lblForceValue->setText(
-                                "Усилие: "+
-                                QString::number(getInt(value,31+8))+"g"
-                                );
+                    {
+                        double relPos = (double)getInt(value,27+8)/100.0;
+                        QString relPosStr = QString::number(relPos)+"%";
+                        lblPositionRel->setText("Относительное положение: "+relPosStr);
+                        (modeLogger->stream) << "relPos=" << relPosStr << ";";
+                    }
+
+                    {
+                        QString forceStr = QString::number(getInt(value,31+8))+"g";
+                        lblForceValue->setText("Усилие: "+forceStr);
+                        (modeLogger->stream) << "force=" << forceStr << ";";
+                    }
+
                     {
                         qint32 positionRel = getInt(value,27+8);
                         qint32 force = getInt(value,31+8);
@@ -579,7 +613,10 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
                     }
 
                     break;
+                }
             }
+
+ 
             btnResetError->setVisible(false);
             btnExcerciseIsokineticStart->setVisible(false);
             lblSetIndex->setVisible(false);
@@ -593,12 +630,13 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
 
             break;
             //------------------------------------------------------------------------
-        case MODE_TEST_ECCENTRIC:
+        case Mode::TEST_ECCENTRIC:
 
-            (modeLogger->stream) << "mode=TEST_ECCENTRIC" << ";";
-
-
-            lblMode->setText("Режим: TEST_ECCENTRIC");
+            {
+                QString modeStr = "TEST_ECCENTRIC";
+                (modeLogger->stream) << "mode=" << modeStr << ";";
+                lblMode->setText("Режим: "+modeStr);
+            }
             lblError->setVisible(false);
             lblPosition->setVisible(true);
             btnEnableServo->setVisible(false);
@@ -618,31 +656,31 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
                         QString::number(getInt(value,1+6+8+3*4))
                         );
             {
-                QString phaseInfo = "Фаза: ";
-                switch(getInt(value,23+8)){
+                qint32 phase = getInt(value,23+8);
+                switch(phase){
                 default:
-                    lblPhase->setText(phaseInfo+"???");
+                    {
+                        QString phaseStr = "???";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
                     break;
-                case PHASE_HOMING:
-                    lblPhase->setText(phaseInfo+"PHASE_HOMING");
-                    break;
-                case PHASE_PAUSE:
-                    lblPhase->setText(phaseInfo+"PHASE_PAUSE");
-                    break;
-                case PHASE_TEST_ECCENTRIC:
-                    lblPhase->setText(phaseInfo+"PHASE_TEST_ECCENTRIC");
-                    break;
-                }
-            }
-
-            switch(value.length())
-            {
-                case 27+8:
+                case Phase::HOMING:
+                    {
+                        QString phaseStr = "HOMING";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
                     lblPositionRel->setVisible(false);
                     lblTimeToTest->setVisible(false);
                     lblForceValue->setVisible(false);
                     break;
-                case 31+8:
+                case Phase::PAUSE:
+                    {
+                        QString phaseStr = "PAUSE";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
                     lblPositionRel->setVisible(false);
                     lblTimeToTest->setVisible(true);
                     lblForceValue->setVisible(false);
@@ -652,20 +690,27 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
                                 QString::number(getInt(value,27+8))+" мс"
                                 );
                     break;
-                case 35+8:
+                case Phase::TEST_ECCENTRIC:
+                    {
+                        QString phaseStr = "TEST_ECCENTRIC";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
                     lblPositionRel->setVisible(true);
                     lblTimeToTest->setVisible(false);
                     lblForceValue->setVisible(true);
 
-                    lblPositionRel->setText(
-                                "Относительное положение: "+
-                                QString::number(getInt(value,27+8))+" ???"
-                                );
-                    lblForceValue->setText(
-                                "Усилие: "+
-                                QString::number(getInt(value,31+8))+"g"
-                                );
-
+                    {
+                        double relPos = (double)getInt(value,27+8)/100.0;
+                        QString relPosStr = QString::number(relPos)+"%";
+                        lblPositionRel->setText("Относительное положение: "+relPosStr);
+                        (modeLogger->stream) << "relPos=" << relPosStr << ";";
+                    }
+                    {
+                        QString forceStr = QString::number(getInt(value,31+8))+"g";
+                        lblForceValue->setText("Усилие: "+forceStr);
+                        (modeLogger->stream) << "force=" << forceStr << ";";
+                    }
                     {
                         qint32 positionRel = getInt(value,27+8);
                         qint32 force = getInt(value,31+8);
@@ -681,9 +726,10 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
                         plotForceVsTime->graph(0)->setData(plotT, plotY);
                         plotForceVsTime->replot();
                     }
-
                     break;
+                }
             }
+
             btnResetError->setVisible(false);
             btnExcerciseIsokineticStart->setVisible(false);
             lblSetIndex->setVisible(false);
@@ -693,14 +739,14 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnCancel->setVisible(true);
             break;
         //------------------------------------------------------------------------
-        case MODE_TEST_STATIC:
+        case Mode::TEST_STATIC:
 
-            (modeLogger->stream) << "mode=TEST_STATIC" << ";";
-
-
-            lblMode->setText("Режим: TEST_STATIC");
+            {
+                QString modeStr = "TEST_STATIC";
+                (modeLogger->stream) << "mode=" << modeStr << ";";
+                lblMode->setText("Режим: "+modeStr);
+            }
             lblError->setVisible(false);
-            lblPosition->setVisible(true);
             btnEnableServo->setVisible(false);
             btnParking->setVisible(false);
             btnTestConcentricStart->setVisible(false);
@@ -710,41 +756,49 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnPersonalExit->setVisible(false);
             wgtPersonal->setVisible(false);
 
-            lblPosition->setText(
-                        "Позиция: "+
-                        QString::number(getInt(value,1+6+8+0*4))+" / "+
-                        QString::number(getInt(value,1+6+8+1*4))+" / "+
-                        QString::number(getInt(value,1+6+8+2*4))+" / "+
-                        QString::number(getInt(value,1+6+8+3*4))
-                        );
 
             {
-                lblPositionRel->setVisible(true);
-                qint32 relPos = getInt(value,35);
-                lblPositionRel->setText(
-                            "Относительное положение: "+
-                            QString::number(relPos)+" ???" + " / " +
-                            QString::number((double)relPos/100.0)+"%"
-                            );
-            }
-
-
-            {
-                QString phaseInfo = "Фаза: ";
-                switch(getInt(value,31)){
+                qint32 phase = getInt(value,23+8);
+                switch(phase){
                 default:
-                    lblPhase->setText(phaseInfo+"???");
+                    {
+                        QString phaseStr = "???";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
                     break;
-                case PHASE_HOMING:
-                    lblPhase->setText(phaseInfo+"PHASE_HOMING");
+                case Phase::HOMING:
+                    {
+                        QString phaseStr = "HOMING";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
+                    {
+                        lblPositionRel->setVisible(true);
+                        double relPos = (double)getInt(value,27+8)/100.0;
+                        QString relPosStr = QString::number(relPos)+"%";
+                        lblPositionRel->setText("Относительное положение: "+relPosStr);
+                        (modeLogger->stream) << "relPos=" << relPosStr << ";";
+                    }
 
                     lblTimeToTest->setVisible(false);
                     lblForceValue->setVisible(false);
 
 
                     break;
-                case PHASE_PAUSE:
-                    lblPhase->setText(phaseInfo+"PHASE_PAUSE");
+                case Phase::PAUSE:
+                    {
+                        QString phaseStr = "PAUSE";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
+                    {
+                        lblPositionRel->setVisible(true);
+                        double relPos = (double)getInt(value,27+8)/100.0;
+                        QString relPosStr = QString::number(relPos)+"%";
+                        lblPositionRel->setText("Относительное положение: "+relPosStr);
+                        (modeLogger->stream) << "relPos=" << relPosStr << ";";
+                    }
 
                     lblTimeToTest->setVisible(true);
                     lblForceValue->setVisible(false);
@@ -754,16 +808,28 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
                                 QString::number(getInt(value,39))+" мс"
                                 );
                     break;
-                case PHASE_TEST_STATIC:
-                    lblPhase->setText(phaseInfo+"PHASE_TEST_STATIC");
+                case Phase::TEST_STATIC:
+                    {
+                        QString phaseStr = "TEST_STATIC";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
+                    {
+                        lblPositionRel->setVisible(true);
+                        double relPos = (double)getInt(value,27+8)/100.0;
+                        QString relPosStr = QString::number(relPos)+"%";
+                        lblPositionRel->setText("Относительное положение: "+relPosStr);
+                        (modeLogger->stream) << "relPos=" << relPosStr << ";";
+                    }
 
                     lblTimeToTest->setVisible(true);
                     lblForceValue->setVisible(true);
 
-                    lblForceValue->setText(
-                                "Усилие: "+
-                                QString::number(getInt(value,39))+"g"
-                                );
+                    {
+                        QString forceStr = QString::number(getInt(value,31+8))+"g";
+                        lblForceValue->setText("Усилие: "+forceStr);
+                        (modeLogger->stream) << "force=" << forceStr << ";";
+                    }
                     lblTimeToTest->setText(
                                 "До окончания теста осталось: "+
                                 QString::number(getInt(value,43))+" мс"
@@ -799,14 +865,14 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnCancel->setVisible(true);
             break;
         //------------------------------------------------------------------------
-        case MODE_EXCERCISE_ISOKINETIC:
+        case Mode::EXCERCISE_ISOKINETIC:
 
-            (modeLogger->stream) << "mode=EXCERCISE_ISOKINETIC" << ";";
-
-
-            lblMode->setText("Режим: EXCERCISE_ISOKINETIC");
+             {
+                QString modeStr = "EXCERCISE_ISOKINETIC";
+                (modeLogger->stream) << "mode=" << modeStr << ";";
+                lblMode->setText("Режим: "+modeStr);
+            }
             lblError->setVisible(false);
-            lblPosition->setVisible(true);
             btnEnableServo->setVisible(false);
             btnParking->setVisible(false);
             btnTestConcentricStart->setVisible(false);
@@ -815,16 +881,13 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnPersonalStart->setVisible(false);
             btnPersonalExit->setVisible(false);
 
-            lblPosition->setText(
-                        "Позиция: "+
-                        QString::number(getInt(value,1+6+8+0*4))+" / "+
-                        QString::number(getInt(value,1+6+8+1*4))+" / "+
-                        QString::number(getInt(value,1+6+8+2*4))+" / "+
-                        QString::number(getInt(value,1+6+8+3*4))
-                        );
-
             lblSetIndex->setVisible(true);
-            lblSetIndex->setText("Set index = "+QString::number(getInt(value,35)));
+
+            {
+                QString setIndexStr = QString::number(getInt(value,35));
+                lblSetIndex->setText("Set index = "+setIndexStr);
+                (modeLogger->stream) << "set=" << setIndexStr << ";";
+            }
 
 
             {
@@ -832,14 +895,18 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
                 qint32 phase = getInt(value,31);
                 switch(phase){
                 default:
-                    lblPhase->setText(phaseInfo+"??? ("+QString::number(phase)+")");
-                    break;
-                case PHASE_HOMING:
-
-                    (modeLogger->stream) << "phase=HOMING" << ";";
-
-
-                    lblPhase->setText(phaseInfo+"PHASE_HOMING");
+                    {
+                        QString phaseStr = "???";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
+                   break;
+                case Phase::HOMING:
+                    {
+                        QString phaseStr = "HOMING";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
 
                     lblPositionRel->setVisible(false);
                     lblTimeToSet->setVisible(false);
@@ -847,86 +914,107 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
                     lblRepDirection->setVisible(false);
                     lblForceValue->setVisible(false);
 
-
                     break;
-                case PHASE_PAUSE:
-
-                    (modeLogger->stream) << "phase=PAUSE" << ";";
-
-                    lblPhase->setText(phaseInfo+"PHASE_PAUSE");
-
+                case Phase::PAUSE:
+                    {
+                        QString phaseStr = "PAUSE";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
+ 
                     lblPositionRel->setVisible(false);
-
                     lblTimeToSet->setVisible(true);
-                    lblTimeToSet->setText("Осталось "+QString::number(getInt(value,39)));
-                    (modeLogger->stream) << "timeToSet=" << QString::number(getInt(value,39)) << ";";
-
-                    lblRepIndex->setVisible(false);
-                    lblRepDirection->setVisible(false);
-                    lblForceValue->setVisible(false);
-
-                    break;
-                case PHASE_ISOKINETIC_FIRSTMOVE:
-
-                    (modeLogger->stream) << "phase=FIRSTMOVE" << ";";
-
-                    lblPhase->setText(phaseInfo+"PHASE_ISOKINETIC_FIRSTMOVE");
-
-
-                    break;
-                case PHASE_ISOKINETIC_FIRSTINTERRUPTION:
-
-                    (modeLogger->stream) << "phase=FIRSTINTERRUPTION" << ";";
-
-                    lblPhase->setText(phaseInfo+"PHASE_ISOKINETIC_FIRSTINTERRUPTION");
-                    break;
-                case PHASE_ISOKINETIC_SECONDMOVE:
-
-                    (modeLogger->stream) << "phase=SECONDMOVE" << ";";
-
-                    lblPhase->setText(phaseInfo+"PHASE_ISOKINETIC_SECONDMOVE");
-
-
-                    break;
-                case PHASE_ISOKINETIC_SECONDINTERRUPTION:
-
-                    (modeLogger->stream) << "phase=SECONDINTERRUPTION" << ";";
-
-                    lblPhase->setText(phaseInfo+"PHASE_ISOKINETIC_SECONDINTERRUPTION");
-                    break;
-                }
-
-                if ((phase==PHASE_ISOKINETIC_FIRSTMOVE)||(phase==PHASE_ISOKINETIC_SECONDMOVE)){
-
-                    lblTimeToSet->setVisible(false);
-
-                    lblPositionRel->setVisible(true);
-                    lblPositionRel->setText("Position REL = "+QString::number(getInt(value,47)));
-                    (modeLogger->stream) << "posRel=" << QString::number(getInt(value,47)) << ";";
-
-
-
-                    lblRepIndex->setVisible(true);
-                    lblRepIndex->setText("Rep index = "+QString::number(getInt(value,39)));
-                    (modeLogger->stream) << "repIndex=" << QString::number(getInt(value,39)) << ";";
-
-
-                    lblRepDirection->setVisible(true);
 
                     {
-                        qint32 repDirection = getInt(value,43);
-                        lblRepDirection->setText(
-                                    "Rep direction = "+
-                                    QString::number(repDirection)+
-                                    (repDirection==0?" ЭКСЦЕНТРИКА":" КОНЦЕНТРИКА")
-                                    );
+                        lblTimeToSet->setText("Осталось "+QString::number(getInt(value,39)));
+                        (modeLogger->stream) << "timeToSet=" << QString::number(getInt(value,39)) << ";";
+                    }
+
+                    lblRepIndex->setVisible(false);
+                    lblRepDirection->setVisible(false);
+                    lblForceValue->setVisible(false);
+
+                    break;
+                case Phase::ISOKINETIC_FIRSTMOVE:
+                    {
+                        QString phaseStr = "FIRSTMOVE";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
+
+ 
+
+                    break;
+                case Phase::ISOKINETIC_FIRSTINTERRUPTION:
+                    {
+                        QString phaseStr = "FIRSTINTERRUPTION";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
+                    {
+                        (modeLogger->stream) << "timeToMove=" << QString::number(getInt(value,39)) << ";";
                     }
 
 
-                    lblForceValue->setVisible(true);
-                    lblForceValue->setText("Force = "+QString::number(getInt(value,51))+"g");
-                    (modeLogger->stream) << "force=" << QString::number(getInt(value,51)) << ";";
+                    break;
+                case Phase::ISOKINETIC_SECONDMOVE:
+                    {
+                        QString phaseStr = "SECONDMOVE";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
 
+ 
+
+                    break;
+                case Phase::ISOKINETIC_SECONDINTERRUPTION:
+                    {
+                        QString phaseStr = "SECONDINTERRUPTION";
+                        lblPhase->setText("Фаза: "+phaseStr);
+                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                    }
+                    {
+                        (modeLogger->stream) << "timeToMove=" << QString::number(getInt(value,39)) << ";";
+                    }
+
+                    break;
+                }
+
+                if ((phase==Phase::ISOKINETIC_FIRSTMOVE)||(phase==Phase::ISOKINETIC_SECONDMOVE)){
+
+                    lblTimeToSet->setVisible(false);
+                    lblPositionRel->setVisible(true);
+                    lblRepIndex->setVisible(true);
+                    lblRepDirection->setVisible(true);
+
+                    {
+                        QString repIndexStr = QString::number(getInt(value,39));
+                        lblRepIndex->setText("Rep index = "+repIndexStr);
+                        (modeLogger->stream) << "repIndex=" << repIndexStr << ";";
+                    }
+                    {
+                        qint32 repDir = getInt(value,43);
+                        QString repDirStr = (repDir==0)?"AB":"BA";
+                        lblRepDirection->setText("Rep direction = "+repDirStr);
+                        (modeLogger->stream) << "repDir=" << repDirStr << ";";
+                    }
+
+                    {
+                        double relPos = (double)getInt(value,47)/100.0;
+                        QString relPosStr = QString::number(relPos)+"%";
+                        lblPositionRel->setText("Относительное положение: "+relPosStr);
+                        (modeLogger->stream) << "relPos=" << relPosStr << ";";
+                    }
+
+                    {
+                        QString forceStr = QString::number(getInt(value,51))+"g";
+                        lblForceValue->setText("Усилие: "+forceStr);
+                        (modeLogger->stream) << "force=" << forceStr << ";";
+                    }
+ 
+
+
+ 
 
                     {
                         qint32 positionRel = getInt(value,47);
@@ -947,11 +1035,10 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
 
 
 
-                }else if ((phase==PHASE_ISOKINETIC_FIRSTINTERRUPTION)||(phase==PHASE_ISOKINETIC_SECONDINTERRUPTION)){
+                }else if ((phase==Phase::ISOKINETIC_FIRSTINTERRUPTION)||(phase==Phase::ISOKINETIC_SECONDINTERRUPTION)){
 
                     lblTimeToSet->setVisible(true);
                     lblTimeToSet->setText("Осталось "+QString::number(getInt(value,39)));
-                    (modeLogger->stream) << "timeToRep=" << QString::number(getInt(value,39)) << ";";
 
 
                     lblPositionRel->setVisible(false);
@@ -973,14 +1060,14 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             btnCancel->setVisible(true);
             break;
             //------------------------------------------------------------------------
-        case MODE_ERROR:
+        case Mode::FAULT:
 
-            (modeLogger->stream) << "mode=ERROR" << ";";
-
-
-            lblMode->setText("Режим: ERROR");
-            lblError->setVisible(true);
-            lblPosition->setVisible(false);
+            {
+                QString modeStr = "FAULT";
+                (modeLogger->stream) << "mode=" << modeStr << ";";
+                lblMode->setText("Режим: "+modeStr);
+            }
+           lblError->setVisible(true);
             lblPositionRel->setVisible(false);
             lblTimeToTest->setVisible(false);
             lblForceValue->setVisible(false);
@@ -994,6 +1081,8 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
             wgtPersonal->setVisible(false);
 
             quint8 errorType = value.at(1+6+8);
+            (modeLogger->stream) << "type=" << (int)errorType << ";";
+
             switch(errorType)
             {
             default:
@@ -1058,8 +1147,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
     }
 
 }
-
-//============================================================================================================
+//=================================================================================================
 void WidgetMode::slotEnableServo()
 {
 
@@ -1075,7 +1163,7 @@ void WidgetMode::slotEnableServo()
     }
 
 }
-//============================================================================================================
+//=================================================================================================
 void WidgetMode::slotParking()
 {
     if (serialPortTransceiver_->isPortOK()==true)
@@ -1089,10 +1177,9 @@ void WidgetMode::slotParking()
 
     }
 }
-//============================================================================================================
+//=================================================================================================
 void WidgetMode::slotPersonalPressed(int buttonID)
 {
-    qDebug() << "WidgetHmiMode::slotPersonalPressed" << buttonID;
     if (serialPortTransceiver_->isPortOK()==true)
     {
         QByteArray valueArray;
@@ -1103,11 +1190,11 @@ void WidgetMode::slotPersonalPressed(int buttonID)
         delete txArray;
     }
 }
-void WidgetMode::slotPersonalHold(int buttonID)
-{
-    qDebug() << "WidgetHmiMode::slotPersonalHold" << buttonID;
-    if (serialPortTransceiver_->isPortOK()==true)
-    {
+//=================================================================================================
+void WidgetMode::slotPersonalHold(int buttonID){
+
+    if (serialPortTransceiver_->isPortOK()==true){
+
         QByteArray valueArray;
         valueArray.push_back((char)buttonID);
         TLVWriter tlv(TLV::TAG_PersonalButtonHold,valueArray);
@@ -1116,12 +1203,11 @@ void WidgetMode::slotPersonalHold(int buttonID)
         delete txArray;
     }
 }
-void WidgetMode::slotPersonalReleased(int buttonID)
-{
-    qDebug() << "WidgetHmiMode::slotPersonalReleased" << buttonID;
-    qDebug() << "";
-    if (serialPortTransceiver_->isPortOK()==true)
-    {
+//=================================================================================================
+void WidgetMode::slotPersonalReleased(int buttonID){
+
+    if (serialPortTransceiver_->isPortOK()==true){
+        
         QByteArray valueArray;
         valueArray.push_back((char)buttonID);
         TLVWriter tlv(TLV::TAG_PersonalButtonReleased,valueArray);
@@ -1130,11 +1216,10 @@ void WidgetMode::slotPersonalReleased(int buttonID)
         delete txArray;
     }
 }
-//============================================================================================================
-void WidgetMode::slotPersonalStart()
-{
-    if (serialPortTransceiver_->isPortOK()==true)
-    {
+//=================================================================================================
+void WidgetMode::slotPersonalStart(){
+
+    if (serialPortTransceiver_->isPortOK()==true){
         QByteArray valueArray;
         TLVWriter tlv(TLV::TAG_Personal,valueArray);
         QByteArray *txArray = tlv.getStuffedArray();
@@ -1143,10 +1228,9 @@ void WidgetMode::slotPersonalStart()
     }
 
 }
-//============================================================================================================
-void WidgetMode::slotPersonalExit()
-{
-    qDebug() << "WidgetHmiMode::slotPersonalExit";
+//=================================================================================================
+void WidgetMode::slotPersonalExit(){
+
     if (serialPortTransceiver_->isPortOK()==true)
     {
         QByteArray valueArray;
@@ -1158,11 +1242,10 @@ void WidgetMode::slotPersonalExit()
 
 }
 //============================================================================================================
-void WidgetMode::slotTestConcentricStart(qint32 pauseBeforeTest)
-{
-    qDebug() << "WidgetHmiMode::slotTestConcentricStart" << QString::number(pauseBeforeTest);
-    if (serialPortTransceiver_->isPortOK()==true)
-    {
+void WidgetMode::slotTestConcentricStart(qint32 pauseBeforeTest){
+
+    if (serialPortTransceiver_->isPortOK()==true){
+
         QByteArray valueArray;
         valueArray.append((char*)&pauseBeforeTest,4);
         TLVWriter tlv(TLV::TAG_TestConcentric,valueArray);
@@ -1173,11 +1256,10 @@ void WidgetMode::slotTestConcentricStart(qint32 pauseBeforeTest)
 
 }
 //============================================================================================================
-void WidgetMode::slotTestEccentricStart(qint32 pauseBeforeTest)
-{
-    qDebug() << "WidgetHmiMode::slotTestEccentricStart" << QString::number(pauseBeforeTest);
-    if (serialPortTransceiver_->isPortOK()==true)
-    {
+void WidgetMode::slotTestEccentricStart(qint32 pauseBeforeTest){
+
+    if (serialPortTransceiver_->isPortOK()==true){
+
         QByteArray valueArray;
         valueArray.append((char*)&pauseBeforeTest,4);
         TLVWriter tlv(TLV::TAG_TestEccentric,valueArray);
@@ -1190,9 +1272,8 @@ void WidgetMode::slotTestEccentricStart(qint32 pauseBeforeTest)
 //============================================================================================================
 void WidgetMode::slotTestStaticStart(QByteArray &testSettings){
 
-    qDebug() << "WidgetHmiMode::slotTestStaticStart";
-    if (serialPortTransceiver_->isPortOK()==true)
-    {
+    if (serialPortTransceiver_->isPortOK()==true){
+
         TLVWriter tlv(TLV::TAG_TestStatic,testSettings);
         QByteArray *txArray = tlv.getStuffedArray();
         serialPortTransceiver_->write(*txArray);
@@ -1201,11 +1282,10 @@ void WidgetMode::slotTestStaticStart(QByteArray &testSettings){
 
 }
 //============================================================================================================
-void WidgetMode::slotResetError()
-{
-    qDebug() << "WidgetHmiMode::slotResetError";
-    if (serialPortTransceiver_->isPortOK()==true)
-    {
+void WidgetMode::slotResetError(){
+
+    if (serialPortTransceiver_->isPortOK()==true){
+
         QByteArray valueArray;
         TLVWriter tlv(TLV::TAG_ResetError,valueArray);
         QByteArray *txArray = tlv.getStuffedArray();
@@ -1215,11 +1295,10 @@ void WidgetMode::slotResetError()
 
 }
 //============================================================================================================
-void WidgetMode::slotExcerciseIsokineticStart()
-{
-    qDebug() << "WidgetHmiMode::slotExcerciseIsokineticStart";
-    if (serialPortTransceiver_->isPortOK()==true)
-    {
+void WidgetMode::slotExcerciseIsokineticStart(){
+
+    if (serialPortTransceiver_->isPortOK()==true){
+
         QByteArray valueArray;
         TLVWriter tlv(TLV::TAG_ExcerciseIsokinetic,valueArray);
         QByteArray *txArray = tlv.getStuffedArray();
@@ -1230,49 +1309,16 @@ void WidgetMode::slotExcerciseIsokineticStart()
 
 }
 //============================================================================================================
-void WidgetMode::slotCancel()
-{
-    qDebug() << "WidgetHmiMode::slotCancel";
-    if (serialPortTransceiver_->isPortOK()==true)
-    {
+void WidgetMode::slotCancel(){
+
+    if (serialPortTransceiver_->isPortOK()==true){
+
         QByteArray valueArray;
         TLVWriter tlv(TLV::TAG_Cancel,valueArray);
         QByteArray *txArray = tlv.getStuffedArray();
         serialPortTransceiver_->write(*txArray);
         delete txArray;
     }
-
-
-}
-//============================================================================================================
-void WidgetMode::debugTimerTimeout(void){
-
-    qDebug() << "WidgetMode::debugTimerTimeout";
-
-    QByteArray value(43,(char)0);
-
-
-    quint8 mode = 5;
-    memcpy(&value.data()[0],&mode,sizeof(mode));
-
-    qint32 phase = 2;
-    memcpy(&value.data()[31],&phase,sizeof(value));
-
-
-    static qint32 positionRel = 0;
-    positionRel = ((positionRel+345+((qrand() % 100))))%10000;
-    memcpy(&value.data()[34],&positionRel,sizeof(positionRel));
-
-    qint32 force = ((qrand() % 200)-100);
-    memcpy(&value.data()[39],&force,sizeof(force));
-
-
-
-    newMessageReceived(TLV::TAG_ReportCurrentMode,0,value);
-
-
-
-
 }
 //============================================================================================================
 void WidgetMode::slotPlotForceReset(){
@@ -1284,8 +1330,6 @@ void WidgetMode::slotPlotForceReset(){
     plotForceVsPosition->replot();
     plotForceVsTime->graph(0)->setData(plotT, plotY);
     plotForceVsTime->replot();
-
-
 
 }
 //============================================================================================================
