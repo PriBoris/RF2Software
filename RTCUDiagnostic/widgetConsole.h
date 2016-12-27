@@ -9,11 +9,10 @@
 #include <QFile>
 
 
-#include "widget.h"
 #include "serialporttransceiver.h"
 
 
-class WidgetConsole : public Widget
+class WidgetConsole : public QWidget
 {
     Q_OBJECT
     QLabel *lblRxMessageCounter;
@@ -22,20 +21,18 @@ class WidgetConsole : public Widget
 
     QVBoxLayout *loMain;
 
-    //QTimer *debugTimer;
 
     SerialPortTransceiver *serialPortTransceiver_;
     quint32 rxMessageCounter;
-    QString name_;
-    bool bbWidget_;
 
     QString getRandomString() const;
     QFile *logFile;
 
 public:
-    explicit WidgetConsole(SerialPortTransceiver *serialPortTransceiver,QString name,bool bbWidget,QWidget *parent = 0);
-    QString getName(){return name_;}
-    bool isBBWidget(){return bbWidget_;}
+    explicit WidgetConsole(
+            SerialPortTransceiver *serialPortTransceiver,
+            QWidget *parent = 0
+            );
     ~WidgetConsole();
 
 public slots:

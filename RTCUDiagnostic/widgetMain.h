@@ -9,14 +9,13 @@
 #include <QPushButton>
 #include <QSettings>
 
-#include "widget.h"
 #include "tlvreader.h"
 #include "serialporttransceiver.h"
 #include "widgetMode.h"
 #include "widgetPersonalSettings.h"
 #include "widgetMachineSettings.h"
 #include "widgetExcerciseSettings.h"
-#include "widgetnfc.h"
+#include "widgetNFC.h"
 #include "widgetConsole.h"
 
 
@@ -26,7 +25,7 @@ class WidgetMain : public QWidget
     Q_OBJECT
 
 
-    WidgetMode *widgetHmiMode;
+    WidgetMode *widgetMode;
     WidgetPersonalSettings *widgetSettingsPosition;
     WidgetMachineSettings *widgetMachineSettings;
     WidgetExcerciseSettings *widgetExcerciseSettings;
@@ -45,15 +44,16 @@ class WidgetMain : public QWidget
     QFont *fontRegular;
     QFont *fontSelect;
 
-    QVector<Widget*> widgetArray;
-    QVector<QGroupBox*> widgetGroupBoxArray;
-    QVector<QVBoxLayout*> widgetGroupBoxLayoutArray;
+    QVector<QWidget*> widgetArray;
+    //QVector<QGroupBox*> widgetGroupBoxArray;
+    //QVector<QVBoxLayout*> widgetGroupBoxLayoutArray;
 
     QSerialPort *serialPort;
     SerialPortTransceiver *serialPortTransceiver;
     TLVReader *tlvReader;
 
     QVBoxLayout *lo;
+
 
     static const int TAB_Mode=0;
     static const int TAB_MachineSettings=1;
@@ -62,16 +62,23 @@ class WidgetMain : public QWidget
     static const int TAB_NFC=4;
     static const int TAB_CONSOLE=5;
 
+    void saveGeometry();
+    void restoreGeometry();
+
+    QWidget *container;
+    QScrollArea *scrollArea;
+    QVBoxLayout *loContainer;
 
 public:
     explicit WidgetMain(QWidget *parent = 0);
-    //~WidgetMain();
+    ~WidgetMain();
 
 signals:
 
 public slots:
 
     void slotTabClicked(int tabIndex);
+    void slotScrollTop();
 
 
 

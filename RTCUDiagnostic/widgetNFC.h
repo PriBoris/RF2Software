@@ -7,14 +7,13 @@
 #include <QBoxLayout>
 #include <QSignalMapper>
 
-#include "widget.h"
 #include "serialporttransceiver.h"
 #include "tlv.h"
 #include "tlvwriter.h"
 
 
 
-class WidgetNFC : public Widget
+class WidgetNFC : public QWidget
 {
     Q_OBJECT
 
@@ -25,14 +24,13 @@ class WidgetNFC : public Widget
 
     SerialPortTransceiver *serialPortTransceiver_;
     quint32 rxMessageCounter;
-    QString name_;
-    bool bbWidget_;
 
 
 public:
-    explicit WidgetNFC(SerialPortTransceiver *serialPortTransceiver,QString name,bool bbWidget,QWidget *parent = 0);
-    QString getName(){return name_;}
-    bool isBBWidget(){return bbWidget_;}
+    explicit WidgetNFC(
+            SerialPortTransceiver *serialPortTransceiver,
+            QWidget *parent = 0
+            );
 
 signals:
 

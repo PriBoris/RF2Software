@@ -9,7 +9,6 @@
 #include <QSignalMapper>
 #include <QTimer>
 
-#include "widget.h"
 #include "serialporttransceiver.h"
 #include "tlv.h"
 #include "tlvwriter.h"
@@ -20,7 +19,7 @@
 #include "qcustomplot.h"
 
 
-class WidgetMode : public Widget
+class WidgetMode : public QWidget
 {
     Q_OBJECT
 
@@ -85,8 +84,6 @@ class WidgetMode : public Widget
 
     SerialPortTransceiver *serialPortTransceiver_;
     quint32 rxMessageCounter;
-    QString name_;
-    bool bbWidget_;
 
     class Mode{
     public:
@@ -152,10 +149,10 @@ class WidgetMode : public Widget
 
 
 public:
-    explicit WidgetMode(SerialPortTransceiver *serialPortTransceiver,QString name,bool bbWidget,QWidget *parent = 0);
+    explicit WidgetMode(
+            SerialPortTransceiver *serialPortTransceiver,
+            QWidget *parent = 0);
     ~WidgetMode();
-    QString getName(){return name_;}
-    bool isBBWidget(){return bbWidget_;}
 
 
 signals:

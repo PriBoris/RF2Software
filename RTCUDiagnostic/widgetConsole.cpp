@@ -10,16 +10,12 @@
 //==============================================================================================================
 WidgetConsole::WidgetConsole(
         SerialPortTransceiver *serialPortTransceiver,
-        QString name,
-        bool bbWidget,
         QWidget *parent
-        ) : Widget(parent)
+        ) : QWidget(parent)
 {
 
     serialPortTransceiver_ = serialPortTransceiver;
     rxMessageCounter = 0;
-    name_ = name;
-    bbWidget_ = bbWidget;
 
     {
         logFile = new QFile("RtcuDebugMessagesLog.txt");

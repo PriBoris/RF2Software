@@ -10,7 +10,6 @@
 
 
 
-#include "widget.h"
 #include "serialporttransceiver.h"
 #include "tlv.h"
 #include "tlvwriter.h"
@@ -34,7 +33,7 @@ struct TMachineSettings
 };
 
 
-class WidgetMachineSettings : public Widget
+class WidgetMachineSettings : public QWidget
 {
 
 
@@ -59,18 +58,12 @@ class WidgetMachineSettings : public Widget
 
     SerialPortTransceiver *serialPortTransceiver_;
     quint32 rxMessageCounter;
-    QString name_;
-    bool bbWidget_;
 
 public:
     explicit WidgetMachineSettings(
             SerialPortTransceiver *serialPortTransceiver,
-            QString name,
-            bool bbWidget,
             QWidget *parent = 0
             );
-    QString getName(){return name_;}
-    bool isBBWidget(){return bbWidget_;}
 
 signals:
 

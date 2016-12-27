@@ -9,16 +9,12 @@ WidgetMode::~WidgetMode(){
 //=================================================================================================
 WidgetMode::WidgetMode(
         SerialPortTransceiver *serialPortTransceiver,
-        QString name,
-        bool bbWidget,
         QWidget *parent
-        ) : Widget(parent){
+        ) : QWidget(parent){
 
     rxMessageCounter = 0;
 
     serialPortTransceiver_ = serialPortTransceiver;
-    name_ = name;
-    bbWidget_ = bbWidget;
 
     modeLogger = new ModeLogger;
 
@@ -1067,7 +1063,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                 (modeLogger->stream) << "mode=" << modeStr << ";";
                 lblMode->setText("Режим: "+modeStr);
             }
-           lblError->setVisible(true);
+            lblError->setVisible(true);
             lblPositionRel->setVisible(false);
             lblTimeToTest->setVisible(false);
             lblForceValue->setVisible(false);

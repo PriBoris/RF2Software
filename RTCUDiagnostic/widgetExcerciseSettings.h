@@ -11,7 +11,6 @@
 #include <QGridLayout>
 #include <QSettings>
 
-#include "widget.h"
 #include "serialporttransceiver.h"
 #include "tlv.h"
 #include "tlvwriter.h"
@@ -31,7 +30,7 @@ struct IsokineticSetSettings
     qint32	repsCount;
 };
 
-class WidgetExcerciseSettings : public Widget
+class WidgetExcerciseSettings : public QWidget
 {
     Q_OBJECT
     QLabel *lblRxMessageCounter;
@@ -63,19 +62,13 @@ class WidgetExcerciseSettings : public Widget
 
     SerialPortTransceiver *serialPortTransceiver_;
     quint32 rxMessageCounter;
-    QString name_;
-    bool bbWidget_;
     QSettings *settings;
 
 public:
     explicit WidgetExcerciseSettings(
             SerialPortTransceiver *serialPortTransceiver,
-            QString name,
-            bool bbWidget,
             QWidget *parent = 0
             );
-    QString getName(){return name_;}
-    bool isBBWidget(){return bbWidget_;}
 
 signals:
 

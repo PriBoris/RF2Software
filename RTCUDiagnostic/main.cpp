@@ -1,5 +1,4 @@
 #include "widgetMain.h"
-#include "mainscrollarea.h"
 
 #include <QApplication>
 
@@ -14,16 +13,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("REFORCE");
     QCoreApplication::setApplicationName("RTCUDiagnostic");
 
+    WidgetMain *widgetMain = new WidgetMain;
 
-
-
-    WidgetMain *mainWidget = new WidgetMain;
-    MainScrollArea *scrollArea=new MainScrollArea;
-    scrollArea->setAttribute( Qt::WA_DeleteOnClose );
-    mainWidget->setAttribute( Qt::WA_DeleteOnClose );
-
-    scrollArea->setWidget(mainWidget);
-    scrollArea->show();
+    widgetMain->show();
 
     return a.exec();
 }

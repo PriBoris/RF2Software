@@ -19,10 +19,7 @@ SOURCES += main.cpp\
     tlv.cpp \
     tlvwriter.cpp \
     tlvreader.cpp \
-    widget.cpp \
     personalbutton.cpp \
-    widgetnfc.cpp \
-    mainscrollarea.cpp \
     widgetMode.cpp \
     widgetMachineSettings.cpp \
     widgetSettingsInteger.cpp \
@@ -33,17 +30,15 @@ SOURCES += main.cpp\
     qcustomplot.cpp \
     widgetTestDynamicStart.cpp \
     widgetTestStaticStart.cpp \
-    ModeLogger.cpp
+    ModeLogger.cpp \
+    widgetNFC.cpp
 
 HEADERS  += \
     serialporttransceiver.h \
     tlv.h \
     tlvwriter.h \
     tlvreader.h \
-    widget.h \
     personalbutton.h \
-    widgetnfc.h \
-    mainscrollarea.h \
     widgetMode.h \
     widgetMachineSettings.h \
     widgetSettingsInteger.h \
@@ -54,4 +49,5 @@ HEADERS  += \
     qcustomplot.h \
     widgetTestDynamicStart.h \
     widgetTestStaticStart.h \
-    ModeLogger.h
+    ModeLogger.h \
+    widgetNFC.h

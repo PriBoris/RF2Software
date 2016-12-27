@@ -1,16 +1,12 @@
-#include "widgetnfc.h"
+#include "widgetNFC.h"
 
 
 WidgetNFC::WidgetNFC(
       SerialPortTransceiver *serialPortTransceiver,
-      QString name,
-      bool bbWidget,
       QWidget *parent
-      ) : Widget(parent)
+      ) : QWidget(parent)
 {
     serialPortTransceiver_ = serialPortTransceiver;
-    name_ = name;
-    bbWidget_ = bbWidget;
     rxMessageCounter = 0;
 
 

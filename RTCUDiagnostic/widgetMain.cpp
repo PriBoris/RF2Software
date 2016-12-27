@@ -1,5 +1,7 @@
 #include "widgetMain.h"
 
+#include <QScrollArea>
+
 //===============================================================================================================
 WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent)
 {
@@ -44,13 +46,14 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent)
     btnTabConsole->setFixedWidth(150);
 
 
-    loTabs->addWidget(lblPortStatus);
     loTabs->addWidget(btnTabMode);
     loTabs->addWidget(btnTabMachineSettings);
     loTabs->addWidget(btnTabPersonalSettings);
     loTabs->addWidget(btnTabExcerciseSettings);
     loTabs->addWidget(btnTabNFC);
     loTabs->addWidget(btnTabConsole);
+    loTabs->addStretch(1);
+    loTabs->addWidget(lblPortStatus);
     loTabs->addStretch(1);
 
     if (serialPortOpened==true){
@@ -86,41 +89,47 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent)
     lo->addLayout(loTabs);
 
 
+    loContainer = new QVBoxLayout;
+
+
     //------------------------------
 
-    widgetHmiMode = new WidgetMode(serialPortTransceiver,"Mode",false);
-    widgetSettingsPosition = new WidgetPersonalSettings(serialPortTransceiver,"PersonalSettings",false);
-    widgetMachineSettings = new WidgetMachineSettings(serialPortTransceiver,"MachineSettings",false);
-    widgetExcerciseSettings = new WidgetExcerciseSettings(serialPortTransceiver,"ExcerciseSettings",false);
-    widgetNFC = new WidgetNFC(serialPortTransceiver,"NFC",false);
-    widgetConsole = new WidgetConsole(serialPortTransceiver,"Console",false);
+    widgetMode = new WidgetMode(serialPortTransceiver);
+    widgetSettingsPosition = new WidgetPersonalSettings(serialPortTransceiver);
+    widgetMachineSettings = new WidgetMachineSettings(serialPortTransceiver);
+    widgetExcerciseSettings = new WidgetExcerciseSettings(serialPortTransceiver);
+    widgetNFC = new WidgetNFC(serialPortTransceiver);
+    widgetConsole = new WidgetConsole(serialPortTransceiver);
 
-    widgetArray.append(widgetHmiMode);
+    widgetArray.append(widgetMode);
     widgetArray.append(widgetMachineSettings);
     widgetArray.append(widgetSettingsPosition);
     widgetArray.append(widgetExcerciseSettings);
     widgetArray.append(widgetNFC);
     widgetArray.append(widgetConsole);
 
-    for(int i=0;i<widgetArray.length();i++)
-    {
-        widgetGroupBoxArray.append(new QGroupBox(widgetArray.at(i)->getName()));
-
-        widgetGroupBoxArray.at(i)->setStyleSheet("QGroupBox { font-weight: bold; font: 12pt;} ");
-
-        widgetGroupBoxLayoutArray.append(new QVBoxLayout);
-
-        widgetGroupBoxLayoutArray.at(i)->addWidget(widgetArray.at(i));
-        widgetGroupBoxLayoutArray.at(i)->addStretch(1);
-        widgetGroupBoxArray.at(i)->setLayout(widgetGroupBoxLayoutArray.at(i));
-
-        lo->addWidget(widgetGroupBoxArray.at(i));
-
+    for(int i=0;i<widgetArray.length();i++){
+         loContainer->addWidget(widgetArray.at(i));
     }
-    lo->addStretch(1);
-    this->setLayout(lo);
+    loContainer->addStretch(1);
 
-    connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetHmiMode,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
+    container = new QWidget;
+    container->setLayout(loContainer);
+    scrollArea=new QScrollArea;
+    scrollArea->setWidget(container);
+    lo->addWidget(scrollArea);
+
+
+
+
+
+
+
+    this->setLayout(lo);
+    restoreGeometry();
+
+
+    connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetMode,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
     connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetSettingsPosition,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
     connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetMachineSettings,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
     connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetExcerciseSettings,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
@@ -142,6 +151,10 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent)
 
 }
 //===============================================================================================================
+WidgetMain::~WidgetMain(){
+    saveGeometry();
+}
+//===============================================================================================================
 void WidgetMain::slotTabClicked(int tabIndex){
 
     switch(tabIndex){
@@ -155,7 +168,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         btnTabConsole->setFont(*fontRegular);
 
 
-        widgetHmiMode->setVisible(true);
+        widgetMode->setVisible(true);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(false);
         widgetExcerciseSettings->setVisible(false);
@@ -172,7 +185,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         btnTabNFC->setFont(*fontRegular);
         btnTabConsole->setFont(*fontRegular);
 
-        widgetHmiMode->setVisible(false);
+        widgetMode->setVisible(false);
         widgetSettingsPosition->setVisible(true);
         widgetMachineSettings->setVisible(false);
         widgetExcerciseSettings->setVisible(false);
@@ -189,7 +202,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         btnTabNFC->setFont(*fontRegular);
         btnTabConsole->setFont(*fontRegular);
 
-        widgetHmiMode->setVisible(false);
+        widgetMode->setVisible(false);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(true);
         widgetExcerciseSettings->setVisible(false);
@@ -206,7 +219,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         btnTabNFC->setFont(*fontRegular);
         btnTabConsole->setFont(*fontRegular);
 
-        widgetHmiMode->setVisible(false);
+        widgetMode->setVisible(false);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(false);
         widgetExcerciseSettings->setVisible(true);
@@ -222,7 +235,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         btnTabNFC->setFont(*fontSelect);
         btnTabConsole->setFont(*fontRegular);
 
-        widgetHmiMode->setVisible(false);
+        widgetMode->setVisible(false);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(false);
         widgetExcerciseSettings->setVisible(false);
@@ -238,7 +251,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         btnTabNFC->setFont(*fontRegular);
         btnTabConsole->setFont(*fontSelect);
 
-        widgetHmiMode->setVisible(false);
+        widgetMode->setVisible(false);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(false);
         widgetExcerciseSettings->setVisible(false);
@@ -247,12 +260,51 @@ void WidgetMain::slotTabClicked(int tabIndex){
         break;
     }
 
+    QTimer::singleShot(0, this, SLOT(scrollTop()));
+
     {
         QSettings *settings = new QSettings();
         settings->setValue("/Settings/tabIndex",tabIndex);
         delete settings;
     }
 
+}
+
+void WidgetMain::slotScrollTop(){
+    int top = scrollArea->verticalScrollBar()->maximum();
+    scrollArea->verticalScrollBar()->setMaximum(top);
+}
+//===============================================================================================================
+void WidgetMain::saveGeometry(){
+
+    QPoint position = this->pos();
+    QRect rect = this->geometry();
+    QSettings settings;
+    settings.setValue("/Settings/windowX",QString::number(rect.x()));
+    settings.setValue("/Settings/windowY",QString::number(rect.y()));
+    settings.setValue("/Settings/windowMaximized",((this->windowState() & Qt::WindowMaximized)!=0));
+
+    settings.setValue("/Settings/windowWidth",QString::number(rect.width()));
+    settings.setValue("/Settings/windowHeight",QString::number(rect.height()));
+
+}
+//===============================================================================================================
+void WidgetMain::restoreGeometry(){
+
+    QSettings settings;
+    if (settings.value("/Settings/windowMaximized",true).toBool()==true){
+        this->setWindowState(Qt::WindowMaximized);
+    } else {
+        QPoint position(
+            settings.value("/Settings/windowX", 100).toInt(),
+            settings.value("/Settings/windowY", 100).toInt()
+            );
+        this->move(position);
+        this->resize(
+            settings.value("/Settings/windowWidth", 300).toInt(),
+            settings.value("/Settings/windowHeight", 300).toInt()
+            );
+    }
 
 }
 //===============================================================================================================

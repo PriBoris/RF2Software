@@ -2,14 +2,10 @@
 
 WidgetMachineSettings::WidgetMachineSettings(
         SerialPortTransceiver *serialPortTransceiver,
-        QString name,
-        bool bbWidget,
         QWidget *parent
-        ) : Widget(parent)
+        ) : QWidget(parent)
 {
     serialPortTransceiver_ = serialPortTransceiver;
-    name_ = name;
-    bbWidget_ = bbWidget;
     rxMessageCounter = 0;
 
     lblRxMessageCounter = new QLabel("lblRxMessageCounter");
