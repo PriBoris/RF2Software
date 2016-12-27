@@ -580,7 +580,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
                     {
                         double relPos = (double)getInt(value,27+8)/100.0;
-                        QString relPosStr = QString::number(relPos)+"%";
+                        QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
                         (modeLogger->stream) << "relPos=" << relPosStr << ";";
                     }
@@ -698,7 +698,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
                     {
                         double relPos = (double)getInt(value,27+8)/100.0;
-                        QString relPosStr = QString::number(relPos)+"%";
+                        QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
                         (modeLogger->stream) << "relPos=" << relPosStr << ";";
                     }
@@ -772,7 +772,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         lblPositionRel->setVisible(true);
                         double relPos = (double)getInt(value,27+8)/100.0;
-                        QString relPosStr = QString::number(relPos)+"%";
+                        QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
                         (modeLogger->stream) << "relPos=" << relPosStr << ";";
                     }
@@ -791,7 +791,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         lblPositionRel->setVisible(true);
                         double relPos = (double)getInt(value,27+8)/100.0;
-                        QString relPosStr = QString::number(relPos)+"%";
+                        QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
                         (modeLogger->stream) << "relPos=" << relPosStr << ";";
                     }
@@ -813,7 +813,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         lblPositionRel->setVisible(true);
                         double relPos = (double)getInt(value,27+8)/100.0;
-                        QString relPosStr = QString::number(relPos)+"%";
+                        QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
                         (modeLogger->stream) << "relPos=" << relPosStr << ";";
                     }
@@ -997,7 +997,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
                     {
                         double relPos = (double)getInt(value,47)/100.0;
-                        QString relPosStr = QString::number(relPos)+"%";
+                        QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
                         (modeLogger->stream) << "relPos=" << relPosStr << ";";
                     }
