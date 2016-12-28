@@ -11,8 +11,8 @@ class MachineSettings{
 
 public:
 
-	struct ProtocolStruct
-	{
+	struct ProtocolStruct{
+
 		int32_t	positionMainMax;
 		int32_t	positionMainMin;
 		int32_t	positionAux1Max;
@@ -25,17 +25,42 @@ public:
 		int32_t speedAbsMainPersonal;
 	};
 
+	struct ProtocolStructExtended{
+		
+		int32_t	positionMainMax;
+		int32_t	positionMainMin;
+		int32_t	positionAux1Max;
+		int32_t	positionAux1Min;
+		int32_t	positionAux2Max;
+		int32_t	positionAux2Min;
+		int32_t	positionAux3Max;
+		int32_t	positionAux3Min;
+		int32_t speedAbsMainMax;
+		int32_t speedAbsMainPersonal;
+		int32_t	encoderBitCount;
+		int32_t	encoderDirection;
+		int32_t	encoderOffset;
+		int32_t forceSensorDirection;
+		int32_t	forceSensorOffset;
+		float forceSensorGain;
+
+	};
+
+
 
 	static void init();
 	static void report();
 	static void load(RxMessage *message);
 	static bool protocolStructValid;
+	static bool protocolStructExtendedValid;
 
 //private:
 
 	static ProtocolStruct protocolStruct;
+	static ProtocolStructExtended protocolStructExtended;
 
 	static bool checkProtocolStruct(ProtocolStruct *protocolStruct);
+	static bool checkProtocolStructExtended(ProtocolStructExtended *protocolStructExtended);
 
 	static int32_t getMainRange();
 

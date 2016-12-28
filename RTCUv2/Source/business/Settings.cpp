@@ -10,6 +10,8 @@ Settings::Struct *Settings::struct0;//located in BKSRAM
 Settings::Struct *Settings::struct1;
 uint8_t Settings::actualIndex;
 
+const int32_t Settings::INT32_UNKNOWN_VALUE = -1;	
+const float Settings::FLOAT_UNKNOWN_VALUE = -12345678.0f;//TODO: infinity or other distinct value	
 
 
 //=================================================================================================

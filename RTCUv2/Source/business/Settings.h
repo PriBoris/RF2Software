@@ -51,7 +51,8 @@ private:
 
 public:
 
-	static const int32_t INT32_UNKNOWN_VALUE = -1;	
+	static const int32_t INT32_UNKNOWN_VALUE;	
+	static const float FLOAT_UNKNOWN_VALUE;	
 
 
 	static void init();

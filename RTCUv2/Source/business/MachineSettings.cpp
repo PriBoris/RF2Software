@@ -12,7 +12,9 @@
 
 
 MachineSettings::ProtocolStruct MachineSettings::protocolStruct;
+MachineSettings::ProtocolStructExtended MachineSettings::protocolStructExtended;
 bool MachineSettings::protocolStructValid;
+bool MachineSettings::protocolStructExtendedValid;
 
 
 //=================================================================================================
@@ -30,10 +32,20 @@ void MachineSettings::init(){
 		(settings->positionAux3Max==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->positionAux3Min==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->speedAbsMainMax==Settings::INT32_UNKNOWN_VALUE)||
-		(settings->speedAbsMainPersonal==Settings::INT32_UNKNOWN_VALUE)
+		(settings->speedAbsMainPersonal==Settings::INT32_UNKNOWN_VALUE)/*||
+		(settings->encoderBitCount==Settings::INT32_UNKNOWN_VALUE)||
+		(settings->encoderDirection==Settings::INT32_UNKNOWN_VALUE)||
+		(settings->encoderOffset==Settings::INT32_UNKNOWN_VALUE)||
+		(settings->forceSensorDirection==Settings::INT32_UNKNOWN_VALUE)||
+		(settings->forceSensorOffset==Settings::INT32_UNKNOWN_VALUE)||
+		(settings->forceSensorGain==Settings::FLOAT_UNKNOWN_VALUE)||
+		true*/
+
 	){
 		protocolStructValid = false;
+		protocolStructExtendedValid = false;
 		memset(&protocolStruct,0,sizeof(protocolStruct));
+		memset(&protocolStructExtended,0,sizeof(protocolStructExtended));
 		//DebugConsole::pushMessage(" #MachineSettings INVALID");
 
 
@@ -54,6 +66,24 @@ void MachineSettings::init(){
 
 		protocolStructValid = true;
 		//DebugConsole::pushMessage(" #MachineSettings VALID");
+
+		memset(&protocolStructExtended,0,sizeof(protocolStructExtended));
+
+		protocolStructExtended.positionMainMax = settings->positionMainMax;
+		protocolStructExtended.positionMainMin = settings->positionMainMin;
+		protocolStructExtended.positionAux1Max = settings->positionAux1Max;
+		protocolStructExtended.positionAux1Min = settings->positionAux1Min;
+		protocolStructExtended.positionAux2Max = settings->positionAux2Max;
+		protocolStructExtended.positionAux2Min = settings->positionAux2Min;
+		protocolStructExtended.positionAux3Max = settings->positionAux3Max;
+		protocolStructExtended.positionAux3Min = settings->positionAux3Min;
+		protocolStructExtended.speedAbsMainMax = settings->speedAbsMainMax;
+		protocolStructExtended.speedAbsMainPersonal = settings->speedAbsMainPersonal;
+
+		protocolStructExtendedValid = true;
+
+
+
 	}
 
 }
