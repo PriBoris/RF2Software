@@ -1,5 +1,7 @@
 #include "WidgetSettingsFloat.h"
 
+
+//=================================================================================================
 WidgetSettingsFloat::WidgetSettingsFloat(
 	QString legend,
 	QString registryName,
@@ -15,10 +17,10 @@ WidgetSettingsFloat::WidgetSettingsFloat(
 
     edtWriteValue = new QLineEdit;
     edtWriteValue->setFixedWidth(200);
-    edtWriteValue->setValidator(new QDoubleValidator(0.0,(double)10000.0,2));
+    //edtWriteValue->setValidator(new QDoubleValidator(0.0,(double)10000.0,2));
     edtWriteValue->setFont(QFont("Verdana",10,QFont::Normal,false));
 
-    lblReadValue = new QLabel("...");
+    lblReadValue = new QLabel("unknown");
     lblReadValue->setFixedWidth(200);
     lblReadValue->setFont(QFont("Verdana",10,QFont::Normal,false));
 
@@ -40,30 +42,31 @@ WidgetSettingsFloat::WidgetSettingsFloat(
 
 
 }
-
+//=================================================================================================
 float WidgetSettingsFloat::getWriteValue() {
     return edtWriteValue->text().toFloat();
 };
-
+//=================================================================================================
 void WidgetSettingsFloat::setReadValue(float newValue) {
     value = newValue;
     lblReadValue->setText(QString::number(value));
 };
-
+//=================================================================================================
 void WidgetSettingsFloat::clearReadValue() {
-    lblReadValue->setText("---");
+    lblReadValue->setText("unknown");
 }
-
+//=================================================================================================
 void WidgetSettingsFloat::setUnknownReadValue() {
-    lblReadValue->setText("не задано");
+    lblReadValue->setText("unknown");
 }
-
-
+//=================================================================================================
 void WidgetSettingsFloat::editingFinished(){
 
-    value = edtWriteValue->text().toInt();
+    value = edtWriteValue->text().toFloat();
     settings->setValue(registryName_,value);
-
-
 }
-
+//=================================================================================================
+void WidgetSettingsFloat::setValidator(QValidator *validator){
+    edtWriteValue->setValidator(validator);
+}
+//=================================================================================================

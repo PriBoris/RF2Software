@@ -2,3 +2,5 @@ Objects/*
 Listings/*
 *.sublime-workspace
 *.dep
+*.Administrator
+*.bak

@@ -30,6 +30,11 @@ WidgetMachineSettingsExtended::WidgetMachineSettingsExtended(
         wgtForceSensorOffset = new WidgetSettingsInteger("forceSensorOffset","MachineSettingsExtended_forceSensorOffset",20000);
         wgtForceSensorGain = new WidgetSettingsFloat("forceSensorGain","MachineSettingsExtended_forceSensorGain",4000.0f);
 
+
+
+        wgtEncoderOffset->setValidator(new QIntValidator(-1000000,1000000));
+        wgtEncoderDirection->setValidator(new QIntValidator(-1,1));
+        wgtEncoderBitCount->setValidator(new QIntValidator(10,16));
     }
 
     btnWriteSettings = new QPushButton("Send Extended Machine Settings");
@@ -132,9 +137,47 @@ void WidgetMachineSettingsExtended::newMessageReceived(quint8 tag,quint32 msgID,
 
         if (value.length()==sizeof(TMachineSettingsExtended)){
 
+            TMachineSettingsExtended machineSettingsExtended;
+            memcpy(&machineSettingsExtended,value.data(),sizeof(TMachineSettingsExtended));
+
+
+            wgtPositionMainMax->setReadValue(machineSettingsExtended.positionMainMax);
+            wgtPositionMainMin->setReadValue(machineSettingsExtended.positionMainMin);
+            wgtPositionAux1Max->setReadValue(machineSettingsExtended.positionAux1Max);
+            wgtPositionAux1Min->setReadValue(machineSettingsExtended.positionAux1Min);
+            wgtPositionAux2Max->setReadValue(machineSettingsExtended.positionAux2Max);
+            wgtPositionAux2Min->setReadValue(machineSettingsExtended.positionAux2Min);
+            wgtPositionAux3Max->setReadValue(machineSettingsExtended.positionAux3Max);
+            wgtPositionAux3Min->setReadValue(machineSettingsExtended.positionAux3Min);
+            wgtSpeedAbsMainMax->setReadValue(machineSettingsExtended.speedAbsMainMax);
+            wgtSpeedAbsMainPersonal->setReadValue(machineSettingsExtended.speedAbsMainPersonal);
+
+            wgtEncoderBitCount->setReadValue(machineSettingsExtended.encoderBitCount);
+            wgtEncoderDirection->setReadValue(machineSettingsExtended.encoderDirection);
+            wgtEncoderOffset->setReadValue(machineSettingsExtended.encoderOffset);
+            wgtForceSensorDirection->setReadValue(machineSettingsExtended.forceSensorDirection);
+            wgtForceSensorOffset->setReadValue(machineSettingsExtended.forceSensorOffset);
+            wgtForceSensorGain->setReadValue(machineSettingsExtended.forceSensorGain);
+
 
         }else{
 
+            wgtPositionMainMax->setUnknownReadValue();
+            wgtPositionMainMin->setUnknownReadValue();
+            wgtPositionAux1Max->setUnknownReadValue();
+            wgtPositionAux1Min->setUnknownReadValue();
+            wgtPositionAux2Max->setUnknownReadValue();
+            wgtPositionAux2Min->setUnknownReadValue();
+            wgtPositionAux3Max->setUnknownReadValue();
+            wgtPositionAux3Min->setUnknownReadValue();
+            wgtSpeedAbsMainMax->setUnknownReadValue();
+            wgtSpeedAbsMainPersonal->setUnknownReadValue();
+            wgtEncoderBitCount->setUnknownReadValue();
+            wgtEncoderDirection->setUnknownReadValue();
+            wgtEncoderOffset->setUnknownReadValue();
+            wgtForceSensorDirection->setUnknownReadValue();
+            wgtForceSensorOffset->setUnknownReadValue();
+            wgtForceSensorGain->setUnknownReadValue();
         	
         }
 

@@ -3,14 +3,14 @@
 
 #include <stm32f4xx_conf.h>
 
-#include "../business/Errors.h"
-
+#include "business/Errors.h"
+#include "business/MachineSettings.h"
 
 
 uint32_t Encoder::requestCounter = 0;
 uint32_t Encoder::replyCounter = 0;
 uint16_t Encoder::rawValue = 0;
-uint16_t Encoder::value = 0;
+//uint16_t Encoder::value = 0;
 
 //=================================================================================================
 void Encoder::init(){
@@ -56,20 +56,14 @@ void Encoder::sendRequest(){
 //=================================================================================================
 void Encoder::getReply(){
 
-	
-	
 	rawValue = SPI_I2S_ReceiveData(SPI4);
 	replyCounter++;
 	
-	if (VALUE_SIGN>0){
+/*	if (VALUE_SIGN>0){
 		value = (rawValue+VALUE_ADDEND-VALUE_SUBTRAHEND) & VALUE_MASK;
 	}else{
 		value = (VALUE_MASK+1-rawValue+VALUE_ADDEND-VALUE_SUBTRAHEND) & VALUE_MASK;
-	}
-	
-	
-	
-	
+	}*/
 	
 }
 //=================================================================================================
@@ -81,7 +75,44 @@ extern "C"{void SPI4_IRQHandler(){
 	
 }}
 //=================================================================================================
-uint16_t Encoder::getValue(){
-	return value;
+int32_t Encoder::getValue(){
+	
+	//TODO: unit test this
+
+	if (MachineSettings::protocolStructExtendedValid==true){
+
+		int32_t valueMask = 0;
+		switch(MachineSettings::protocolStructExtended.encoderBitCount){
+		default:
+			valueMask = 0;
+			break;
+		case 15:
+			valueMask = 32767;
+			break;
+		}
+
+		if (MachineSettings::protocolStructExtended.encoderDirection>=0){
+
+			int32_t value = (int32_t)rawValue;	
+			value += MachineSettings::protocolStructExtended.encoderOffset;
+			value &= valueMask;
+			return value;
+
+
+		}else{
+
+			int32_t value = -(int32_t)rawValue;	
+			value += MachineSettings::protocolStructExtended.encoderOffset;
+			value &= valueMask;
+			return value;
+		}
+		
+	}else{
+		return 0;
+	}
+	
+	
+	
+	//return value;
 }
 //=================================================================================================

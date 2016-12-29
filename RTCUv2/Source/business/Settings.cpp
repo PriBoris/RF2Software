@@ -113,6 +113,12 @@ void Settings::initializeStruct(uint8_t structIndex){
 	ss->positionAux4Min = INT32_UNKNOWN_VALUE;;
 	ss->speedAbsMainMax = INT32_UNKNOWN_VALUE;
 	ss->speedAbsMainPersonal = INT32_UNKNOWN_VALUE;
+	ss->encoderBitCount = INT32_UNKNOWN_VALUE;
+	ss->encoderDirection = INT32_UNKNOWN_VALUE;
+	ss->encoderOffset = INT32_UNKNOWN_VALUE;
+	ss->forceSensorDirection = INT32_UNKNOWN_VALUE;
+	ss->forceSensorOffset = INT32_UNKNOWN_VALUE;
+	ss->forceSensorGain = FLOAT_UNKNOWN_VALUE;
 
 	ss->checksum = calculateChecksum(structIndex);
 	

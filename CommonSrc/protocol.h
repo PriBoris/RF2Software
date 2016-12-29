@@ -113,13 +113,13 @@ private:
 		static const uint8_t TAG_RfidProximity = 0x04;
 		static const uint8_t TAG_RtcuDebugMessage = 0x05;
 		static const uint8_t TAG_ReportGenericExcerciseSettings = 0x06;
-		static const uint8_t TAG_ReportExtendedMachineSettings = 0x07;
+		static const uint8_t TAG_ReportMachineSettingsExtended = 0x07;
 		
 
 		static const uint8_t TAG_EnableServo = 0x40;
 		static const uint8_t TAG_LoadPersonalSettings = 0x41;
 		static const uint8_t TAG_LoadExcerciseSettings = 0x42;
-		static const uint8_t TAG_LoadMachineSettings = 0x43;
+		//static const uint8_t TAG_LoadMachineSettings = 0x43;
 		static const uint8_t TAG_Parking = 0x44;
 		static const uint8_t TAG_Personal = 0x45;
 		static const uint8_t TAG_PersonalExit = 0x46;
@@ -134,7 +134,7 @@ private:
 		static const uint8_t TAG_TestStatic = 0x4F;
 		static const uint8_t TAG_LoadGenericExcerciseSettings = 0x50;
 		static const uint8_t TAG_GenericExcerciseIsokinetic = 0x51;
-		static const uint8_t TAG_LoadExtendedMachineSettings = 0x52;
+		static const uint8_t TAG_LoadMachineSettingsExtended = 0x52;
 
 
 		static const uint8_t TAG_CheckRfidProximity = 0x80;

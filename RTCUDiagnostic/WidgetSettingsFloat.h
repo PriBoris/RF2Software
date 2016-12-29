@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QBoxLayout>
-#include <QIntValidator>
+#include <QValidator>
 
 #include <QSettings>
 #include <QDebug>
@@ -37,6 +37,8 @@ public:
     void setReadValue(float newValue);
     void clearReadValue();
     void setUnknownReadValue();
+    void setValidator(QValidator *validator);
+
 
 signals:
 

@@ -53,7 +53,7 @@ void ExcerciseSettings::load(RxMessage *message){
 	if (
 		(message->tag==Protocol::TAG_LoadExcerciseSettings)&&
 		(message->valueLen!=0)&&
-		(MachineSettings::protocolStructValid==true)&&
+		(MachineSettings::protocolStructExtendedValid==true)&&
 		(PersonalSettings::protocolStructValid==true)
 	){
 

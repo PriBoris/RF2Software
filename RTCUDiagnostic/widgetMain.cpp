@@ -276,6 +276,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         delete settings;
     }
     scrollArea->verticalScrollBar()->setMaximum(0);
+    scrollArea->horizontalScrollBar()->setMaximum(0);
 }
 //===============================================================================================================
 void WidgetMain::saveGeometry(){

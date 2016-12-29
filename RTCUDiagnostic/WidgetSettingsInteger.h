@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QBoxLayout>
-#include <QIntValidator>
+#include <QValidator>
 
 #include <QSettings>
 #include <QDebug>
@@ -28,6 +28,7 @@ class WidgetSettingsInteger : public QWidget{
     qint32 value;
 
 public:
+    
     explicit WidgetSettingsInteger(
             QString legend,
             QString registryName,
@@ -35,22 +36,17 @@ public:
             QWidget *parent = 0
             );
 
-    qint32 getWriteValue() {
-        return edtWriteValue->text().toInt();
-    };
+    qint32 getWriteValue();
 
-    void setReadValue(qint32 newValue) {
-        value = newValue;
-        lblReadValue->setText(QString::number(value));
-    };
+    void setReadValue(qint32 newValue);
 
-    void clearReadValue() {
-        lblReadValue->setText("---");
-    }
+    void clearReadValue();
 
-    void setUnknownReadValue() {
-        lblReadValue->setText("не задано");
-    }
+    void setUnknownReadValue();
+
+    void setReadOnly();
+
+    void setValidator(QValidator *validator);
 
 signals:
 

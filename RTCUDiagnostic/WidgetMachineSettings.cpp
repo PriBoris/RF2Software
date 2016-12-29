@@ -23,11 +23,23 @@ WidgetMachineSettings::WidgetMachineSettings(
         wgtSpeedAbsMainMax = new WidgetSettingsInteger("speedAbsMainMax","MachineSettings_SpeedAbsMainMax",1000);
         wgtSpeedAbsMainPersonal = new WidgetSettingsInteger("speedAbsMainPersonal","MachineSettings_SpeedAbsMainPersonal",50);
 
+
+        wgtPositionMainMax->setReadOnly();
+        wgtPositionMainMin->setReadOnly();
+        wgtPositionAux1Max->setReadOnly();
+        wgtPositionAux1Min->setReadOnly();
+        wgtPositionAux2Max->setReadOnly();
+        wgtPositionAux2Min->setReadOnly();
+        wgtPositionAux3Max->setReadOnly();
+        wgtPositionAux3Min->setReadOnly();
+        wgtSpeedAbsMainMax->setReadOnly();
+        wgtSpeedAbsMainPersonal->setReadOnly();
     }
 
     btnWriteSettings = new QPushButton("Send Machine Settings");
     btnWriteSettings->setFixedWidth(600);
     btnWriteSettings->setFont(QFont("Verdana",10,QFont::Bold,true));
+    btnWriteSettings->setEnabled(false);
 
 
     loMain = new QVBoxLayout;

@@ -85,10 +85,10 @@ void Servo::brake(bool on){
 
 bool Servo::validateActualPosition(){
 
-	uint16_t encoderActualValue = Encoder::getValue();
-	if (encoderActualValue>MachineSettings::protocolStruct.positionMainMax){
+	int32_t encoderActualValue = Encoder::getValue();
+	if (encoderActualValue>MachineSettings::protocolStructExtended.positionMainMax){
 		return false;
-	}else if (encoderActualValue<MachineSettings::protocolStruct.positionMainMin){
+	}else if (encoderActualValue<MachineSettings::protocolStructExtended.positionMainMin){
 		return false;
 	}else{
 		return true;
@@ -97,11 +97,11 @@ bool Servo::validateActualPosition(){
 }
 bool Servo::validateActualPosition(bool direction){
 
-	uint16_t encoderActualValue = Encoder::getValue();
+	int32_t encoderActualValue = Encoder::getValue();
 	if (POSITIVE_DIRECTION==direction){
 
 		// validate before moving servo in positive direction
-		if (encoderActualValue>MachineSettings::protocolStruct.positionMainMax){
+		if (encoderActualValue>MachineSettings::protocolStructExtended.positionMainMax){
 			return false;
 		}else{
 			return true;
@@ -110,7 +110,7 @@ bool Servo::validateActualPosition(bool direction){
 	}else if (NEGATIVE_DIRECTION==direction){
 
 		// validate before moving servo in negative direction
-		if (encoderActualValue<MachineSettings::protocolStruct.positionMainMin){
+		if (encoderActualValue<MachineSettings::protocolStructExtended.positionMainMin){
 			return false;
 		}else{
 			return true;

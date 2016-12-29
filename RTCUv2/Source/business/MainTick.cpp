@@ -268,18 +268,18 @@ void MainTick::process(){ //called every 100ms
 				case Protocol::TAG_LoadExcerciseSettings:
 					ExcerciseSettings::load(message);
 					break;
-				case Protocol::TAG_LoadMachineSettings:
+				case Protocol::TAG_LoadMachineSettingsExtended:
 					MachineSettings::load(message);
 					break;
 				case Protocol::TAG_Personal:
-					if (MachineSettings::protocolStructValid==true){
+					if (MachineSettings::protocolStructExtendedValid==true){
 						setSubmode(PERSONAL_Starting);//TODO:check message length
 						//DebugConsole::pushMessage(" #Personal\0");
 					}
 					break;
 				case Protocol::TAG_Parking: 
 					if (
-						(MachineSettings::protocolStructValid==true)&&
+						(MachineSettings::protocolStructExtendedValid==true)&&
 						(PersonalSettings::protocolStructValid==true)
 					){
 						setSubmode(PARKING_Starting);//TODO:check message length
@@ -290,7 +290,7 @@ void MainTick::process(){ //called every 100ms
 				case Protocol::TAG_TestEccentric:
 
 					if (
-						(MachineSettings::protocolStructValid==true)&&
+						(MachineSettings::protocolStructExtendedValid==true)&&
 						(PersonalSettings::protocolStructValid==true)&&
 						(true==ForceTestDynamic::load(message))
 					){
@@ -303,7 +303,7 @@ void MainTick::process(){ //called every 100ms
 				case Protocol::TAG_TestStatic:
 
 					if (
-						(MachineSettings::protocolStructValid==true)&&
+						(MachineSettings::protocolStructExtendedValid==true)&&
 						(PersonalSettings::protocolStructValid==true)&&
 						(true==ForceTestStatic::load(message))
 					){
@@ -315,7 +315,7 @@ void MainTick::process(){ //called every 100ms
 				case Protocol::TAG_ExcerciseIsokinetic:
 
 					if (
-						(MachineSettings::protocolStructValid==true)&&
+						(MachineSettings::protocolStructExtendedValid==true)&&
 						(PersonalSettings::protocolStructValid==true)&&
 						(ExcerciseSettings::valid==true)
 					){
@@ -347,7 +347,7 @@ void MainTick::process(){ //called every 100ms
 
 		RangeAdjustment::servoFrequency = Servo::absSpeedToFrequency(
 			MachineSettings::getMainRange(),
-			MachineSettings::protocolStruct.speedAbsMainPersonal
+			MachineSettings::protocolStructExtended.speedAbsMainPersonal
 			);
 
 		RxMessageQueue::flush();
@@ -427,9 +427,9 @@ void MainTick::process(){ //called every 100ms
 
 						Actuators::enable(
 							0,
-							MachineSettings::protocolStruct.positionAux1Max,
-							MachineSettings::protocolStruct.positionAux1Min,
-							MachineSettings::protocolStruct.positionAux1Max
+							MachineSettings::protocolStructExtended.positionAux1Max,
+							MachineSettings::protocolStructExtended.positionAux1Min,
+							MachineSettings::protocolStructExtended.positionAux1Max
 						);	
 						setSubmode(PERSONAL_MovingAux);
 						break;
@@ -437,9 +437,9 @@ void MainTick::process(){ //called every 100ms
 
 						Actuators::enable(
 							0,
-							MachineSettings::protocolStruct.positionAux1Min,
-							MachineSettings::protocolStruct.positionAux1Min,
-							MachineSettings::protocolStruct.positionAux1Max
+							MachineSettings::protocolStructExtended.positionAux1Min,
+							MachineSettings::protocolStructExtended.positionAux1Min,
+							MachineSettings::protocolStructExtended.positionAux1Max
 						);	
 						setSubmode(PERSONAL_MovingAux);
 						break;
@@ -447,9 +447,9 @@ void MainTick::process(){ //called every 100ms
 
 						Actuators::enable(
 							1,
-							MachineSettings::protocolStruct.positionAux2Max,
-							MachineSettings::protocolStruct.positionAux2Min,
-							MachineSettings::protocolStruct.positionAux2Max
+							MachineSettings::protocolStructExtended.positionAux2Max,
+							MachineSettings::protocolStructExtended.positionAux2Min,
+							MachineSettings::protocolStructExtended.positionAux2Max
 						);	
 						setSubmode(PERSONAL_MovingAux);
 						break;
@@ -457,9 +457,9 @@ void MainTick::process(){ //called every 100ms
 
 						Actuators::enable(
 							1,
-							MachineSettings::protocolStruct.positionAux2Min,
-							MachineSettings::protocolStruct.positionAux2Min,
-							MachineSettings::protocolStruct.positionAux2Max
+							MachineSettings::protocolStructExtended.positionAux2Min,
+							MachineSettings::protocolStructExtended.positionAux2Min,
+							MachineSettings::protocolStructExtended.positionAux2Max
 						);	
 						setSubmode(PERSONAL_MovingAux);
 						break;
@@ -693,14 +693,14 @@ void MainTick::process(){ //called every 100ms
 		Actuators::enable(
 			0,
 			PersonalSettings::protocolStruct.positionAux1,
-			MachineSettings::protocolStruct.positionAux1Min,
-			MachineSettings::protocolStruct.positionAux1Max
+			MachineSettings::protocolStructExtended.positionAux1Min,
+			MachineSettings::protocolStructExtended.positionAux1Max
 		);	
 		Actuators::enable(
 			1,
 			PersonalSettings::protocolStruct.positionAux2,
-			MachineSettings::protocolStruct.positionAux2Min,
-			MachineSettings::protocolStruct.positionAux2Max
+			MachineSettings::protocolStructExtended.positionAux2Min,
+			MachineSettings::protocolStructExtended.positionAux2Max
 		);	
 		setSubmode(PARKING_MovingAux);
 
@@ -1034,14 +1034,14 @@ void MainTick::process(){ //called every 100ms
 		Actuators::enable(
 			0,
 			PersonalSettings::protocolStruct.positionAux1,
-			MachineSettings::protocolStruct.positionAux1Min,
-			MachineSettings::protocolStruct.positionAux1Max
+			MachineSettings::protocolStructExtended.positionAux1Min,
+			MachineSettings::protocolStructExtended.positionAux1Max
 		);	
 		Actuators::enable(
 			1,
 			PersonalSettings::protocolStruct.positionAux2,
-			MachineSettings::protocolStruct.positionAux2Min,
-			MachineSettings::protocolStruct.positionAux2Max
+			MachineSettings::protocolStructExtended.positionAux2Min,
+			MachineSettings::protocolStructExtended.positionAux2Max
 		);	
 		setSubmode(EXERCISE_Homing_MovingAux);
 

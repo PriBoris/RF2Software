@@ -1,6 +1,6 @@
 #include "WidgetSettingsInteger.h"
 
-
+//=================================================================================================
 WidgetSettingsInteger::WidgetSettingsInteger(
         QString legend,
         QString registryName,
@@ -18,10 +18,10 @@ WidgetSettingsInteger::WidgetSettingsInteger(
 
     edtWriteValue = new QLineEdit;
     edtWriteValue->setFixedWidth(200);
-    edtWriteValue->setValidator(new QIntValidator(0,99999));
+    //edtWriteValue->setValidator(new QIntValidator(0,99999));
     edtWriteValue->setFont(QFont("Verdana",10,QFont::Normal,false));
 
-    lblReadValue = new QLabel("...");
+    lblReadValue = new QLabel("unknown");
     lblReadValue->setFixedWidth(200);
     lblReadValue->setFont(QFont("Verdana",10,QFont::Normal,false));
 
@@ -45,7 +45,7 @@ WidgetSettingsInteger::WidgetSettingsInteger(
 
 
 }
-
+//=================================================================================================
 void WidgetSettingsInteger::editingFinished(){
 
     value = edtWriteValue->text().toInt();
@@ -53,6 +53,31 @@ void WidgetSettingsInteger::editingFinished(){
 
 
 }
-
+//=================================================================================================
+qint32 WidgetSettingsInteger::getWriteValue() {
+    return edtWriteValue->text().toInt();
+};
+//=================================================================================================
+void WidgetSettingsInteger::setReadValue(qint32 newValue) {
+    value = newValue;
+    lblReadValue->setText(QString::number(value));
+};
+//=================================================================================================
+void WidgetSettingsInteger::clearReadValue() {
+    lblReadValue->setText("unknown");
+}
+//=================================================================================================
+void WidgetSettingsInteger::setUnknownReadValue() {
+    lblReadValue->setText("unknown");
+}
+//=================================================================================================
+void WidgetSettingsInteger::setReadOnly(){
+    edtWriteValue->setEnabled(false);
+}
+//=================================================================================================
+void WidgetSettingsInteger::setValidator(QValidator *validator){
+    edtWriteValue->setValidator(validator);
+}
+//=================================================================================================
 
 

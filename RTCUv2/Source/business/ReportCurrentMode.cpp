@@ -592,11 +592,10 @@ void MainTick::reportCurrentModeHeader(uint8_t *message){
 //=================================================================================================
 void MainTick::reportCurrentModePosition(uint8_t *message){
 
-	uint16_t encoderValue16 = Encoder::getValue();
-	int32_t encoderValue32 = (int32_t)encoderValue16;
+	int32_t encoderValue = Encoder::getValue();
 	memcpy(
 		&message[MSGPOS_PositionMain],
-		&encoderValue32,
+		&encoderValue,
 		sizeof(int32_t)
 		);
 

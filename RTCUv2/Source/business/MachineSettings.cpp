@@ -11,9 +11,7 @@
 #include "servo/encoder.h"
 
 
-MachineSettings::ProtocolStruct MachineSettings::protocolStruct;
 MachineSettings::ProtocolStructExtended MachineSettings::protocolStructExtended;
-bool MachineSettings::protocolStructValid;
 bool MachineSettings::protocolStructExtendedValid;
 
 
@@ -32,40 +30,22 @@ void MachineSettings::init(){
 		(settings->positionAux3Max==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->positionAux3Min==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->speedAbsMainMax==Settings::INT32_UNKNOWN_VALUE)||
-		(settings->speedAbsMainPersonal==Settings::INT32_UNKNOWN_VALUE)/*||
+		(settings->speedAbsMainPersonal==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->encoderBitCount==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->encoderDirection==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->encoderOffset==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->forceSensorDirection==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->forceSensorOffset==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->forceSensorGain==Settings::FLOAT_UNKNOWN_VALUE)||
-		true*/
+		false
 
 	){
-		protocolStructValid = false;
 		protocolStructExtendedValid = false;
-		memset(&protocolStruct,0,sizeof(protocolStruct));
 		memset(&protocolStructExtended,0,sizeof(protocolStructExtended));
 		//DebugConsole::pushMessage(" #MachineSettings INVALID");
 
 
 	}else{
-
-		memset(&protocolStruct,0,sizeof(protocolStruct));
-
-		protocolStruct.positionMainMax = settings->positionMainMax;
-		protocolStruct.positionMainMin = settings->positionMainMin;
-		protocolStruct.positionAux1Max = settings->positionAux1Max;
-		protocolStruct.positionAux1Min = settings->positionAux1Min;
-		protocolStruct.positionAux2Max = settings->positionAux2Max;
-		protocolStruct.positionAux2Min = settings->positionAux2Min;
-		protocolStruct.positionAux3Max = settings->positionAux3Max;
-		protocolStruct.positionAux3Min = settings->positionAux3Min;
-		protocolStruct.speedAbsMainMax = settings->speedAbsMainMax;
-		protocolStruct.speedAbsMainPersonal = settings->speedAbsMainPersonal;
-
-		protocolStructValid = true;
-		//DebugConsole::pushMessage(" #MachineSettings VALID");
 
 		memset(&protocolStructExtended,0,sizeof(protocolStructExtended));
 
@@ -80,8 +60,15 @@ void MachineSettings::init(){
 		protocolStructExtended.speedAbsMainMax = settings->speedAbsMainMax;
 		protocolStructExtended.speedAbsMainPersonal = settings->speedAbsMainPersonal;
 
-		protocolStructExtendedValid = true;
+		protocolStructExtended.encoderBitCount = settings->encoderBitCount;
+		protocolStructExtended.encoderDirection = settings->encoderDirection;
+		protocolStructExtended.encoderOffset = settings->encoderOffset;
+		protocolStructExtended.forceSensorDirection = settings->forceSensorDirection;
+		protocolStructExtended.forceSensorOffset = settings->forceSensorOffset;
+		protocolStructExtended.forceSensorGain = settings->forceSensorGain;
 
+		protocolStructExtendedValid = true;
+		//DebugConsole::pushMessage(" #MachineSettings VALID");
 
 
 	}
@@ -90,16 +77,29 @@ void MachineSettings::init(){
 //=================================================================================================
 void MachineSettings::report(){
 
-	if (protocolStructValid==false){
+	if (protocolStructExtendedValid==false){
 
 		Diagnostics::protocol.sendPacket(Protocol::TAG_ReportMachineSettings,0,0);
+		Diagnostics::protocol.sendPacket(Protocol::TAG_ReportMachineSettingsExtended,0,0);
 		HMI::protocol.sendPacket(Protocol::TAG_ReportMachineSettings,0,0);
 
 	}else{
 
-		Diagnostics::protocol.sendPacket(Protocol::TAG_ReportMachineSettings,(uint8_t*)&protocolStruct,sizeof(ProtocolStruct));
-		HMI::protocol.sendPacket(Protocol::TAG_ReportMachineSettings,(uint8_t*)&protocolStruct,sizeof(ProtocolStruct));
-
+		Diagnostics::protocol.sendPacket(
+			Protocol::TAG_ReportMachineSettings,
+			(uint8_t*)&protocolStructExtended,
+			ProtocolStructSize
+			);
+		Diagnostics::protocol.sendPacket(
+			Protocol::TAG_ReportMachineSettingsExtended,
+			(uint8_t*)&protocolStructExtended,
+			sizeof(ProtocolStructExtended)
+			);
+		HMI::protocol.sendPacket(
+			Protocol::TAG_ReportMachineSettings,
+			(uint8_t*)&protocolStructExtended,
+			ProtocolStructSize
+			);
 	}
 
 
@@ -109,34 +109,43 @@ void MachineSettings::load(RxMessage *message){
 
 
 	if (
-		(message->tag==Protocol::TAG_LoadMachineSettings)&&
-		(message->valueLen==sizeof(ProtocolStruct))&&
+		(message->tag==Protocol::TAG_LoadMachineSettingsExtended)&&
+		(message->valueLen==sizeof(protocolStructExtended))&&
 		(message->fromHMI==false)
 
 	){
 
-		ProtocolStruct newProtocolStruct;
-		memcpy(&newProtocolStruct,message->value,sizeof(ProtocolStruct));
+		ProtocolStructExtended newProtocolStructExtended;
+		memcpy(&newProtocolStructExtended,message->value,sizeof(ProtocolStructExtended));
 
-		if (checkProtocolStruct(&newProtocolStruct)==true){
+		if (checkProtocolStructExtended(&newProtocolStructExtended)==true){
 
 			Settings::Struct *settings = Settings::getStruct();
 
-			settings->positionMainMax = newProtocolStruct.positionMainMax;
-			settings->positionMainMin = newProtocolStruct.positionMainMin;
-			settings->positionAux1Max = newProtocolStruct.positionAux1Max;
-			settings->positionAux1Min = newProtocolStruct.positionAux1Min;
-			settings->positionAux2Max = newProtocolStruct.positionAux2Max;
-			settings->positionAux2Min = newProtocolStruct.positionAux2Min;
-			settings->positionAux3Max = newProtocolStruct.positionAux3Max;
-			settings->positionAux3Min = newProtocolStruct.positionAux3Min;
-			settings->speedAbsMainMax = newProtocolStruct.speedAbsMainMax;
-			settings->speedAbsMainPersonal = newProtocolStruct.speedAbsMainPersonal;
+			settings->positionMainMax = newProtocolStructExtended.positionMainMax;
+			settings->positionMainMin = newProtocolStructExtended.positionMainMin;
+			settings->positionAux1Max = newProtocolStructExtended.positionAux1Max;
+			settings->positionAux1Min = newProtocolStructExtended.positionAux1Min;
+			settings->positionAux2Max = newProtocolStructExtended.positionAux2Max;
+			settings->positionAux2Min = newProtocolStructExtended.positionAux2Min;
+			settings->positionAux3Max = newProtocolStructExtended.positionAux3Max;
+			settings->positionAux3Min = newProtocolStructExtended.positionAux3Min;
+			settings->speedAbsMainMax = newProtocolStructExtended.speedAbsMainMax;
+			settings->speedAbsMainPersonal = newProtocolStructExtended.speedAbsMainPersonal;
+
+			settings->encoderBitCount = newProtocolStructExtended.encoderBitCount;
+			settings->encoderDirection = newProtocolStructExtended.encoderDirection;
+			settings->encoderOffset = newProtocolStructExtended.encoderOffset;
+			settings->forceSensorDirection = newProtocolStructExtended.forceSensorDirection;
+			settings->forceSensorOffset = newProtocolStructExtended.forceSensorOffset;
+			settings->forceSensorGain = newProtocolStructExtended.forceSensorGain;
+
+
 
 			Settings::updateStruct();
 
-			memcpy(&protocolStruct,&newProtocolStruct,sizeof(ProtocolStruct));
-			protocolStructValid = true;
+			memcpy(&protocolStructExtended,&newProtocolStructExtended,sizeof(ProtocolStructExtended));
+			protocolStructExtendedValid = true;
 
 			//DebugConsole::pushMessage("MachineSettings were loaded \0");
 
@@ -152,15 +161,14 @@ void MachineSettings::load(RxMessage *message){
 
 }
 //=================================================================================================
-bool MachineSettings::checkProtocolStruct(ProtocolStruct *protocolStruct){
+bool MachineSettings::checkProtocolStructExtended(ProtocolStructExtended *protocolStructExtended){
 
 	bool valid = true;
 
 	if (
-		(protocolStruct->positionMainMax<0)||
-		//(protocolStruct->positionMainMax>4095)|| 
-		(protocolStruct->positionMainMin<0)||
-		(protocolStruct->positionMainMax<protocolStruct->positionMainMin)
+		(protocolStructExtended->positionMainMax<0)||
+		(protocolStructExtended->positionMainMin<0)||
+		(protocolStructExtended->positionMainMax<protocolStructExtended->positionMainMin)
 //TODO: should be dependent on encoder bits count
 
 		//...
@@ -178,9 +186,9 @@ bool MachineSettings::checkProtocolStruct(ProtocolStruct *protocolStruct){
 //=================================================================================================
 int32_t MachineSettings::getMainRange(){
 
-	int32_t mainRange = MachineSettings::protocolStruct.positionMainMax - MachineSettings::protocolStruct.positionMainMin;
+	int32_t mainRange = MachineSettings::protocolStructExtended.positionMainMax - MachineSettings::protocolStructExtended.positionMainMin;
 
-	if (protocolStructValid!=true){
+	if (protocolStructExtendedValid!=true){
 		return 0;
 	}else if (mainRange<0){
 		return (-mainRange);

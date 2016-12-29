@@ -51,7 +51,7 @@ void PersonalSettings::load(RxMessage *message){
 	if (
 		(message->tag==Protocol::TAG_LoadPersonalSettings)&&
 		(message->valueLen==sizeof(ProtocolStruct))&&
-		(MachineSettings::protocolStructValid==true)
+		(MachineSettings::protocolStructExtendedValid==true)
 	){
 
 		ProtocolStruct newProtocolStruct;
@@ -86,27 +86,27 @@ bool PersonalSettings::checkProtocolStruct(ProtocolStruct *protocolStruct){
 
 
 	// check parking position
-	if (protocolStruct->positionMainParking > MachineSettings::protocolStruct.positionMainMax){
-		protocolStruct->positionMainParking = MachineSettings::protocolStruct.positionMainMax;
+	if (protocolStruct->positionMainParking > MachineSettings::protocolStructExtended.positionMainMax){
+		protocolStruct->positionMainParking = MachineSettings::protocolStructExtended.positionMainMax;
 	}
-	if (protocolStruct->positionMainParking < MachineSettings::protocolStruct.positionMainMin){
-		protocolStruct->positionMainParking = MachineSettings::protocolStruct.positionMainMin;
+	if (protocolStruct->positionMainParking < MachineSettings::protocolStructExtended.positionMainMin){
+		protocolStruct->positionMainParking = MachineSettings::protocolStructExtended.positionMainMin;
 	}
 
 	//check position A
-	if (protocolStruct->positionMainA > MachineSettings::protocolStruct.positionMainMax){
-		protocolStruct->positionMainA = MachineSettings::protocolStruct.positionMainMax;
+	if (protocolStruct->positionMainA > MachineSettings::protocolStructExtended.positionMainMax){
+		protocolStruct->positionMainA = MachineSettings::protocolStructExtended.positionMainMax;
 	}
-	if (protocolStruct->positionMainA < MachineSettings::protocolStruct.positionMainMin){
-		protocolStruct->positionMainA = MachineSettings::protocolStruct.positionMainMin;
+	if (protocolStruct->positionMainA < MachineSettings::protocolStructExtended.positionMainMin){
+		protocolStruct->positionMainA = MachineSettings::protocolStructExtended.positionMainMin;
 	}
 
 	//check position B
-	if (protocolStruct->positionMainB > MachineSettings::protocolStruct.positionMainMax){
-		protocolStruct->positionMainB = MachineSettings::protocolStruct.positionMainMax;
+	if (protocolStruct->positionMainB > MachineSettings::protocolStructExtended.positionMainMax){
+		protocolStruct->positionMainB = MachineSettings::protocolStructExtended.positionMainMax;
 	}
-	if (protocolStruct->positionMainB < MachineSettings::protocolStruct.positionMainMin){
-		protocolStruct->positionMainB = MachineSettings::protocolStruct.positionMainMin;
+	if (protocolStruct->positionMainB < MachineSettings::protocolStructExtended.positionMainMin){
+		protocolStruct->positionMainB = MachineSettings::protocolStructExtended.positionMainMin;
 	}
 
 	//check AB distance
@@ -121,24 +121,24 @@ bool PersonalSettings::checkProtocolStruct(ProtocolStruct *protocolStruct){
 	}
 
 	//check parking speed
-	if (protocolStruct->speedAbsMainParking < MachineSettings::protocolStruct.speedAbsMainMax){
-		protocolStruct->speedAbsMainParking = MachineSettings::protocolStruct.speedAbsMainMax;
+	if (protocolStruct->speedAbsMainParking < MachineSettings::protocolStructExtended.speedAbsMainMax){
+		protocolStruct->speedAbsMainParking = MachineSettings::protocolStructExtended.speedAbsMainMax;
 	}
 
 	// check aux1 position
-	if (protocolStruct->positionAux1 > MachineSettings::protocolStruct.positionAux1Max){
-		protocolStruct->positionAux1 = MachineSettings::protocolStruct.positionAux1Max;
+	if (protocolStruct->positionAux1 > MachineSettings::protocolStructExtended.positionAux1Max){
+		protocolStruct->positionAux1 = MachineSettings::protocolStructExtended.positionAux1Max;
 	}
-	if (protocolStruct->positionAux1 < MachineSettings::protocolStruct.positionAux1Min){
-		protocolStruct->positionAux1 = MachineSettings::protocolStruct.positionAux1Min;
+	if (protocolStruct->positionAux1 < MachineSettings::protocolStructExtended.positionAux1Min){
+		protocolStruct->positionAux1 = MachineSettings::protocolStructExtended.positionAux1Min;
 	}
 
 	// check aux2 position
-	if (protocolStruct->positionAux2 > MachineSettings::protocolStruct.positionAux2Max){
-		protocolStruct->positionAux2 = MachineSettings::protocolStruct.positionAux2Max;
+	if (protocolStruct->positionAux2 > MachineSettings::protocolStructExtended.positionAux2Max){
+		protocolStruct->positionAux2 = MachineSettings::protocolStructExtended.positionAux2Max;
 	}
-	if (protocolStruct->positionAux2 < MachineSettings::protocolStruct.positionAux2Min){
-		protocolStruct->positionAux2 = MachineSettings::protocolStruct.positionAux2Min;
+	if (protocolStruct->positionAux2 < MachineSettings::protocolStructExtended.positionAux2Min){
+		protocolStruct->positionAux2 = MachineSettings::protocolStructExtended.positionAux2Min;
 	}
 
 
