@@ -15,7 +15,7 @@
 #include "tlv.h"
 #include "tlvwriter.h"
 
-#include "widgetSettingsInteger.h"
+#include "WidgetSettingsInteger.h"
 
 #define MAX_SET_COUNT   (10)
 

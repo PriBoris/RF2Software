@@ -19,7 +19,7 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent)
 
 
     fontRegular = new QFont("Verdana", 10, QFont::Normal);
-    fontSelect = new QFont("Verdana", 10, QFont::Bold);
+    fontSelect = new QFont("Verdana", 10, QFont::Black);
 
 
 
@@ -97,12 +97,14 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent)
     widgetMode = new WidgetMode(serialPortTransceiver);
     widgetSettingsPosition = new WidgetPersonalSettings(serialPortTransceiver);
     widgetMachineSettings = new WidgetMachineSettings(serialPortTransceiver);
+    widgetMachineSettingsExtended = new WidgetMachineSettingsExtended(serialPortTransceiver);
     widgetExcerciseSettings = new WidgetExcerciseSettings(serialPortTransceiver);
     widgetNFC = new WidgetNFC(serialPortTransceiver);
     widgetConsole = new WidgetConsole(serialPortTransceiver);
 
     widgetArray.append(widgetMode);
     widgetArray.append(widgetMachineSettings);
+    widgetArray.append(widgetMachineSettingsExtended);
     widgetArray.append(widgetSettingsPosition);
     widgetArray.append(widgetExcerciseSettings);
     widgetArray.append(widgetNFC);
@@ -132,6 +134,7 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent)
     connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetMode,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
     connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetSettingsPosition,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
     connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetMachineSettings,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
+    connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetMachineSettingsExtended,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
     connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetExcerciseSettings,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
     connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetNFC,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
     connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetConsole,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
@@ -171,6 +174,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         widgetMode->setVisible(true);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(false);
+        widgetMachineSettingsExtended->setVisible(false);
         widgetExcerciseSettings->setVisible(false);
         widgetNFC->setVisible(false);
         widgetConsole->setVisible(false);
@@ -188,6 +192,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         widgetMode->setVisible(false);
         widgetSettingsPosition->setVisible(true);
         widgetMachineSettings->setVisible(false);
+        widgetMachineSettingsExtended->setVisible(false);
         widgetExcerciseSettings->setVisible(false);
         widgetNFC->setVisible(false);
         widgetConsole->setVisible(false);
@@ -205,6 +210,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         widgetMode->setVisible(false);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(true);
+        widgetMachineSettingsExtended->setVisible(true);
         widgetExcerciseSettings->setVisible(false);
         widgetNFC->setVisible(false);
         widgetConsole->setVisible(false);
@@ -222,6 +228,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         widgetMode->setVisible(false);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(false);
+        widgetMachineSettingsExtended->setVisible(false);
         widgetExcerciseSettings->setVisible(true);
         widgetNFC->setVisible(false);
         widgetConsole->setVisible(false);
@@ -238,6 +245,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         widgetMode->setVisible(false);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(false);
+        widgetMachineSettingsExtended->setVisible(false);
         widgetExcerciseSettings->setVisible(false);
         widgetNFC->setVisible(true);
         widgetConsole->setVisible(false);
@@ -247,6 +255,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         btnTabMode->setFont(*fontRegular);
         btnTabPersonalSettings->setFont(*fontRegular);
         btnTabMachineSettings->setFont(*fontRegular);
+        widgetMachineSettingsExtended->setVisible(false);
         btnTabExcerciseSettings->setFont(*fontRegular);
         btnTabNFC->setFont(*fontRegular);
         btnTabConsole->setFont(*fontSelect);
@@ -260,19 +269,13 @@ void WidgetMain::slotTabClicked(int tabIndex){
         break;
     }
 
-    QTimer::singleShot(0, this, SLOT(scrollTop()));
 
     {
         QSettings *settings = new QSettings();
         settings->setValue("/Settings/tabIndex",tabIndex);
         delete settings;
     }
-
-}
-
-void WidgetMain::slotScrollTop(){
-    int top = scrollArea->verticalScrollBar()->maximum();
-    scrollArea->verticalScrollBar()->setMaximum(top);
+    scrollArea->verticalScrollBar()->setMaximum(0);
 }
 //===============================================================================================================
 void WidgetMain::saveGeometry(){

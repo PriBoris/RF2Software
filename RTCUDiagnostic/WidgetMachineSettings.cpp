@@ -1,32 +1,39 @@
-#include "widgetMachineSettings.h"
+#include "WidgetMachineSettings.h"
 
 WidgetMachineSettings::WidgetMachineSettings(
         SerialPortTransceiver *serialPortTransceiver,
         QWidget *parent
-        ) : QWidget(parent)
-{
+        ) : QWidget(parent){
+    
     serialPortTransceiver_ = serialPortTransceiver;
     rxMessageCounter = 0;
 
     lblRxMessageCounter = new QLabel("lblRxMessageCounter");
-    wgtPositionMainMax = new WidgetSettingsInteger("positionMainMax","MachineSettings_PositionMainMax",99);
-    wgtPositionMainMin = new WidgetSettingsInteger("positionMainMin","MachineSettings_PositionMainMin",0);
-    wgtPositionAux1Max = new WidgetSettingsInteger("positionAux1Max","MachineSettings_PositionAux1Max",99);
-    wgtPositionAux1Min = new WidgetSettingsInteger("positionAux1Min","MachineSettings_PositionAux1Min",0);
-    wgtPositionAux2Max = new WidgetSettingsInteger("positionAux2Max","MachineSettings_PositionAux2Max",99);
-    wgtPositionAux2Min = new WidgetSettingsInteger("positionAux2Min","MachineSettings_PositionAux2Min",0);
-    wgtPositionAux3Max = new WidgetSettingsInteger("positionAux3Max","MachineSettings_PositionAux3Max",99);
-    wgtPositionAux3Min = new WidgetSettingsInteger("positionAux3Min","MachineSettings_PositionAux3Min",0);
-    wgtSpeedAbsMainMax = new WidgetSettingsInteger("speedAbsMainMax","MachineSettings_SpeedAbsMainMax",1000);
-    wgtSpeedAbsMainPersonal = new WidgetSettingsInteger("speedAbsMainPersonal","MachineSettings_SpeedAbsMainPersonal",50);
+    lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
 
-    btnWriteSettings = new QPushButton("послать настройки");
+    {
+        wgtPositionMainMax = new WidgetSettingsInteger("positionMainMax","MachineSettings_PositionMainMax",99);
+        wgtPositionMainMin = new WidgetSettingsInteger("positionMainMin","MachineSettings_PositionMainMin",0);
+        wgtPositionAux1Max = new WidgetSettingsInteger("positionAux1Max","MachineSettings_PositionAux1Max",99);
+        wgtPositionAux1Min = new WidgetSettingsInteger("positionAux1Min","MachineSettings_PositionAux1Min",0);
+        wgtPositionAux2Max = new WidgetSettingsInteger("positionAux2Max","MachineSettings_PositionAux2Max",99);
+        wgtPositionAux2Min = new WidgetSettingsInteger("positionAux2Min","MachineSettings_PositionAux2Min",0);
+        wgtPositionAux3Max = new WidgetSettingsInteger("positionAux3Max","MachineSettings_PositionAux3Max",99);
+        wgtPositionAux3Min = new WidgetSettingsInteger("positionAux3Min","MachineSettings_PositionAux3Min",0);
+        wgtSpeedAbsMainMax = new WidgetSettingsInteger("speedAbsMainMax","MachineSettings_SpeedAbsMainMax",1000);
+        wgtSpeedAbsMainPersonal = new WidgetSettingsInteger("speedAbsMainPersonal","MachineSettings_SpeedAbsMainPersonal",50);
+
+    }
+
+    btnWriteSettings = new QPushButton("Send Machine Settings");
+    btnWriteSettings->setFixedWidth(600);
+    btnWriteSettings->setFont(QFont("Verdana",10,QFont::Bold,true));
+
 
     loMain = new QVBoxLayout;
+
     loMain->addWidget(lblRxMessageCounter);
-
-
-    //...
+        loMain->addSpacing(10);
     loMain->addWidget(wgtPositionMainMin);
     loMain->addWidget(wgtPositionMainMax);
         loMain->addSpacing(10);
@@ -41,7 +48,9 @@ WidgetMachineSettings::WidgetMachineSettings(
     loMain->addSpacing(10);
     loMain->addWidget(wgtSpeedAbsMainMax);
     loMain->addWidget(wgtSpeedAbsMainPersonal);
+        loMain->addSpacing(10);
     loMain->addWidget(btnWriteSettings);
+        loMain->addSpacing(10);
 
     loMain->addStretch(1);
 
@@ -53,11 +62,8 @@ WidgetMachineSettings::WidgetMachineSettings(
 //============================================================================================================
 void WidgetMachineSettings::slotWriteSettings(){
 
-    qDebug() << "WidgetMachineSettings::slotWriteSettings";
+    if (serialPortTransceiver_->isPortOK()==true){
 
-    if (serialPortTransceiver_->isPortOK()==true)
-    {
-        QByteArray valueArray;
 
         TMachineSettings newMachineSettings;
 
@@ -72,8 +78,8 @@ void WidgetMachineSettings::slotWriteSettings(){
         newMachineSettings.speedAbsMainMax = wgtSpeedAbsMainMax->getWriteValue();
         newMachineSettings.speedAbsMainPersonal = wgtSpeedAbsMainPersonal->getWriteValue();
 
+        QByteArray valueArray;
         valueArray.append((char*)&newMachineSettings,sizeof(newMachineSettings));
-
         TLVWriter tlv(TLV::TAG_LoadMachineSettings,valueArray);
         QByteArray *txArray = tlv.getStuffedArray();
         serialPortTransceiver_->write(*txArray);

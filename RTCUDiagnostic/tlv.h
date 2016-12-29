@@ -18,8 +18,6 @@ protected:
 
 public:
 
-    static const quint8 TAG_BB_ReadStrainGauge = 0x80;
-    static const quint8 TAG_BB_ReadDateTime = 0x81;
 
 
     static const quint8 TAG_ReportCurrentMode = 0x00;
@@ -28,6 +26,9 @@ public:
     static const quint8 TAG_ReportMachineSettings = 0x03;
     static const quint8 TAG_RfidProximity = 0x04;
     static const quint8 TAG_RtcuDebugMessage = 0x05;
+    static const quint8 TAG_ReportGenericExcerciseSettings = 0x06;
+    static const quint8 TAG_ReportMachineSettingsExtended = 0x07;
+
 
     static const quint8 TAG_EnableServo = 0x40;
     static const quint8 TAG_LoadPersonalSettings = 0x41;
@@ -45,7 +46,9 @@ public:
     static const quint8 TAG_ResetError = 0x4D;
     static const quint8 TAG_Cancel = 0x4E;
     static const quint8 TAG_TestStatic = 0x4F;
-
+    static const quint8 TAG_LoadGenericExcerciseSettings = 0x50;
+    static const quint8 TAG_GenericExcerciseIsokinetic = 0x51;
+    static const quint8 TAG_LoadMachineSettingsExtended = 0x52;
 
 
 

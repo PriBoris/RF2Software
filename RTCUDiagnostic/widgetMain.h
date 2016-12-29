@@ -13,21 +13,23 @@
 #include "serialporttransceiver.h"
 #include "widgetMode.h"
 #include "widgetPersonalSettings.h"
-#include "widgetMachineSettings.h"
+#include "WidgetMachineSettings.h"
+#include "WidgetMachineSettingsExtended.h"
 #include "widgetExcerciseSettings.h"
 #include "widgetNFC.h"
 #include "widgetConsole.h"
 
 
 
-class WidgetMain : public QWidget
-{
+class WidgetMain : public QWidget{
+
     Q_OBJECT
 
 
     WidgetMode *widgetMode;
     WidgetPersonalSettings *widgetSettingsPosition;
     WidgetMachineSettings *widgetMachineSettings;
+    WidgetMachineSettingsExtended *widgetMachineSettingsExtended;
     WidgetExcerciseSettings *widgetExcerciseSettings;
     WidgetNFC *widgetNFC;
     WidgetConsole *widgetConsole;
@@ -45,8 +47,6 @@ class WidgetMain : public QWidget
     QFont *fontSelect;
 
     QVector<QWidget*> widgetArray;
-    //QVector<QGroupBox*> widgetGroupBoxArray;
-    //QVector<QVBoxLayout*> widgetGroupBoxLayoutArray;
 
     QSerialPort *serialPort;
     SerialPortTransceiver *serialPortTransceiver;
@@ -78,7 +78,6 @@ signals:
 public slots:
 
     void slotTabClicked(int tabIndex);
-    void slotScrollTop();
 
 
 

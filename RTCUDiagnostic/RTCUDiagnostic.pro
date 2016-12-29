@@ -21,8 +21,6 @@ SOURCES += main.cpp\
     tlvreader.cpp \
     personalbutton.cpp \
     widgetMode.cpp \
-    widgetMachineSettings.cpp \
-    widgetSettingsInteger.cpp \
     widgetPersonalSettings.cpp \
     widgetExcerciseSettings.cpp \
     widgetConsole.cpp \
@@ -31,7 +29,11 @@ SOURCES += main.cpp\
     widgetTestDynamicStart.cpp \
     widgetTestStaticStart.cpp \
     ModeLogger.cpp \
-    widgetNFC.cpp
+    widgetNFC.cpp \
+    WidgetMachineSettingsExtended.cpp \
+    WidgetMachineSettings.cpp \
+    WidgetSettingsInteger.cpp \
+    WidgetSettingsFloat.cpp
 
 HEADERS  += \
     serialporttransceiver.h \
@@ -40,8 +42,6 @@ HEADERS  += \
     tlvreader.h \
     personalbutton.h \
     widgetMode.h \
-    widgetMachineSettings.h \
-    widgetSettingsInteger.h \
     widgetPersonalSettings.h \
     widgetExcerciseSettings.h \
     widgetConsole.h \
@@ -50,4 +50,8 @@ HEADERS  += \
     widgetTestDynamicStart.h \
     widgetTestStaticStart.h \
     ModeLogger.h \
-    widgetNFC.h
+    widgetNFC.h \
+    WidgetMachineSettingsExtended.h \
+    WidgetMachineSettings.h \
+    WidgetSettingsInteger.h \
+    WidgetSettingsFloat.h

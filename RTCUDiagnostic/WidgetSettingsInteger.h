@@ -12,8 +12,8 @@
 
 
 
-class WidgetSettingsInteger : public QWidget
-{
+class WidgetSettingsInteger : public QWidget{
+    
     Q_OBJECT
 
     QLabel *lblLegend;

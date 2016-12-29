@@ -15,7 +15,7 @@
 #include "tlvwriter.h"
 
 
-#include "widgetSettingsInteger.h"
+#include "WidgetSettingsInteger.h"
 
 
 struct PersonalSettings

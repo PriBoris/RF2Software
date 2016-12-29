@@ -1,4 +1,4 @@
-#include "widgetSettingsInteger.h"
+#include "WidgetSettingsInteger.h"
 
 
 WidgetSettingsInteger::WidgetSettingsInteger(
@@ -12,14 +12,18 @@ WidgetSettingsInteger::WidgetSettingsInteger(
     registryName_ = registryName;
 
     lblLegend = new QLabel(legend_);
-    lblLegend->setFixedWidth(100);
+    lblLegend->setFixedWidth(200);
+    lblLegend->setFont(QFont("Verdana",10,QFont::Normal,false));
+
 
     edtWriteValue = new QLineEdit;
-    edtWriteValue->setFixedWidth(100);
+    edtWriteValue->setFixedWidth(200);
     edtWriteValue->setValidator(new QIntValidator(0,99999));
+    edtWriteValue->setFont(QFont("Verdana",10,QFont::Normal,false));
 
     lblReadValue = new QLabel("...");
-    lblReadValue->setFixedWidth(100);
+    lblReadValue->setFixedWidth(200);
+    lblReadValue->setFont(QFont("Verdana",10,QFont::Normal,false));
 
     lo = new QHBoxLayout;
     lo->addWidget(lblLegend);
@@ -42,9 +46,7 @@ WidgetSettingsInteger::WidgetSettingsInteger(
 
 }
 
-void WidgetSettingsInteger::editingFinished()
-{
-//    qDebug() << "WidgetSettingsInteger::editingFinished";
+void WidgetSettingsInteger::editingFinished(){
 
     value = edtWriteValue->text().toInt();
     settings->setValue(registryName_,value);

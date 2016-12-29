@@ -15,10 +15,10 @@
 #include "tlvwriter.h"
 
 
-#include "widgetSettingsInteger.h"
+#include "WidgetSettingsInteger.h"
 
-struct TMachineSettings
-{
+struct TMachineSettings{
+
     qint32	positionMainMax;
     qint32	positionMainMin;
     qint32	positionAux1Max;
@@ -33,13 +33,13 @@ struct TMachineSettings
 };
 
 
-class WidgetMachineSettings : public QWidget
-{
+class WidgetMachineSettings : public QWidget{
 
 
     Q_OBJECT
 
     QLabel *lblRxMessageCounter;
+    
     WidgetSettingsInteger *wgtPositionMainMax;
     WidgetSettingsInteger *wgtPositionMainMin;
     WidgetSettingsInteger *wgtPositionAux1Max;
