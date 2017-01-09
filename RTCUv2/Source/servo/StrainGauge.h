@@ -32,7 +32,6 @@ private:
 	static uint32_t valueBufferPtr;
 	static const uint32_t filterLength = 64;//16;
 
-	static const int32_t VALUE_OFFSET = 13000;
 
 public:
 	static void init();

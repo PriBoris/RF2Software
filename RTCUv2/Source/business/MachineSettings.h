@@ -28,7 +28,6 @@ public:
 		int32_t	encoderBitCount;
 		int32_t	encoderDirection;
 		int32_t	encoderOffset;
-		int32_t forceSensorDirection;
 		int32_t	forceSensorOffset;
 		float forceSensorGain;
 

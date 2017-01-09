@@ -66,10 +66,22 @@ WidgetMode::WidgetMode(
     }
 
 
-    lblSetIndex = new QLabel("lblSetIndex");
-    lblRepIndex = new QLabel("lblRepIndex");
-    lblRepDirection = new QLabel("lblRepDirection");
-    lblTimeToSet = new QLabel("lblTimeToSet");
+    {
+        lblSetIndex = new QLabel("lblSetIndex");
+        lblSetIndex->setFont(QFont("Verdana",10,QFont::Normal,true));
+    }
+    {
+        lblRepIndex = new QLabel("lblRepIndex");
+        lblRepIndex->setFont(QFont("Verdana",10,QFont::Normal,true));
+    }
+    {
+        lblRepDirection = new QLabel("lblRepDirection");
+        lblRepDirection->setFont(QFont("Verdana",10,QFont::Normal,true));
+    }
+    {
+        lblTimeToSet = new QLabel("lblTimeToSet");
+        lblTimeToSet->setFont(QFont("Verdana",10,QFont::Normal,true));
+    }
 
     {
         btnEnableServo = new QPushButton("Enable SERVO");btnEnableServo->setFixedWidth(300);

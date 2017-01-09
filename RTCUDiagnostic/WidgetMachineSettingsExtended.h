@@ -30,7 +30,6 @@ struct TMachineSettingsExtended{
 	qint32 encoderBitCount;
 	qint32 encoderDirection;
 	qint32 encoderOffset;
-	qint32 forceSensorDirection;
 	qint32 forceSensorOffset;
 	float forceSensorGain;
 
@@ -55,7 +54,6 @@ class WidgetMachineSettingsExtended : public QWidget
 	WidgetSettingsInteger *wgtEncoderBitCount;
 	WidgetSettingsInteger *wgtEncoderDirection;
 	WidgetSettingsInteger *wgtEncoderOffset;
-	WidgetSettingsInteger *wgtForceSensorDirection;
 	WidgetSettingsInteger *wgtForceSensorOffset;
 	WidgetSettingsFloat *wgtForceSensorGain;
 

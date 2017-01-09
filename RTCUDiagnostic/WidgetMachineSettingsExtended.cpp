@@ -26,7 +26,6 @@ WidgetMachineSettingsExtended::WidgetMachineSettingsExtended(
         wgtEncoderBitCount = new WidgetSettingsInteger("encoderBitCount","MachineSettingsExtended_encoderBitCount",15);
         wgtEncoderDirection = new WidgetSettingsInteger("encoderDirection","MachineSettingsExtended_encoderDirection",1);
         wgtEncoderOffset = new WidgetSettingsInteger("encoderOffset","MachineSettingsExtended_encoderOffset",10000);
-        wgtForceSensorDirection = new WidgetSettingsInteger("forceSensorDirection","MachineSettingsExtended_forceSensorDirection",1);
         wgtForceSensorOffset = new WidgetSettingsInteger("forceSensorOffset","MachineSettingsExtended_forceSensorOffset",20000);
         wgtForceSensorGain = new WidgetSettingsFloat("forceSensorGain","MachineSettingsExtended_forceSensorGain",4000.0f);
 
@@ -68,7 +67,6 @@ WidgetMachineSettingsExtended::WidgetMachineSettingsExtended(
         loMain->addWidget(wgtEncoderDirection);
         loMain->addWidget(wgtEncoderOffset);
             loMain->addSpacing(10);
-        loMain->addWidget(wgtForceSensorDirection);
         loMain->addWidget(wgtForceSensorOffset);
         loMain->addWidget(wgtForceSensorGain);
             loMain->addSpacing(10);
@@ -109,7 +107,6 @@ void WidgetMachineSettingsExtended::slotWriteSettings(){
         newMachineSettingsExtended.encoderBitCount = wgtEncoderBitCount->getWriteValue();
         newMachineSettingsExtended.encoderDirection = wgtEncoderDirection->getWriteValue();
         newMachineSettingsExtended.encoderOffset = wgtEncoderOffset->getWriteValue();
-        newMachineSettingsExtended.forceSensorDirection = wgtForceSensorDirection->getWriteValue();
         newMachineSettingsExtended.forceSensorOffset = wgtForceSensorOffset->getWriteValue();
         newMachineSettingsExtended.forceSensorGain = wgtForceSensorGain->getWriteValue();
 
@@ -156,7 +153,6 @@ void WidgetMachineSettingsExtended::newMessageReceived(quint8 tag,quint32 msgID,
             wgtEncoderBitCount->setReadValue(machineSettingsExtended.encoderBitCount);
             wgtEncoderDirection->setReadValue(machineSettingsExtended.encoderDirection);
             wgtEncoderOffset->setReadValue(machineSettingsExtended.encoderOffset);
-            wgtForceSensorDirection->setReadValue(machineSettingsExtended.forceSensorDirection);
             wgtForceSensorOffset->setReadValue(machineSettingsExtended.forceSensorOffset);
             wgtForceSensorGain->setReadValue(machineSettingsExtended.forceSensorGain);
 
@@ -176,7 +172,6 @@ void WidgetMachineSettingsExtended::newMessageReceived(quint8 tag,quint32 msgID,
             wgtEncoderBitCount->setUnknownReadValue();
             wgtEncoderDirection->setUnknownReadValue();
             wgtEncoderOffset->setUnknownReadValue();
-            wgtForceSensorDirection->setUnknownReadValue();
             wgtForceSensorOffset->setUnknownReadValue();
             wgtForceSensorGain->setUnknownReadValue();
         	

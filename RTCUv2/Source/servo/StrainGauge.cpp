@@ -3,6 +3,9 @@
 
 #include <stm32f4xx_conf.h>
 
+#include "business/MachineSettings.h"
+
+
 
 uint32_t StrainGauge::readyCounter = 0;
 uint32_t StrainGauge::valueCounter = 0;
@@ -306,9 +309,18 @@ int32_t StrainGauge::getFilteredValue(void)
 	}
 	accu /= (int64_t)filterLength;
 
-
-
-	//TODO: convert to grams
-	return ((int32_t)accu/(int32_t)4096)+VALUE_OFFSET;
+	//static const int32_t VALUE_OFFSET = 13000;
+	//return ((int32_t)accu/(int32_t)4096)+VALUE_OFFSET;
+	
+	
+	if (MachineSettings::protocolStructExtendedValid==true){
+		float forceSensorRawValue = (float)accu;
+		float forceSensorValue = forceSensorRawValue* MachineSettings::protocolStructExtended.forceSensorGain;
+		return (int32_t)forceSensorValue + MachineSettings::protocolStructExtended.forceSensorOffset;
+	}else{
+		return 0;
+	}
+	
+	
 }
 //===================================================================================================

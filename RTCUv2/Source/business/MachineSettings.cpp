@@ -34,7 +34,6 @@ void MachineSettings::init(){
 		(settings->encoderBitCount==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->encoderDirection==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->encoderOffset==Settings::INT32_UNKNOWN_VALUE)||
-		(settings->forceSensorDirection==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->forceSensorOffset==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->forceSensorGain==Settings::FLOAT_UNKNOWN_VALUE)||
 		false
@@ -63,7 +62,6 @@ void MachineSettings::init(){
 		protocolStructExtended.encoderBitCount = settings->encoderBitCount;
 		protocolStructExtended.encoderDirection = settings->encoderDirection;
 		protocolStructExtended.encoderOffset = settings->encoderOffset;
-		protocolStructExtended.forceSensorDirection = settings->forceSensorDirection;
 		protocolStructExtended.forceSensorOffset = settings->forceSensorOffset;
 		protocolStructExtended.forceSensorGain = settings->forceSensorGain;
 
@@ -136,7 +134,6 @@ void MachineSettings::load(RxMessage *message){
 			settings->encoderBitCount = newProtocolStructExtended.encoderBitCount;
 			settings->encoderDirection = newProtocolStructExtended.encoderDirection;
 			settings->encoderOffset = newProtocolStructExtended.encoderOffset;
-			settings->forceSensorDirection = newProtocolStructExtended.forceSensorDirection;
 			settings->forceSensorOffset = newProtocolStructExtended.forceSensorOffset;
 			settings->forceSensorGain = newProtocolStructExtended.forceSensorGain;
 
