@@ -13,8 +13,8 @@
 #include "tlv.h"
 #include "tlvwriter.h"
 #include "personalbutton.h"
-#include "widgetTestDynamicStart.h"
-#include "widgetTestStaticStart.h"
+#include "WidgetTestDynamicStart.h"
+#include "WidgetTestStaticStart.h"
 #include "ModeLogger.h"
 #include "qcustomplot.h"
 
@@ -63,8 +63,8 @@ class WidgetMode : public QWidget
     PersonalButton *btnPersonalAux1Minus;
     PersonalButton *btnPersonalAux2Plus;
     PersonalButton *btnPersonalAux2Minus;
-    PersonalButton *btnPersonalAux3Plus;
-    PersonalButton *btnPersonalAux3Minus;
+    //PersonalButton *btnPersonalAux3Plus;
+    //PersonalButton *btnPersonalAux3Minus;
     QSignalMapper *signalMapperPressed;
     QSignalMapper *signalMapperReleased;
     QSignalMapper *signalMapperHold;

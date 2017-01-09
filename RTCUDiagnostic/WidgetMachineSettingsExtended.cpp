@@ -37,10 +37,11 @@ WidgetMachineSettingsExtended::WidgetMachineSettingsExtended(
         wgtEncoderBitCount->setValidator(new QIntValidator(10,16));
     }
 
-    btnWriteSettings = new QPushButton("Send Extended Machine Settings");
-    btnWriteSettings->setFixedWidth(600);
-    btnWriteSettings->setFont(QFont("Verdana",10,QFont::Bold,true));
-
+    {
+        btnWriteSettings = new QPushButton("Send Extended Machine Settings");
+        btnWriteSettings->setFixedWidth(600);
+        btnWriteSettings->setFont(QFont("Verdana",10,QFont::Bold,true));
+    }
 
 
     {

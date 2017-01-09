@@ -20,20 +20,20 @@ SOURCES += main.cpp\
     tlvwriter.cpp \
     tlvreader.cpp \
     personalbutton.cpp \
-    widgetMode.cpp \
-    widgetPersonalSettings.cpp \
-    widgetExcerciseSettings.cpp \
-    widgetConsole.cpp \
-    widgetMain.cpp \
     qcustomplot.cpp \
-    widgetTestDynamicStart.cpp \
-    widgetTestStaticStart.cpp \
     ModeLogger.cpp \
-    widgetNFC.cpp \
     WidgetMachineSettingsExtended.cpp \
     WidgetMachineSettings.cpp \
     WidgetSettingsInteger.cpp \
-    WidgetSettingsFloat.cpp
+    WidgetSettingsFloat.cpp \
+    WidgetMode.cpp \
+    WidgetTestDynamicStart.cpp \
+    WidgetTestStaticStart.cpp \
+    WidgetNFC.cpp \
+    WidgetConsole.cpp \
+    WidgetExcerciseSettings.cpp \
+    WidgetMain.cpp \
+    WidgetPersonalSettings.cpp
 
 HEADERS  += \
     serialporttransceiver.h \
@@ -41,17 +41,17 @@ HEADERS  += \
     tlvwriter.h \
     tlvreader.h \
     personalbutton.h \
-    widgetMode.h \
-    widgetPersonalSettings.h \
-    widgetExcerciseSettings.h \
-    widgetConsole.h \
-    widgetMain.h \
     qcustomplot.h \
-    widgetTestDynamicStart.h \
-    widgetTestStaticStart.h \
     ModeLogger.h \
-    widgetNFC.h \
     WidgetMachineSettingsExtended.h \
     WidgetMachineSettings.h \
     WidgetSettingsInteger.h \
-    WidgetSettingsFloat.h
+    WidgetSettingsFloat.h \
+    WidgetMode.h \
+    WidgetTestDynamicStart.h \
+    WidgetTestStaticStart.h \
+    WidgetNFC.h \
+    WidgetExcerciseSettings.h \
+    WidgetConsole.h \
+    WidgetMain.h \
+    WidgetPersonalSettings.h

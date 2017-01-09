@@ -1,4 +1,4 @@
-#include "widgetTestStaticStart.h"
+#include "WidgetTestStaticStart.h"
 
 WidgetTestStaticStart::WidgetTestStaticStart(
         QString legend,
@@ -22,13 +22,26 @@ WidgetTestStaticStart::WidgetTestStaticStart(
     defaultValuePositionRel_ = defaultValuePositionRel;
 
     btnStart = new QPushButton(legend);
+    btnStart->setFont(QFont("Verdana",10,QFont::Bold,true));
+
 
     lblPause = new QLabel("пауза перед тестом:");
+    lblPause->setFont(QFont("Verdana",10,QFont::Normal,false));
+
     edtPause = new QLineEdit();
+    edtPause->setFont(QFont("Verdana",10,QFont::Normal,false));
+
     lblDuration = new QLabel("длительность теста:");
+    lblDuration->setFont(QFont("Verdana",10,QFont::Normal,false));
+
     edtDuration = new QLineEdit();
+    edtDuration->setFont(QFont("Verdana",10,QFont::Normal,false));
+
     lblPositionRel = new QLabel("положение теста (%*100):");
+    lblPositionRel->setFont(QFont("Verdana",10,QFont::Normal,false));
+
     edtPositionRel = new QLineEdit();
+    edtPositionRel->setFont(QFont("Verdana",10,QFont::Normal,false));
 
 
     lo = new QHBoxLayout;

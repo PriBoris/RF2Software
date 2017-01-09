@@ -1,4 +1,4 @@
-#include "widgetExcerciseSettings.h"
+#include "WidgetExcerciseSettings.h"
 
 WidgetExcerciseSettings::WidgetExcerciseSettings(
         SerialPortTransceiver *serialPortTransceiver,
@@ -8,48 +8,157 @@ WidgetExcerciseSettings::WidgetExcerciseSettings(
 
 
     serialPortTransceiver_ = serialPortTransceiver;
-    rxMessageCounter = 0;
     settings = new QSettings;
 
-    lblRxMessageCounter = new QLabel("lblRxMessageCounter");
+    {
+        rxMessageCounter = 0;
+        lblRxMessageCounter = new QLabel("lblRxMessageCounter");
+        lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+    }
 
     wgtSetCount = new WidgetSettingsInteger("SetCount","ExcerciseSettings_SetCount",3);
 
 
-    loSetTable = new QGridLayout;
 
-    edtPauseTime = new QLineEdit[MAX_SET_COUNT];
-    edtFirstInterruptionTime = new QLineEdit[MAX_SET_COUNT];
-    edtSecondInterruptionTime = new QLineEdit[MAX_SET_COUNT];
-    edtStartPoint = new QLineEdit[MAX_SET_COUNT];
-    edtSpeedAB = new QLineEdit[MAX_SET_COUNT];
-    edtSpeedBA = new QLineEdit[MAX_SET_COUNT];
-    edtRepsCount = new QLineEdit[MAX_SET_COUNT];
 
-    lblPauseTime = new QLabel[MAX_SET_COUNT];
-    lblFirstInterruptionTime = new QLabel[MAX_SET_COUNT];
-    lblSecondInterruptionTime = new QLabel[MAX_SET_COUNT];
-    lblStartPoint = new QLabel[MAX_SET_COUNT];
-    lblSpeedAB = new QLabel[MAX_SET_COUNT];
-    lblSpeedBA = new QLabel[MAX_SET_COUNT];
-    lblRepsCount = new QLabel[MAX_SET_COUNT];
-
-    loSetTable->addWidget(new QLabel("lblPauseTime"),0,0);
-    loSetTable->addWidget(new QLabel("lblFirstInterruptionTime"),1,0);
-    loSetTable->addWidget(new QLabel("lblSecondInterruptionTime"),2,0);
-    loSetTable->addWidget(new QLabel("lblStartPoint"),3,0);
-    loSetTable->addWidget(new QLabel("lblSpeedAB"),4,0);
-    loSetTable->addWidget(new QLabel("lblSpeedBA"),5,0);
-    loSetTable->addWidget(new QLabel("lblRepsCount"),6,0);
-    for(int i=0;i<MAX_SET_COUNT;i++)
     {
-        loSetTable->addWidget(&edtPauseTime[i],0,1+i);
-        loSetTable->addWidget(&edtFirstInterruptionTime[i],1,1+i);
-        loSetTable->addWidget(&edtSecondInterruptionTime[i],2,1+i);
-        loSetTable->addWidget(&edtStartPoint[i],3,1+i);
-        loSetTable->addWidget(&edtSpeedAB[i],4,1+i);
-        loSetTable->addWidget(&edtSpeedBA[i],5,1+i);
-        loSetTable->addWidget(&edtRepsCount[i],6,1+i);
+        edtPauseTime = new QLineEdit[MAX_SET_COUNT];
+        edtFirstInterruptionTime = new QLineEdit[MAX_SET_COUNT];
+        edtSecondInterruptionTime = new QLineEdit[MAX_SET_COUNT];
+        edtStartPoint = new QLineEdit[MAX_SET_COUNT];
+        edtSpeedAB = new QLineEdit[MAX_SET_COUNT];
+        edtSpeedBA = new QLineEdit[MAX_SET_COUNT];
+        edtRepsCount = new QLineEdit[MAX_SET_COUNT];
+
+        for(int i=0;i<MAX_SET_COUNT;i++){
+
+            edtPauseTime[i].setFixedWidth(75);
+            edtFirstInterruptionTime[i].setFixedWidth(75);
+            edtSecondInterruptionTime[i].setFixedWidth(75);
+            edtStartPoint[i].setFixedWidth(75);
+            edtSpeedAB[i].setFixedWidth(75);
+            edtSpeedBA[i].setFixedWidth(75);
+            edtRepsCount[i].setFixedWidth(75);
+
+            edtPauseTime[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+            edtFirstInterruptionTime[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+            edtSecondInterruptionTime[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+            edtStartPoint[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+            edtSpeedAB[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+            edtSpeedBA[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+            edtRepsCount[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+
+
+        
+
+        }
+
+
+    }
+
+    {
+        lblPauseTime = new QLabel[MAX_SET_COUNT];
+        lblFirstInterruptionTime = new QLabel[MAX_SET_COUNT];
+        lblSecondInterruptionTime = new QLabel[MAX_SET_COUNT];
+        lblStartPoint = new QLabel[MAX_SET_COUNT];
+        lblSpeedAB = new QLabel[MAX_SET_COUNT];
+        lblSpeedBA = new QLabel[MAX_SET_COUNT];
+        lblRepsCount = new QLabel[MAX_SET_COUNT];
+
+        for(int i=0;i<MAX_SET_COUNT;i++){
+
+            lblPauseTime[i].setFixedWidth(75);
+            lblFirstInterruptionTime[i].setFixedWidth(75);
+            lblSecondInterruptionTime[i].setFixedWidth(75);
+            lblStartPoint[i].setFixedWidth(75);
+            lblSpeedAB[i].setFixedWidth(75);
+            lblSpeedBA[i].setFixedWidth(75);
+            lblRepsCount[i].setFixedWidth(75);
+
+            lblPauseTime[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+            lblFirstInterruptionTime[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+            lblSecondInterruptionTime[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+            lblStartPoint[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+            lblSpeedAB[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+            lblSpeedBA[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+            lblRepsCount[i].setFont(QFont("Verdana",10,QFont::Normal,true));
+
+        }
+
+    }
+
+    {
+        lblPauseTimeTitle = new QLabel[2];
+        lblFirstInterruptionTimeTitle = new QLabel[2];
+        lblSecondInterruptionTimeTitle = new QLabel[2];
+        lblStartPointTitle = new QLabel[2];
+        lblSpeedABTitle = new QLabel[2];
+        lblSpeedBATitle = new QLabel[2];
+        lblRepsCountTitle = new QLabel[2];
+
+        lblPauseTimeTitle[0].setText("PauseTime");
+        lblFirstInterruptionTimeTitle[0].setText("FirstInterruptionTime");
+        lblSecondInterruptionTimeTitle[0].setText("SecondInterruptionTime");
+        lblStartPointTitle[0].setText("StartPoint");
+        lblSpeedABTitle[0].setText("SpeedAB");
+        lblSpeedBATitle[0].setText("SpeedBA");
+        lblRepsCountTitle[0].setText("RepsCount");
+
+        lblPauseTimeTitle[1].setText("PauseTime");
+        lblFirstInterruptionTimeTitle[1].setText("FirstInterruptionTime");
+        lblSecondInterruptionTimeTitle[1].setText("SecondInterruptionTime");
+        lblStartPointTitle[1].setText("StartPoint");
+        lblSpeedABTitle[1].setText("SpeedAB");
+        lblSpeedBATitle[1].setText("SpeedBA");
+        lblRepsCountTitle[1].setText("RepsCount");
+
+        lblPauseTimeTitle[0].setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblFirstInterruptionTimeTitle[0].setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblSecondInterruptionTimeTitle[0].setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblStartPointTitle[0].setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblSpeedABTitle[0].setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblSpeedBATitle[0].setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblRepsCountTitle[0].setFont(QFont("Verdana",10,QFont::Normal,true));
+
+        lblPauseTimeTitle[1].setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblFirstInterruptionTimeTitle[1].setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblSecondInterruptionTimeTitle[1].setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblStartPointTitle[1].setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblSpeedABTitle[1].setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblSpeedBATitle[1].setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblRepsCountTitle[1].setFont(QFont("Verdana",10,QFont::Normal,true));
+
+    }
+
+    loWriteTable = new QGridLayout;
+    loReadTable = new QGridLayout;
+
+    loWriteTable->addWidget(&lblPauseTimeTitle[0],0,0);
+    loWriteTable->addWidget(&lblFirstInterruptionTimeTitle[0],1,0);
+    loWriteTable->addWidget(&lblSecondInterruptionTimeTitle[0],2,0);
+    loWriteTable->addWidget(&lblStartPointTitle[0],3,0);
+    loWriteTable->addWidget(&lblSpeedABTitle[0],4,0);
+    loWriteTable->addWidget(&lblSpeedBATitle[0],5,0);
+    loWriteTable->addWidget(&lblRepsCountTitle[0],6,0);
+
+    loReadTable->addWidget(&lblPauseTimeTitle[1],0,0);
+    loReadTable->addWidget(&lblFirstInterruptionTimeTitle[1],1,0);
+    loReadTable->addWidget(&lblSecondInterruptionTimeTitle[1],2,0);
+    loReadTable->addWidget(&lblStartPointTitle[1],3,0);
+    loReadTable->addWidget(&lblSpeedABTitle[1],4,0);
+    loReadTable->addWidget(&lblSpeedBATitle[1],5,0);
+    loReadTable->addWidget(&lblRepsCountTitle[1],6,0);
+
+    for(int i=0;i<MAX_SET_COUNT;i++){
+
+        loWriteTable->addWidget(&edtPauseTime[i],0,1+i);
+        loWriteTable->addWidget(&edtFirstInterruptionTime[i],1,1+i);
+        loWriteTable->addWidget(&edtSecondInterruptionTime[i],2,1+i);
+        loWriteTable->addWidget(&edtStartPoint[i],3,1+i);
+        loWriteTable->addWidget(&edtSpeedAB[i],4,1+i);
+        loWriteTable->addWidget(&edtSpeedBA[i],5,1+i);
+        loWriteTable->addWidget(&edtRepsCount[i],6,1+i);
+
 
         setSettings[i].pauseTime = settings->value("ExcerciseSettings_PauseTime"+QString::number(i),20000).toInt();
         setSettings[i].firstInterruptionTime = settings->value("ExcerciseSettings_FirstInterruptionTime"+QString::number(i),200).toInt();
@@ -67,13 +176,13 @@ WidgetExcerciseSettings::WidgetExcerciseSettings(
         edtSpeedBA[i].setText(QString::number(setSettings[i].speedBA));
         edtRepsCount[i].setText(QString::number(setSettings[i].repsCount));
 
-        loSetTable->addWidget(&lblPauseTime[i],0,1+MAX_SET_COUNT+i);
-        loSetTable->addWidget(&lblFirstInterruptionTime[i],1,1+MAX_SET_COUNT+i);
-        loSetTable->addWidget(&lblSecondInterruptionTime[i],2,1+MAX_SET_COUNT+i);
-        loSetTable->addWidget(&lblStartPoint[i],3,1+MAX_SET_COUNT+i);
-        loSetTable->addWidget(&lblSpeedAB[i],4,1+MAX_SET_COUNT+i);
-        loSetTable->addWidget(&lblSpeedBA[i],5,1+MAX_SET_COUNT+i);
-        loSetTable->addWidget(&lblRepsCount[i],6,1+MAX_SET_COUNT+i);
+        loReadTable->addWidget(&lblPauseTime[i],0,1+i);
+        loReadTable->addWidget(&lblFirstInterruptionTime[i],1,1+i);
+        loReadTable->addWidget(&lblSecondInterruptionTime[i],2,1+i);
+        loReadTable->addWidget(&lblStartPoint[i],3,1+i);
+        loReadTable->addWidget(&lblSpeedAB[i],4,1+i);
+        loReadTable->addWidget(&lblSpeedBA[i],5,1+i);
+        loReadTable->addWidget(&lblRepsCount[i],6,1+i);
 
         lblPauseTime[i].setText("...");
         lblFirstInterruptionTime[i].setText("...");
@@ -100,17 +209,35 @@ WidgetExcerciseSettings::WidgetExcerciseSettings(
 
     }
 
-    loSetTable->setColumnStretch(1+MAX_SET_COUNT*2,1);
-    loSetTable->setRowStretch(5,1);
+
+    loWriteTable->setColumnStretch(1+MAX_SET_COUNT,1);
+    loWriteTable->setRowStretch(5,1);
+
+    loReadTable->setColumnStretch(1+MAX_SET_COUNT,1);
+    loReadTable->setRowStretch(5,1);
 
 
+    {
+        btnWriteSettings = new QPushButton("Send Excercise Settings");
+        btnWriteSettings->setFixedWidth(600);
+        btnWriteSettings->setFont(QFont("Verdana",10,QFont::Bold,true));
+    }
 
-    btnWriteSettings = new QPushButton("послать настройки");
 
     loMain = new QVBoxLayout;
+
     loMain->addWidget(lblRxMessageCounter);
+    loMain->addSpacing(10);
+
     loMain->addWidget(wgtSetCount);
-    loMain->addLayout(loSetTable);
+    loMain->addSpacing(10);
+
+    loMain->addLayout(loWriteTable);
+    loMain->addSpacing(10);
+
+    loMain->addLayout(loReadTable);
+    loMain->addSpacing(10);
+
     loMain->addWidget(btnWriteSettings);
     loMain->addStretch(1);
 

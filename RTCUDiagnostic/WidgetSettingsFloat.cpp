@@ -23,6 +23,7 @@ WidgetSettingsFloat::WidgetSettingsFloat(
     lblReadValue = new QLabel("unknown");
     lblReadValue->setFixedWidth(200);
     lblReadValue->setFont(QFont("Verdana",10,QFont::Normal,false));
+    lblReadValue->setStyleSheet("border: 1px solid");    
 
     lo = new QHBoxLayout;
     lo->addWidget(lblLegend);

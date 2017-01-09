@@ -1,4 +1,4 @@
-#include "widgetMain.h"
+#include "WidgetMain.h"
 
 #include <QScrollArea>
 
@@ -28,22 +28,32 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent)
 
     //------------------------------
 
-    lblPortStatus = new QLabel("");
-    btnTabMode = new QPushButton("Mode");
-    btnTabPersonalSettings = new QPushButton("PersonalSettings");
-    btnTabMachineSettings = new QPushButton("MachineSettings");
-    btnTabExcerciseSettings = new QPushButton("ExcerciseSettings");
-    btnTabNFC = new QPushButton("NFC");
-    btnTabConsole = new QPushButton("Console");
+    {
+        btnTabMode = new QPushButton("Mode");
+        btnTabPersonalSettings = new QPushButton("PersonalSettings");
+        btnTabMachineSettings = new QPushButton("MachineSettings");
+        btnTabExcerciseSettings = new QPushButton("ExcerciseSettings");
+        btnTabNFC = new QPushButton("NFC");
+        btnTabConsole = new QPushButton("Console");
+
+        btnTabMode->setFixedWidth(150);
+        btnTabPersonalSettings->setFixedWidth(150);
+        btnTabMachineSettings->setFixedWidth(150);
+        btnTabExcerciseSettings->setFixedWidth(150);
+        btnTabNFC->setFixedWidth(150);
+        btnTabConsole->setFixedWidth(150);
+
+    }
+
+
     loTabs = new QHBoxLayout;
 
-    lblPortStatus->setFixedWidth(150);
-    btnTabMode->setFixedWidth(150);
-    btnTabPersonalSettings->setFixedWidth(150);
-    btnTabMachineSettings->setFixedWidth(150);
-    btnTabExcerciseSettings->setFixedWidth(150);
-    btnTabNFC->setFixedWidth(150);
-    btnTabConsole->setFixedWidth(150);
+    {
+        lblPortStatus = new QLabel("");
+        lblPortStatus->setFixedWidth(150);
+        lblPortStatus->setFont(QFont("Verdana",10,QFont::Normal,false));
+    }
+
 
 
     loTabs->addWidget(btnTabMode);

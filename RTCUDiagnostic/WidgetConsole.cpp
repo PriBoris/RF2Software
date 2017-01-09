@@ -1,6 +1,6 @@
 
 
-#include "widgetConsole.h"
+#include "WidgetConsole.h"
 
 #include <QDebug>
 #include <QDateTime>
@@ -28,7 +28,10 @@ WidgetConsole::WidgetConsole(
 
 
 
-    lblRxMessageCounter = new QLabel("lblRxMessageCounter");
+    {
+        lblRxMessageCounter = new QLabel("lblRxMessageCounter");
+        lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+    }
 
     edtReceived = new QTextEdit;
     edtReceived->setReadOnly(true);

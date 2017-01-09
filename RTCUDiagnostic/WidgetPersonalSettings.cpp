@@ -1,4 +1,4 @@
-#include "widgetPersonalSettings.h"
+#include "WidgetPersonalSettings.h"
 
 
 //============================================================================================================
@@ -11,7 +11,10 @@ WidgetPersonalSettings::WidgetPersonalSettings(
     rxMessageCounter = 0;
 
 
-    lblRxMessageCounter = new QLabel("lblRxMessageCounter");
+    {
+        lblRxMessageCounter = new QLabel("lblRxMessageCounter");
+        lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+    }
 
     wgtPositionMainA = new WidgetSettingsInteger("PositionMainA","SettingsPosition_PositionMainA",1000);
     wgtPositionMainB = new WidgetSettingsInteger("PositionMainB","SettingsPosition_PositionMainB",5000);
@@ -31,10 +34,19 @@ WidgetPersonalSettings::WidgetPersonalSettings(
 
 
 
-    btnWriteSettings = new QPushButton("послать настройки");
+    {
+        btnWriteSettings = new QPushButton("Send Personal Settings");
+        btnWriteSettings->setFixedWidth(600);
+        btnWriteSettings->setFont(QFont("Verdana",10,QFont::Bold,true));
+    }
+
+
 
     loMain = new QVBoxLayout;
+
     loMain->addWidget(lblRxMessageCounter);
+    loMain->addSpacing(10);
+
     loMain->addWidget(wgtPositionMainA);
     loMain->addWidget(wgtPositionMainB);
     loMain->addWidget(wgtPositionParking);
@@ -44,6 +56,8 @@ WidgetPersonalSettings::WidgetPersonalSettings(
     loMain->addWidget(wgtSpeedAbsMainParking);
     loMain->addWidget(wgtSpeedRelMainTestEccentric);
     loMain->addWidget(wgtSpeedRelMainTestConcentric);
+    loMain->addSpacing(10);
+
     loMain->addWidget(btnWriteSettings);
     loMain->addStretch(1);
 

@@ -1,4 +1,4 @@
-#include "widgetTestDynamicStart.h"
+#include "WidgetTestDynamicStart.h"
 
 WidgetTestDynamicStart::WidgetTestDynamicStart(
         QString legend,
@@ -17,8 +17,14 @@ WidgetTestDynamicStart::WidgetTestDynamicStart(
 
 
     btnStart = new QPushButton(legend);
+    btnStart->setFont(QFont("Verdana",10,QFont::Bold,true));
+
     lblPause = new QLabel("пауза перед тестом:");
+    lblPause->setFont(QFont("Verdana",10,QFont::Normal,false));
+
     edtPause = new QLineEdit();
+    edtPause->setFont(QFont("Verdana",10,QFont::Normal,false));
+
     lo = new QHBoxLayout;
 
     btnStart->setFixedWidth(200);

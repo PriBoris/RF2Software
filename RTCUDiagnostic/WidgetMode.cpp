@@ -1,4 +1,4 @@
-#include "widgetMode.h"
+#include "WidgetMode.h"
 
 #include <QDateTime>
 
@@ -19,29 +19,70 @@ WidgetMode::WidgetMode(
     modeLogger = new ModeLogger;
 
 
+    {
+        lblRxMessageCounter = new QLabel("lblRxMessageCounter");
+        lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+    }
 
-    lblRxMessageCounter = new QLabel("lblRxMessageCounter");
-    lblDateTime = new QLabel("lblDateTime");
-    lblMode = new QLabel("lblMode");
-        lblMode->setStyleSheet("font: 16pt;");
-    lblPhase = new QLabel("lblPhase");;
-    lblError = new QLabel("lblError");
+    {
+        lblDateTime = new QLabel("lblDateTime");
+        lblDateTime->setFont(QFont("Verdana",10,QFont::Normal,false));
+    }
+
+    {
+        lblMode = new QLabel("lblMode");
+        lblMode->setFont(QFont("Verdana",16,QFont::Bold,false));
+    }
+
+    {
+        lblPhase = new QLabel("lblPhase");
+        lblPhase->setFont(QFont("Verdana",10,QFont::Normal,false));
+    }
+
+    {
+        lblError = new QLabel("lblError");
         lblError->setStyleSheet("font: 16pt;");
-    lblMode->setStyleSheet("font: 16pt;");
-    lblPosition = new QLabel("lblPosition");
-    lblPositionRel = new QLabel("lblPositionRel");
-    lblTimeToTest = new QLabel("lblTimeToTest");
-    lblForceValue = new QLabel("lblForceValue");
-        lblForceValue->setStyleSheet("font: 16pt;");
+    }
+
+    {
+        lblPosition = new QLabel("lblPosition");
+        lblPosition->setFont(QFont("Verdana",10,QFont::Normal,false));
+    }
+    {
+        lblPositionRel = new QLabel("lblPositionRel");
+        lblPositionRel->setFont(QFont("Verdana",10,QFont::Normal,false));
+    }
+    {
+        lblTimeToTest = new QLabel("lblTimeToTest");
+        lblTimeToTest->setFont(QFont("Verdana",10,QFont::Normal,false));
+    }
+    {
+        lblForceValue = new QLabel("lblForceValue");
+        lblForceValue->setFont(QFont("Verdana",16,QFont::Normal,false));
+    }
+    {
+        lblOdometer = new QLabel("lblOdometer");
+        lblOdometer->setFont(QFont("Verdana",10,QFont::Normal,false));
+    }
+
 
     lblSetIndex = new QLabel("lblSetIndex");
     lblRepIndex = new QLabel("lblRepIndex");
     lblRepDirection = new QLabel("lblRepDirection");
     lblTimeToSet = new QLabel("lblTimeToSet");
-    btnEnableServo = new QPushButton("Enable SERVO");btnEnableServo->setFixedWidth(300);
-    btnParking = new QPushButton("PARKING start");btnParking->setFixedWidth(300);
-    btnPersonalStart = new QPushButton("PERSONAL start");btnPersonalStart->setFixedWidth(300);
-    btnPersonalExit = new QPushButton("PERSONAL exit");btnPersonalExit->setFixedWidth(300);
+
+    {
+        btnEnableServo = new QPushButton("Enable SERVO");btnEnableServo->setFixedWidth(300);
+        btnParking = new QPushButton("PARKING start");btnParking->setFixedWidth(300);
+        btnPersonalStart = new QPushButton("PERSONAL start");btnPersonalStart->setFixedWidth(300);
+        btnPersonalExit = new QPushButton("PERSONAL exit");btnPersonalExit->setFixedWidth(300);
+
+        btnEnableServo->setFont(QFont("Verdana",10,QFont::Bold,true));
+        btnParking->setFont(QFont("Verdana",10,QFont::Bold,true));
+        btnPersonalStart->setFont(QFont("Verdana",10,QFont::Bold,true));
+        btnPersonalExit->setFont(QFont("Verdana",10,QFont::Bold,true));
+
+    }
 
     {
         btnPersonalMainPlus = new PersonalButton("Main+");
@@ -50,16 +91,24 @@ WidgetMode::WidgetMode(
         btnPersonalAux1Minus = new PersonalButton("Aux1-");
         btnPersonalAux2Plus = new PersonalButton("Aux2+");
         btnPersonalAux2Minus = new PersonalButton("Aux2-");
-        btnPersonalAux3Plus = new PersonalButton("Aux3+");
-        btnPersonalAux3Minus = new PersonalButton("Aux3-");
-        btnPersonalMainPlus->setFixedWidth(50);
-        btnPersonalMainMinus->setFixedWidth(50);
-        btnPersonalAux1Plus->setFixedWidth(50);
-        btnPersonalAux1Minus->setFixedWidth(50);
-        btnPersonalAux2Plus->setFixedWidth(50);
-        btnPersonalAux2Minus->setFixedWidth(50);
-        btnPersonalAux3Plus->setFixedWidth(50);
-        btnPersonalAux3Minus->setFixedWidth(50);
+        //btnPersonalAux3Plus = new PersonalButton("Aux3+");
+        //btnPersonalAux3Minus = new PersonalButton("Aux3-");
+
+        btnPersonalMainPlus->setFixedWidth(75);
+        btnPersonalMainMinus->setFixedWidth(75);
+        btnPersonalAux1Plus->setFixedWidth(75);
+        btnPersonalAux1Minus->setFixedWidth(75);
+        btnPersonalAux2Plus->setFixedWidth(75);
+        btnPersonalAux2Minus->setFixedWidth(75);
+        //btnPersonalAux3Plus->setFixedWidth(50);
+        //btnPersonalAux3Minus->setFixedWidth(50);
+
+        btnPersonalMainPlus->setFont(QFont("Verdana",10,QFont::Bold,true));
+        btnPersonalMainMinus->setFont(QFont("Verdana",10,QFont::Bold,true));
+        btnPersonalAux1Plus->setFont(QFont("Verdana",10,QFont::Bold,true));
+        btnPersonalAux1Minus->setFont(QFont("Verdana",10,QFont::Bold,true));
+        btnPersonalAux2Plus->setFont(QFont("Verdana",10,QFont::Bold,true));
+        btnPersonalAux2Minus->setFont(QFont("Verdana",10,QFont::Bold,true));
 
         loPersonal = new QHBoxLayout;
         loPersonal->addWidget(btnPersonalMainPlus);
@@ -68,12 +117,13 @@ WidgetMode::WidgetMode(
         loPersonal->addWidget(btnPersonalAux1Minus);
         loPersonal->addWidget(btnPersonalAux2Plus);
         loPersonal->addWidget(btnPersonalAux2Minus);
-        loPersonal->addWidget(btnPersonalAux3Plus);
-        loPersonal->addWidget(btnPersonalAux3Minus);
+        //loPersonal->addWidget(btnPersonalAux3Plus);
+        //loPersonal->addWidget(btnPersonalAux3Minus);
         loPersonal->addStretch(1);
         wgtPersonal = new QWidget;
         wgtPersonal->setLayout(loPersonal);
     }
+
 
     btnTestConcentricStart = new WidgetTestDynamicStart(
                 "Test Concentric Start",
@@ -85,7 +135,6 @@ WidgetMode::WidgetMode(
                 "TestEccentricPause",
                 3000
                 );
-
     btnTestStaticStart = new WidgetTestStaticStart(
                 "Test Static Start",
                 "TestStaticPause",
@@ -97,13 +146,23 @@ WidgetMode::WidgetMode(
                 );
 
 
+    {
+        btnResetError = new QPushButton("Reset Error");
+        btnResetError->setFixedWidth(300);
+        btnResetError->setFont(QFont("Verdana",10,QFont::Bold,true));
+    }
 
-    btnResetError = new QPushButton("сброс ошибки");btnResetError->setFixedWidth(300);
-    btnExcerciseIsokineticStart = new QPushButton("начать тренировку");btnExcerciseIsokineticStart->setFixedWidth(300);
+    {    
+        btnExcerciseIsokineticStart = new QPushButton("Start Isokinetic Excercise");
+        btnExcerciseIsokineticStart->setFixedWidth(300);
+        btnExcerciseIsokineticStart->setFont(QFont("Verdana",10,QFont::Bold,true));
+    }
 
-    btnCancel = new QPushButton("CANCEL");btnCancel->setFixedWidth(300);
+    {
+        btnCancel = new QPushButton("CANCEL");btnCancel->setFixedWidth(300);
+        btnCancel->setFont(QFont("Verdana",10,QFont::Bold,true));
+    }
 
-    lblOdometer = new QLabel("lblOdometer");
 
 
     {
@@ -130,6 +189,7 @@ WidgetMode::WidgetMode(
         plotForceVsTime->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
 
         btnPlotForceReset = new QPushButton("clear plot");btnPlotForceReset->setFixedWidth(300);
+        btnPlotForceReset->setFont(QFont("Verdana",10,QFont::Normal,true));
         plotTime = 0;
 
     }
@@ -185,16 +245,16 @@ WidgetMode::WidgetMode(
     connect(btnPersonalAux1Minus, SIGNAL(pressed()), signalMapperPressed, SLOT(map()));
     connect(btnPersonalAux2Plus, SIGNAL(pressed()), signalMapperPressed, SLOT(map()));
     connect(btnPersonalAux2Minus, SIGNAL(pressed()), signalMapperPressed, SLOT(map()));
-    connect(btnPersonalAux3Plus, SIGNAL(pressed()), signalMapperPressed, SLOT(map()));
-    connect(btnPersonalAux3Minus, SIGNAL(pressed()), signalMapperPressed, SLOT(map()));
+    //connect(btnPersonalAux3Plus, SIGNAL(pressed()), signalMapperPressed, SLOT(map()));
+    //connect(btnPersonalAux3Minus, SIGNAL(pressed()), signalMapperPressed, SLOT(map()));
     signalMapperPressed->setMapping(btnPersonalMainPlus, (int)0);
     signalMapperPressed->setMapping(btnPersonalMainMinus, (int)1);
     signalMapperPressed->setMapping(btnPersonalAux1Plus, (int)2);
     signalMapperPressed->setMapping(btnPersonalAux1Minus, (int)3);
     signalMapperPressed->setMapping(btnPersonalAux2Plus, (int)4);
     signalMapperPressed->setMapping(btnPersonalAux2Minus, (int)5);
-    signalMapperPressed->setMapping(btnPersonalAux3Plus, (int)6);
-    signalMapperPressed->setMapping(btnPersonalAux3Minus, (int)7);
+    //signalMapperPressed->setMapping(btnPersonalAux3Plus, (int)6);
+    //signalMapperPressed->setMapping(btnPersonalAux3Minus, (int)7);
     connect(signalMapperPressed, SIGNAL(mapped(int)),this, SIGNAL(personalPressed(int)));
     connect(this, SIGNAL(personalPressed(int)),this, SLOT(slotPersonalPressed(int)));
 
@@ -205,16 +265,16 @@ WidgetMode::WidgetMode(
     connect(btnPersonalAux1Minus, SIGNAL(released()), signalMapperReleased, SLOT(map()));
     connect(btnPersonalAux2Plus, SIGNAL(released()), signalMapperReleased, SLOT(map()));
     connect(btnPersonalAux2Minus, SIGNAL(released()), signalMapperReleased, SLOT(map()));
-    connect(btnPersonalAux3Plus, SIGNAL(released()), signalMapperReleased, SLOT(map()));
-    connect(btnPersonalAux3Minus, SIGNAL(released()), signalMapperReleased, SLOT(map()));
+    //connect(btnPersonalAux3Plus, SIGNAL(released()), signalMapperReleased, SLOT(map()));
+    //connect(btnPersonalAux3Minus, SIGNAL(released()), signalMapperReleased, SLOT(map()));
     signalMapperReleased->setMapping(btnPersonalMainPlus, (int)0);
     signalMapperReleased->setMapping(btnPersonalMainMinus, (int)1);
     signalMapperReleased->setMapping(btnPersonalAux1Plus, (int)2);
     signalMapperReleased->setMapping(btnPersonalAux1Minus, (int)3);
     signalMapperReleased->setMapping(btnPersonalAux2Plus, (int)4);
     signalMapperReleased->setMapping(btnPersonalAux2Minus, (int)5);
-    signalMapperReleased->setMapping(btnPersonalAux3Plus, (int)6);
-    signalMapperReleased->setMapping(btnPersonalAux3Minus, (int)7);
+    //signalMapperReleased->setMapping(btnPersonalAux3Plus, (int)6);
+    //signalMapperReleased->setMapping(btnPersonalAux3Minus, (int)7);
     connect(signalMapperReleased, SIGNAL(mapped(int)),this, SIGNAL(personalReleased(int)));
     connect(this, SIGNAL(personalReleased(int)),this, SLOT(slotPersonalReleased(int)));
 
@@ -225,16 +285,16 @@ WidgetMode::WidgetMode(
     connect(btnPersonalAux1Minus, SIGNAL(hold()), signalMapperHold, SLOT(map()));
     connect(btnPersonalAux2Plus, SIGNAL(hold()), signalMapperHold, SLOT(map()));
     connect(btnPersonalAux2Minus, SIGNAL(hold()), signalMapperHold, SLOT(map()));
-    connect(btnPersonalAux3Plus, SIGNAL(hold()), signalMapperHold, SLOT(map()));
-    connect(btnPersonalAux3Minus, SIGNAL(hold()), signalMapperHold, SLOT(map()));
+    //connect(btnPersonalAux3Plus, SIGNAL(hold()), signalMapperHold, SLOT(map()));
+    //connect(btnPersonalAux3Minus, SIGNAL(hold()), signalMapperHold, SLOT(map()));
     signalMapperHold->setMapping(btnPersonalMainPlus, (int)0);
     signalMapperHold->setMapping(btnPersonalMainMinus, (int)1);
     signalMapperHold->setMapping(btnPersonalAux1Plus, (int)2);
     signalMapperHold->setMapping(btnPersonalAux1Minus, (int)3);
     signalMapperHold->setMapping(btnPersonalAux2Plus, (int)4);
     signalMapperHold->setMapping(btnPersonalAux2Minus, (int)5);
-    signalMapperHold->setMapping(btnPersonalAux3Plus, (int)6);
-    signalMapperHold->setMapping(btnPersonalAux3Minus, (int)7);
+    //signalMapperHold->setMapping(btnPersonalAux3Plus, (int)6);
+    //signalMapperHold->setMapping(btnPersonalAux3Minus, (int)7);
     connect(signalMapperHold, SIGNAL(mapped(int)),this, SIGNAL(personalHold(int)));
     connect(this, SIGNAL(personalHold(int)),this, SLOT(slotPersonalHold(int)));
 
@@ -329,12 +389,12 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             lblPosition->setVisible(true);
             {
                 QString posStr = 
-                    QString::number(getInt(value,1+6+8+0*4))+"/"+
-                    QString::number(getInt(value,1+6+8+1*4))+"/"+
-                    QString::number(getInt(value,1+6+8+2*4))+"/"+
-                    QString::number(getInt(value,1+6+8+3*4))
+                    QString::number(getInt(value,1+6+8+0*4))+" ... "+
+                    QString::number(getInt(value,1+6+8+1*4))+" ... "+
+                    QString::number(getInt(value,1+6+8+2*4))/*+""+
+                    QString::number(getInt(value,1+6+8+3*4))*/
                     ;
-                    lblPosition->setText("Позиция: "+posStr); 
+                    lblPosition->setText("Позиция:   "+posStr); 
                     (modeLogger->stream) << "pos=" << posStr << ";";
             }
             break;

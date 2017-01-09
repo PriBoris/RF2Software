@@ -19,8 +19,8 @@
 
 #define MAX_SET_COUNT   (10)
 
-struct IsokineticSetSettings
-{
+struct IsokineticSetSettings{
+
     qint32 pauseTime;
     qint32 firstInterruptionTime;
     qint32 secondInterruptionTime;
@@ -30,15 +30,23 @@ struct IsokineticSetSettings
     qint32	repsCount;
 };
 
-class WidgetExcerciseSettings : public QWidget
-{
+class WidgetExcerciseSettings : public QWidget{
+
     Q_OBJECT
     QLabel *lblRxMessageCounter;
 
     WidgetSettingsInteger *wgtSetCount;
 
 
-    QGridLayout *loSetTable;
+
+    QLabel *lblPauseTimeTitle;
+    QLabel *lblFirstInterruptionTimeTitle;
+    QLabel *lblSecondInterruptionTimeTitle;
+    QLabel *lblStartPointTitle;
+    QLabel *lblSpeedABTitle;
+    QLabel *lblSpeedBATitle;
+    QLabel *lblRepsCountTitle;
+
     QLineEdit *edtPauseTime;
     QLineEdit *edtFirstInterruptionTime;
     QLineEdit *edtSecondInterruptionTime;
@@ -46,6 +54,7 @@ class WidgetExcerciseSettings : public QWidget
     QLineEdit *edtSpeedAB;
     QLineEdit *edtSpeedBA;
     QLineEdit *edtRepsCount;
+
     QLabel *lblPauseTime;
     QLabel *lblFirstInterruptionTime;
     QLabel *lblSecondInterruptionTime;
@@ -53,6 +62,9 @@ class WidgetExcerciseSettings : public QWidget
     QLabel *lblSpeedAB;
     QLabel *lblSpeedBA;
     QLabel *lblRepsCount;
+
+    QGridLayout *loWriteTable;
+    QGridLayout *loReadTable;
 
     IsokineticSetSettings setSettings[MAX_SET_COUNT];
 

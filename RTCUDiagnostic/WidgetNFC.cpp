@@ -1,4 +1,4 @@
-#include "widgetNFC.h"
+#include "WidgetNFC.h"
 
 
 WidgetNFC::WidgetNFC(
@@ -10,8 +10,15 @@ WidgetNFC::WidgetNFC(
     rxMessageCounter = 0;
 
 
-    lblRxMessageCounter = new QLabel("lblRxMessageCounter");
-    lblUID = new QLabel("lblUID");
+    {
+        lblRxMessageCounter = new QLabel("lblRxMessageCounter");
+        lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+    }
+
+    {
+        lblUID = new QLabel("lblUID");
+        lblUID->setFont(QFont("Verdana",10,QFont::Normal,true));
+    }
 
 
     loMain = new QVBoxLayout;

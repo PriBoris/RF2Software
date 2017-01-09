@@ -11,13 +11,13 @@
 
 #include "tlvreader.h"
 #include "serialporttransceiver.h"
-#include "widgetMode.h"
-#include "widgetPersonalSettings.h"
+#include "WidgetMode.h"
+#include "WidgetPersonalSettings.h"
 #include "WidgetMachineSettings.h"
 #include "WidgetMachineSettingsExtended.h"
-#include "widgetExcerciseSettings.h"
-#include "widgetNFC.h"
-#include "widgetConsole.h"
+#include "WidgetExcerciseSettings.h"
+#include "WidgetNFC.h"
+#include "WidgetConsole.h"
 
 
 
