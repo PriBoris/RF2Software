@@ -33,7 +33,9 @@ SOURCES += main.cpp\
     WidgetConsole.cpp \
     WidgetExcerciseSettings.cpp \
     WidgetMain.cpp \
-    WidgetPersonalSettings.cpp
+    WidgetPersonalSettings.cpp \
+    WidgetServoMode.cpp \
+    RTCU.cpp
 
 HEADERS  += \
     serialporttransceiver.h \
@@ -54,4 +56,6 @@ HEADERS  += \
     WidgetExcerciseSettings.h \
     WidgetConsole.h \
     WidgetMain.h \
-    WidgetPersonalSettings.h
+    WidgetPersonalSettings.h \
+    WidgetServoMode.h \
+    RTCU.h

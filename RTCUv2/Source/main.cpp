@@ -101,10 +101,6 @@ int main(void){
 			
 			NV::RealTimeClock::poll();
 		}
-/*		if (Heartbeat::mainMidtick()){
-			MainTick::processMid();
-		}
-*/
 		//------------------------------------------------------------------------------------------
 		if (Actuators::feedbackValueReady()!=false){
 			Actuators::control();

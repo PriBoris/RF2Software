@@ -85,20 +85,7 @@ class WidgetMode : public QWidget
     SerialPortTransceiver *serialPortTransceiver_;
     quint32 rxMessageCounter;
 
-    class Mode{
-    public:
-        static const quint8 INITIALIZING = 0;
-        static const quint8 IDLE = 1;
-        static const quint8 WAITING = 2;
-        static const quint8 PARKING = 3;
-        static const quint8 PERSONAL = 4;
-        static const quint8 TEST_CONCENTRIC = 5;
-        static const quint8 TEST_ECCENTRIC = 6;
-        static const quint8 EXCERCISE_ISOKINETIC = 7;
-        static const quint8 FAULT = 8;
-        static const quint8 TEST_STATIC = 9;
-        static const quint8 GENERIC_EXERCISE_ISOKINETIC = 10;
-    };
+
 
     static const quint8 ERROR_ServoInternal = 0;
     static const quint8 ERROR_ServoConnectionLost = 1;
@@ -134,16 +121,15 @@ class WidgetMode : public QWidget
 
 
 
-    qint32 getInt(QByteArray &array,int offset)
-    {
+    qint32 getInt(QByteArray &array,int offset){
         qint32 result;
-        char* p = (char*)&result;
-        *p++ = array.at(offset+0);
-        *p++ = array.at(offset+1);
-        *p++ = array.at(offset+2);
-        *p++ = array.at(offset+3);
+        memcpy(&result,&array.data()[offset],sizeof(result));
         return result;
-
+    }
+    quint32 getUint(QByteArray &array,int offset){
+        quint32 result;
+        memcpy(&result,&array.data()[offset],sizeof(result));
+        return result;
     }
 
 

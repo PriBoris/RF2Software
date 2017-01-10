@@ -2,9 +2,11 @@
 
 #include <QScrollArea>
 
+#include "RTCU.h"
+
+
 //===============================================================================================================
-WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent)
-{
+WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent){
 
     serialPort = new QSerialPort();
     serialPort->setPortName("COM5");
@@ -16,6 +18,8 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent)
     serialPortTransceiver = new SerialPortTransceiver(serialPort);
     tlvReader = new TLVReader();
     connect(serialPortTransceiver,SIGNAL(newReadData(QByteArray&)),tlvReader,SLOT(processReadData(QByteArray&)));
+
+    RTCU::init();
 
 
     fontRegular = new QFont("Verdana", 10, QFont::Normal);
@@ -105,6 +109,7 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent)
     //------------------------------
 
     widgetMode = new WidgetMode(serialPortTransceiver);
+    widgetServoMode = new WidgetServoMode(serialPortTransceiver);
     widgetSettingsPosition = new WidgetPersonalSettings(serialPortTransceiver);
     widgetMachineSettings = new WidgetMachineSettings(serialPortTransceiver);
     widgetMachineSettingsExtended = new WidgetMachineSettingsExtended(serialPortTransceiver);
@@ -113,6 +118,7 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent)
     widgetConsole = new WidgetConsole(serialPortTransceiver);
 
     widgetArray.append(widgetMode);
+    widgetArray.append(widgetServoMode);
     widgetArray.append(widgetMachineSettings);
     widgetArray.append(widgetMachineSettingsExtended);
     widgetArray.append(widgetSettingsPosition);
@@ -142,6 +148,7 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent)
 
 
     connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetMode,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
+    connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetServoMode,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
     connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetSettingsPosition,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
     connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetMachineSettings,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
     connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),widgetMachineSettingsExtended,SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
@@ -182,6 +189,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
 
 
         widgetMode->setVisible(true);
+        widgetServoMode->setVisible(true);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(false);
         widgetMachineSettingsExtended->setVisible(false);
@@ -200,6 +208,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         btnTabConsole->setFont(*fontRegular);
 
         widgetMode->setVisible(false);
+        widgetServoMode->setVisible(false);
         widgetSettingsPosition->setVisible(true);
         widgetMachineSettings->setVisible(false);
         widgetMachineSettingsExtended->setVisible(false);
@@ -218,6 +227,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         btnTabConsole->setFont(*fontRegular);
 
         widgetMode->setVisible(false);
+        widgetServoMode->setVisible(false);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(true);
         widgetMachineSettingsExtended->setVisible(true);
@@ -236,6 +246,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         btnTabConsole->setFont(*fontRegular);
 
         widgetMode->setVisible(false);
+        widgetServoMode->setVisible(false);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(false);
         widgetMachineSettingsExtended->setVisible(false);
@@ -253,6 +264,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         btnTabConsole->setFont(*fontRegular);
 
         widgetMode->setVisible(false);
+        widgetServoMode->setVisible(false);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(false);
         widgetMachineSettingsExtended->setVisible(false);
@@ -260,6 +272,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         widgetNFC->setVisible(true);
         widgetConsole->setVisible(false);
         break;
+
     case TAB_CONSOLE:
 
         btnTabMode->setFont(*fontRegular);
@@ -271,6 +284,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
         btnTabConsole->setFont(*fontSelect);
 
         widgetMode->setVisible(false);
+        widgetServoMode->setVisible(false);
         widgetSettingsPosition->setVisible(false);
         widgetMachineSettings->setVisible(false);
         widgetExcerciseSettings->setVisible(false);

@@ -2,6 +2,8 @@
 
 #include <QDateTime>
 
+#include "RTCU.h"
+
 //=================================================================================================
 WidgetMode::~WidgetMode(){
     delete modeLogger;
@@ -12,7 +14,6 @@ WidgetMode::WidgetMode(
         QWidget *parent
         ) : QWidget(parent){
 
-    rxMessageCounter = 0;
 
     serialPortTransceiver_ = serialPortTransceiver;
 
@@ -20,6 +21,7 @@ WidgetMode::WidgetMode(
 
 
     {
+        rxMessageCounter = 0;
         lblRxMessageCounter = new QLabel("lblRxMessageCounter");
         lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
     }
@@ -384,20 +386,20 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
         switch(mode){
         default:
-        case (Mode::INITIALIZING):
+        case (RTCU::Mode::INITIALIZING):
             lblPosition->setVisible(false);
             lblPosition->setText("");
             break;
-        case (Mode::IDLE):
-        case (Mode::WAITING):
-        case (Mode::PARKING):
-        case (Mode::PERSONAL):
-        case (Mode::TEST_CONCENTRIC):
-        case (Mode::TEST_ECCENTRIC):
-        case (Mode::EXCERCISE_ISOKINETIC):
-        case (Mode::FAULT):
-        case (Mode::TEST_STATIC):
-        case (Mode::GENERIC_EXERCISE_ISOKINETIC):
+        case (RTCU::Mode::IDLE):
+        case (RTCU::Mode::WAITING):
+        case (RTCU::Mode::PARKING):
+        case (RTCU::Mode::PERSONAL):
+        case (RTCU::Mode::TEST_CONCENTRIC):
+        case (RTCU::Mode::TEST_ECCENTRIC):
+        case (RTCU::Mode::EXCERCISE_ISOKINETIC):
+        case (RTCU::Mode::FAULT):
+        case (RTCU::Mode::TEST_STATIC):
+        case (RTCU::Mode::GENERIC_EXERCISE_ISOKINETIC):
             lblPosition->setVisible(true);
             {
                 QString posStr = 
@@ -416,14 +418,16 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
         }
 
+
+        {
+            QString modeStr = RTCU::Mode::getTitle(mode);
+            (modeLogger->stream) << "mode=" << modeStr << ";";
+            lblMode->setText("Режим: "+modeStr);
+        }
+
         switch(mode){
         //------------------------------------------------------------------------
         default:
-           {
-                QString modeStr = "???";
-                (modeLogger->stream) << "mode=" << modeStr << ";";
-                lblMode->setText("Режим: "+modeStr);
-            }
            lblError->setVisible(false);
             btnEnableServo->setVisible(false);
             btnParking->setVisible(false);
@@ -439,13 +443,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             btnCancel->setVisible(false);
             break;
         //------------------------------------------------------------------------
-        case Mode::INITIALIZING:
-
-            {
-                QString modeStr = "INITIALIZING";
-                (modeLogger->stream) << "mode=" << modeStr << ";";
-                lblMode->setText("Режим: "+modeStr);
-            }
+        case RTCU::Mode::INITIALIZING:
 
             lblError->setVisible(false);
             lblPositionRel->setVisible(false);
@@ -469,13 +467,8 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             btnCancel->setVisible(false);
             break;
             //------------------------------------------------------------------------
-        case Mode::IDLE:
+        case RTCU::Mode::IDLE:
 
-            {
-                QString modeStr = "IDLE";
-                (modeLogger->stream) << "mode=" << modeStr << ";";
-                lblMode->setText("Режим: "+modeStr);
-            }
             lblError->setVisible(false);
             lblPositionRel->setVisible(false);
             lblTimeToTest->setVisible(false);
@@ -499,12 +492,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             btnCancel->setVisible(false);
             break;
         //------------------------------------------------------------------------
-        case Mode::WAITING:
-             {
-                QString modeStr = "WAITING";
-                (modeLogger->stream) << "mode=" << modeStr << ";";
-                lblMode->setText("Режим: "+modeStr);
-            }
+        case RTCU::Mode::WAITING:
             lblError->setVisible(false);
             lblPositionRel->setVisible(false);
             lblTimeToTest->setVisible(false);
@@ -528,13 +516,8 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             btnCancel->setVisible(false);
             break;
             //------------------------------------------------------------------------
-        case Mode::PARKING:
+        case RTCU::Mode::PARKING:
 
-            {
-                QString modeStr = "PARKING";
-                (modeLogger->stream) << "mode=" << modeStr << ";";
-                lblMode->setText("Режим: "+modeStr);
-            }
             lblError->setVisible(false);
             lblPositionRel->setVisible(false);
             lblTimeToTest->setVisible(false);
@@ -557,14 +540,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             break;
 
             //------------------------------------------------------------------------
-        case Mode::PERSONAL:
+        case RTCU::Mode::PERSONAL:
 
-             {
-                QString modeStr = "PERSONAL";
-                (modeLogger->stream) << "mode=" << modeStr << ";";
-                lblMode->setText("Режим: "+modeStr);
-            }
-           lblError->setVisible(false);
+            lblError->setVisible(false);
             lblPositionRel->setVisible(false);
             lblTimeToTest->setVisible(false);
             lblForceValue->setVisible(false);
@@ -586,13 +564,8 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             btnCancel->setVisible(false);
             break;
         //------------------------------------------------------------------------
-        case Mode::TEST_CONCENTRIC:
+        case RTCU::Mode::TEST_CONCENTRIC:
 
-            {
-                QString modeStr = "TEST_CONCENTRIC";
-                (modeLogger->stream) << "mode=" << modeStr << ";";
-                lblMode->setText("Режим: "+modeStr);
-            }
             lblError->setVisible(false);
             btnEnableServo->setVisible(false);
             btnParking->setVisible(false);
@@ -698,13 +671,8 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
             break;
             //------------------------------------------------------------------------
-        case Mode::TEST_ECCENTRIC:
+        case RTCU::Mode::TEST_ECCENTRIC:
 
-            {
-                QString modeStr = "TEST_ECCENTRIC";
-                (modeLogger->stream) << "mode=" << modeStr << ";";
-                lblMode->setText("Режим: "+modeStr);
-            }
             lblError->setVisible(false);
             lblPosition->setVisible(true);
             btnEnableServo->setVisible(false);
@@ -807,13 +775,8 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             btnCancel->setVisible(true);
             break;
         //------------------------------------------------------------------------
-        case Mode::TEST_STATIC:
+        case RTCU::Mode::TEST_STATIC:
 
-            {
-                QString modeStr = "TEST_STATIC";
-                (modeLogger->stream) << "mode=" << modeStr << ";";
-                lblMode->setText("Режим: "+modeStr);
-            }
             lblError->setVisible(false);
             btnEnableServo->setVisible(false);
             btnParking->setVisible(false);
@@ -933,13 +896,8 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             btnCancel->setVisible(true);
             break;
         //------------------------------------------------------------------------
-        case Mode::EXCERCISE_ISOKINETIC:
+        case RTCU::Mode::EXCERCISE_ISOKINETIC:
 
-             {
-                QString modeStr = "EXCERCISE_ISOKINETIC";
-                (modeLogger->stream) << "mode=" << modeStr << ";";
-                lblMode->setText("Режим: "+modeStr);
-            }
             lblError->setVisible(false);
             btnEnableServo->setVisible(false);
             btnParking->setVisible(false);
@@ -1128,13 +1086,8 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             btnCancel->setVisible(true);
             break;
             //------------------------------------------------------------------------
-        case Mode::FAULT:
+        case RTCU::Mode::FAULT:
 
-            {
-                QString modeStr = "FAULT";
-                (modeLogger->stream) << "mode=" << modeStr << ";";
-                lblMode->setText("Режим: "+modeStr);
-            }
             lblError->setVisible(true);
             lblPositionRel->setVisible(false);
             lblTimeToTest->setVisible(false);

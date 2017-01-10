@@ -775,6 +775,11 @@
               <FileType>5</FileType>
               <FilePath>.\Source\business\Excercise.h</FilePath>
             </File>
+            <File>
+              <FileName>ReportServoMode.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Source\business\ReportServoMode.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

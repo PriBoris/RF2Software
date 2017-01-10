@@ -28,6 +28,7 @@ public:
     static const quint8 TAG_RtcuDebugMessage = 0x05;
     static const quint8 TAG_ReportGenericExcerciseSettings = 0x06;
     static const quint8 TAG_ReportMachineSettingsExtended = 0x07;
+    static const quint8 TAG_ReportServoMode = 0x08;
 
 
     static const quint8 TAG_EnableServo = 0x40;

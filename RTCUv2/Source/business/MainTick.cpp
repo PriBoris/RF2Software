@@ -30,7 +30,9 @@
 
 
 MainTick::Mode MainTick::mode;
+MainTick::Mode MainTick::modePrev;
 MainTick::Submode MainTick::submode;
+MainTick::Submode MainTick::submodePrev;
 
 uint_fast8_t MainTick::rangeAdjustmentTimeoutCounter;
 
@@ -40,21 +42,24 @@ uint32_t MainTick::profilerMaxValue = 0;
 MainTick::Submode MainTick::profilerMaxValueSubmode = ERROR_Error;
 MainTick::Submode MainTick::profilerStartSubmode = ERROR_Error;
 
+uint32_t MainTick::tickID;
 
 
 //==================================================================================================================
 void MainTick::init(){
 
-
-
-
 	setSubmode(INITIALIZING_JustStarted);
-
+	modePrev = mode;
+	submodePrev = submode;
+	tickID = 0;
 
 
 }
 //==================================================================================================================
 void MainTick::process(){ //called every 100ms
+
+	modePrev = mode;
+	submodePrev = submode;
 
 	profilerStart();
 
@@ -95,22 +100,6 @@ void MainTick::process(){ //called every 100ms
 		NFC::protocol.sendPacket(Protocol::TAG_CheckRfidProximity,NULL,0);
 	}
 
-	{
-		/*
-		NFC::getResponse();
-		NFC::sendRequest();
-		//TAG_RfidProximity message consists of UID length (4bytes) followed by UID value (at least 4 bytes)
-		uint8_t uidMessage[14+NFC::MAX_UID_LENGTH];	
-		memset(uidMessage,0,sizeof(uidMessage));
-		uidMessage[0] = NFC::getUID(&uidMessage[4]);
-		if (uidMessage[0]!=0){
-			Diagnostics::protocol.sendPacket(Protocol::TAG_RfidProximity,uidMessage,4+uidMessage[0]);
-			HMI::protocol.sendPacket(Protocol::TAG_RfidProximity,uidMessage,4+uidMessage[0]);
-		}
-		*/
-	}
-	
-	
 	if (Errors::asserted()){
 		setSubmode(ERROR_Error);
 	}
@@ -1387,114 +1376,14 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------------------------------------------
 	}
 
+	reportServoModeDefault();
+
 	//DebugConsole::process();
 
 	profilerStop();
+	tickID++;
 
 }
-//==================================================================================================================
-void MainTick::processMid(){
-
-	__asm("	nop");
-
-	switch(submode){
-
-	case EXERCISE_FirstMovement:
-
-		if (PositionTask::checkPosition(Excercise::getPositionMainFirstMovement(),Excercise::getSpeedFirstMovement())==false){
-
-			if (PositionTask::getDirection(Excercise::getPositionMainFirstMovement())==Servo::NEGATIVE_DIRECTION){
-				Servo::moveNegative(true);
-				Servo::movePositive(false);
-				Servo::brake(false);
-			}else{
-				Servo::movePositive(true);
-				Servo::moveNegative(false);
-				Servo::brake(false);
-			}						
-
-		}else if (Excercise::firstInterruptionEnabled()){
-
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
-			setSubmode(EXERCISE_FirstInterruption);
-
-		}else{
-
-			//test
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
-
-			setSubmode(EXERCISE_SecondMovement);
-
-		}
-
-
-
-
-		break;
-
-	case EXERCISE_SecondMovement:
-
-
-		if (PositionTask::checkPosition(Excercise::getPositionMainSecondMovement(),Excercise::getSpeedSecondMovement())==false){
-
-			if (PositionTask::getDirection(Excercise::getPositionMainSecondMovement())==Servo::NEGATIVE_DIRECTION){
-				Servo::moveNegative(true);
-				Servo::movePositive(false);
-				Servo::brake(false);
-			}else{
-				Servo::movePositive(true);
-				Servo::moveNegative(false);
-				Servo::brake(false);
-			}						
-
-		}else if (Excercise::secondInterruptionEnabled()){
-
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
-			setSubmode(EXERCISE_SecondInterruption);
-
-		}else{
-
-			Excercise::repetitionDone();
-			if (Excercise::isSetDone()==true){
-
-				Servo::brake(true);
-				Servo::movePositive(false);
-				Servo::moveNegative(false);
-				if (Excercise::isExcerciseDone()==true){
-					setSubmode(WAITING_Waiting);
-				}else{
-					setSubmode(EXERCISE_StartingSet);
-				}
-
-			}else{
-
-				//debug
-				Servo::brake(true);
-				Servo::movePositive(false);
-				Servo::moveNegative(false);
-
-
-
-				Excercise::repetitionStart();
-				setSubmode(EXERCISE_FirstMovement);
-			}
-
-		}
-
-
-		break;
-
-
-	}
-
-}
-
 //==================================================================================================================
 void MainTick::profilerStart(){
 	profilerStartTimestamp = Heartbeat::getCounterValue();
@@ -1509,10 +1398,6 @@ void MainTick::profilerStop(){
 		profilerMaxValue = profilerLastValue;
 		profilerMaxValueSubmode = profilerStartSubmode;
 	}
-
-
-
-
 }
 //==================================================================================================================
 void MainTick::processFieldbus(){
@@ -1522,7 +1407,6 @@ void MainTick::processFieldbus(){
 			//DebugConsole::pushMessage(" #FieldbusResponseLost\0");
 		}
 		Fieldbus::pushUSSRequest(USS::makeInverterReadyRequest());
-
 
 }
 //==================================================================================================================

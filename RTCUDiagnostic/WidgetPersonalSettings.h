@@ -18,8 +18,8 @@
 #include "WidgetSettingsInteger.h"
 
 
-struct PersonalSettings
-{
+struct PersonalSettings{
+
     qint32 positionMainA;
     qint32	positionMainB;
     qint32	positionMainParking;
@@ -35,8 +35,8 @@ struct PersonalSettings
 };
 
 
-class WidgetPersonalSettings : public QWidget
-{
+class WidgetPersonalSettings : public QWidget{
+    
     Q_OBJECT
 
     QLabel *lblRxMessageCounter;

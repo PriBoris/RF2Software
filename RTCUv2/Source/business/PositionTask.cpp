@@ -32,16 +32,15 @@ bool PositionTask::checkPosition(int32_t taskPosition,int32_t taskSpeed){
 
 	return checkPosition(taskPosition);
 
-
+/*
 	int32_t actualPosition = Encoder::getValue();
 	
-	int32_t permissibleError = MachineSettings::getMainRange()/100; //1%
+	int32_t permissibleError;
 	
 	if (taskSpeed<=1000){
 		permissibleError = MachineSettings::getMainRange()/7; //15%		
 	}else if (taskSpeed<=1500){
-//		permissibleError = MachineSettings::getMainRange()/10; //10%		
-		permissibleError = MachineSettings::getMainRange()/7; //10%		
+		permissibleError = MachineSettings::getMainRange()/10; //10%		
 	}else if (taskSpeed<=2000){
 		permissibleError = MachineSettings::getMainRange()/12; //7%		
 	}else if (taskSpeed<=2500){
@@ -49,6 +48,7 @@ bool PositionTask::checkPosition(int32_t taskPosition,int32_t taskSpeed){
 	}else if (taskSpeed<=3000){
 		permissibleError = MachineSettings::getMainRange()/20; //5%		
 	}else{
+		permissibleError = MachineSettings::getMainRange()/100; //1%
 	}
 	
 
@@ -59,7 +59,7 @@ bool PositionTask::checkPosition(int32_t taskPosition,int32_t taskSpeed){
 	}else{
 		return true;// [actualPosition] is close to [parkingPosition]
 	}
-
+*/
 
 
 }

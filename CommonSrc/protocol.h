@@ -114,6 +114,7 @@ private:
 		static const uint8_t TAG_RtcuDebugMessage = 0x05;
 		static const uint8_t TAG_ReportGenericExcerciseSettings = 0x06;
 		static const uint8_t TAG_ReportMachineSettingsExtended = 0x07;
+		static const uint8_t TAG_ReportServoMode = 0x08;
 		
 
 		static const uint8_t TAG_EnableServo = 0x40;

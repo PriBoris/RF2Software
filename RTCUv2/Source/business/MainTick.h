@@ -81,6 +81,7 @@ private:
 		ERROR_Error,
 	};
 	static Submode submode;
+	static Submode submodePrev;
 
 
 	enum Mode{
@@ -98,6 +99,7 @@ private:
 
 	};
 	static Mode mode;
+	static Mode modePrev;
 
 	static void setSubmode(Submode newSubmode);
 
@@ -107,6 +109,11 @@ private:
 
 	static void reportMachineSettings();
 
+	static bool reportServoModeIssued;
+	static void reportServoModeDefault();
+	static void reportServoModeHeader(uint8_t *message);
+	
+	
 
 	//-----------------------------------------------------------
 
@@ -231,7 +238,13 @@ private:
 		MSGLEN_SetIndex+
 		0;
 
+	//-----------------------------------------------------------
 
+	static const uint16_t MSGLEN_ReportServoMode_DEFAULT = 
+		sizeof(uint32_t)+
+		sizeof(NV::RealTimeClock::TCurrentDateTime)+
+		4*sizeof(uint8_t)+
+		0;
 
 
 
@@ -262,13 +275,12 @@ private:
 
 	static void processFieldbus();
 
-
+	static uint32_t tickID;
 
 public:
 
 	static void init();
 	static void process();
-	static void processMid();
 
 
 

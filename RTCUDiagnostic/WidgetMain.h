@@ -12,6 +12,7 @@
 #include "tlvreader.h"
 #include "serialporttransceiver.h"
 #include "WidgetMode.h"
+#include "WidgetServoMode.h"
 #include "WidgetPersonalSettings.h"
 #include "WidgetMachineSettings.h"
 #include "WidgetMachineSettingsExtended.h"
@@ -27,6 +28,7 @@ class WidgetMain : public QWidget{
 
 
     WidgetMode *widgetMode;
+    WidgetServoMode *widgetServoMode;
     WidgetPersonalSettings *widgetSettingsPosition;
     WidgetMachineSettings *widgetMachineSettings;
     WidgetMachineSettingsExtended *widgetMachineSettingsExtended;
