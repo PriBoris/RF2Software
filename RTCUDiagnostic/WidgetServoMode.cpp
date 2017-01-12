@@ -1,11 +1,13 @@
 #include "WidgetServoMode.h"
 
+#include <QDateTime>
 
 #include "RTCU.h"
 
 
 //=================================================================================================
 WidgetServoMode::~WidgetServoMode(){
+    delete reportLogger;
 }
 //=================================================================================================
 WidgetServoMode::WidgetServoMode(
@@ -14,6 +16,9 @@ WidgetServoMode::WidgetServoMode(
 
 
     serialPortTransceiver_ = serialPortTransceiver;
+
+    reportLogger = new ReportLogger("ReportServoMode.txt");
+
 
     {
         rxMessageCounter = 0;
@@ -85,12 +90,22 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
             quint32 mainTickID = TLV::getUint32(value,0);
             QString mainTickIDStr = QString::number(mainTickID);
             lblMainTickID->setText("MainTickID: "+mainTickIDStr);
+            (reportLogger->stream) << "tickID=" << QString::number(mainTickID) << ";";
+
 
         }
 
         {
             QString machineTimeStr = TLV::getDateTimeStr(value,4,true);
             lblDateTime->setText("Machine time: "+machineTimeStr);
+        }
+
+
+        {
+			QDateTime dateTime(QDateTime::currentDateTime());
+			QString pcTimeStr = dateTime.toString("(HH:mm:ss.zzz)");
+			QString machineTimeStr = TLV::getDateTimeStr(value,4,false);
+			(reportLogger->stream) << machineTimeStr << pcTimeStr << ";";
         }
 
         {
@@ -105,6 +120,7 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
             }
 
             lblMode->setText("Mode: "+modeStr);
+			(reportLogger->stream) << modeStr << ";";
         }
 
         {
@@ -119,6 +135,7 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
             }
 
             lblSubmode->setText("Submode: "+submodeStr);
+			(reportLogger->stream) << submodeStr << ";";
         }
 
 
@@ -131,10 +148,13 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
 
             lblServoFrequencyPositive->setText("Servo F(+): "+servoFrequencyPositiveStr);
             lblServoFrequencyNegative->setText("Servo F(-): "+servoFrequencyNegativeStr);
-
+			(reportLogger->stream) << servoFrequencyPositiveStr << ";";
+			(reportLogger->stream) << servoFrequencyNegativeStr << ";";
+ 
         }
 
-
+        (reportLogger->stream) << "\n";
+        reportLogger->flush();
     }
 
 

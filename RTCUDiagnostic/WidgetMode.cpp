@@ -6,7 +6,7 @@
 
 //=================================================================================================
 WidgetMode::~WidgetMode(){
-    delete modeLogger;
+    delete reportLogger;
 }
 //=================================================================================================
 WidgetMode::WidgetMode(
@@ -17,7 +17,7 @@ WidgetMode::WidgetMode(
 
     serialPortTransceiver_ = serialPortTransceiver;
 
-    modeLogger = new ModeLogger;
+    reportLogger = new ReportLogger("ReportCurrentMode.txt");
 
 
     {
@@ -340,7 +340,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                         +QString::number(value.length())
                         +")"
                         );
-            (modeLogger->stream) << "mdgID=" << QString::number(msgID) << ";";
+            (reportLogger->stream) << "mdgID=" << QString::number(msgID) << ";";
         }
 
 
@@ -353,7 +353,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             QDateTime dateTime(QDateTime::currentDateTime());
             QString pcTimeStr = dateTime.toString("(HH:mm:ss.zzz)");
             QString machineTimeStr = TLV::getDateTimeStr(value,1,false);
-            (modeLogger->stream) << machineTimeStr << pcTimeStr << ";";
+            (reportLogger->stream) << machineTimeStr << pcTimeStr << ";";
         }
 
         {
@@ -394,7 +394,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     QString::number(TLV::getInt32(value,1+6+8+3*4))*/
                     ;
                     lblPosition->setText("Позиция:   "+posStr); 
-                    (modeLogger->stream) << "pos=" << posStr << ";";
+                    (reportLogger->stream) << "pos=" << posStr << ";";
             }
             break;
 
@@ -406,7 +406,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
         {
             QString modeStr = RTCU::Mode::getTitle(mode);
-            (modeLogger->stream) << "mode=" << modeStr << ";";
+            (reportLogger->stream) << "mode=" << modeStr << ";";
             lblMode->setText("Режим: "+modeStr);
         }
 
@@ -568,14 +568,14 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "???";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     break;
                 case Phase::HOMING:
                     {
                         QString phaseStr = "HOMING";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     lblPositionRel->setVisible(false);
                     lblTimeToTest->setVisible(false);
@@ -586,7 +586,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "PAUSE";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     lblPositionRel->setVisible(false);
                     lblTimeToTest->setVisible(true);
@@ -602,7 +602,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "TEST_CONCENTRIC";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     lblPositionRel->setVisible(true);
                     lblTimeToTest->setVisible(false);
@@ -612,13 +612,13 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                         double relPos = (double)TLV::getInt32(value,27+8)/100.0;
                         QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
-                        (modeLogger->stream) << "relPos=" << relPosStr << ";";
+                        (reportLogger->stream) << "relPos=" << relPosStr << ";";
                     }
 
                     {
                         QString forceStr = QString::number(TLV::getInt32(value,31+8))+"g";
                         lblForceValue->setText("Усилие: "+forceStr);
-                        (modeLogger->stream) << "force=" << forceStr << ";";
+                        (reportLogger->stream) << "force=" << forceStr << ";";
                     }
 
                     {
@@ -683,14 +683,14 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "???";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     break;
                 case Phase::HOMING:
                     {
                         QString phaseStr = "HOMING";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     lblPositionRel->setVisible(false);
                     lblTimeToTest->setVisible(false);
@@ -700,7 +700,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "PAUSE";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     lblPositionRel->setVisible(false);
                     lblTimeToTest->setVisible(true);
@@ -715,7 +715,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "TEST_ECCENTRIC";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     lblPositionRel->setVisible(true);
                     lblTimeToTest->setVisible(false);
@@ -725,12 +725,12 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                         double relPos = (double)TLV::getInt32(value,27+8)/100.0;
                         QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
-                        (modeLogger->stream) << "relPos=" << relPosStr << ";";
+                        (reportLogger->stream) << "relPos=" << relPosStr << ";";
                     }
                     {
                         QString forceStr = QString::number(TLV::getInt32(value,31+8))+"g";
                         lblForceValue->setText("Усилие: "+forceStr);
-                        (modeLogger->stream) << "force=" << forceStr << ";";
+                        (reportLogger->stream) << "force=" << forceStr << ";";
                     }
                     {
                         qint32 positionRel = TLV::getInt32(value,27+8);
@@ -780,21 +780,21 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "???";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     break;
                 case Phase::HOMING:
                     {
                         QString phaseStr = "HOMING";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     {
                         lblPositionRel->setVisible(true);
                         double relPos = (double)TLV::getInt32(value,27+8)/100.0;
                         QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
-                        (modeLogger->stream) << "relPos=" << relPosStr << ";";
+                        (reportLogger->stream) << "relPos=" << relPosStr << ";";
                     }
 
                     lblTimeToTest->setVisible(false);
@@ -806,14 +806,14 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "PAUSE";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     {
                         lblPositionRel->setVisible(true);
                         double relPos = (double)TLV::getInt32(value,27+8)/100.0;
                         QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
-                        (modeLogger->stream) << "relPos=" << relPosStr << ";";
+                        (reportLogger->stream) << "relPos=" << relPosStr << ";";
                     }
 
                     lblTimeToTest->setVisible(true);
@@ -828,14 +828,14 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "TEST_STATIC";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     {
                         lblPositionRel->setVisible(true);
                         double relPos = (double)TLV::getInt32(value,27+8)/100.0;
                         QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
-                        (modeLogger->stream) << "relPos=" << relPosStr << ";";
+                        (reportLogger->stream) << "relPos=" << relPosStr << ";";
                     }
 
                     lblTimeToTest->setVisible(true);
@@ -844,7 +844,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString forceStr = QString::number(TLV::getInt32(value,31+8))+"g";
                         lblForceValue->setText("Усилие: "+forceStr);
-                        (modeLogger->stream) << "force=" << forceStr << ";";
+                        (reportLogger->stream) << "force=" << forceStr << ";";
                     }
                     lblTimeToTest->setText(
                                 "До окончания теста осталось: "+
@@ -897,7 +897,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             {
                 QString setIndexStr = QString::number(TLV::getInt32(value,35));
                 lblSetIndex->setText("Set index = "+setIndexStr);
-                (modeLogger->stream) << "set=" << setIndexStr << ";";
+                (reportLogger->stream) << "set=" << setIndexStr << ";";
             }
 
 
@@ -909,14 +909,14 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "???";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                    break;
                 case Phase::HOMING:
                     {
                         QString phaseStr = "HOMING";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
 
                     lblPositionRel->setVisible(false);
@@ -930,7 +930,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "PAUSE";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
  
                     lblPositionRel->setVisible(false);
@@ -938,7 +938,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
                     {
                         lblTimeToSet->setText("Осталось "+QString::number(TLV::getInt32(value,39)));
-                        (modeLogger->stream) << "timeToSet=" << QString::number(TLV::getInt32(value,39)) << ";";
+                        (reportLogger->stream) << "timeToSet=" << QString::number(TLV::getInt32(value,39)) << ";";
                     }
 
                     lblRepIndex->setVisible(false);
@@ -950,7 +950,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "FIRSTMOVE";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
 
  
@@ -960,10 +960,10 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "FIRSTINTERRUPTION";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     {
-                        (modeLogger->stream) << "timeToMove=" << QString::number(TLV::getInt32(value,39)) << ";";
+                        (reportLogger->stream) << "timeToMove=" << QString::number(TLV::getInt32(value,39)) << ";";
                     }
 
 
@@ -972,7 +972,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "SECONDMOVE";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
 
  
@@ -982,10 +982,10 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString phaseStr = "SECONDINTERRUPTION";
                         lblPhase->setText("Фаза: "+phaseStr);
-                        (modeLogger->stream) << "phase=" << phaseStr << ";";
+                        (reportLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     {
-                        (modeLogger->stream) << "timeToMove=" << QString::number(TLV::getInt32(value,39)) << ";";
+                        (reportLogger->stream) << "timeToMove=" << QString::number(TLV::getInt32(value,39)) << ";";
                     }
 
                     break;
@@ -1001,26 +1001,26 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     {
                         QString repIndexStr = QString::number(TLV::getInt32(value,39));
                         lblRepIndex->setText("Rep index = "+repIndexStr);
-                        (modeLogger->stream) << "repIndex=" << repIndexStr << ";";
+                        (reportLogger->stream) << "repIndex=" << repIndexStr << ";";
                     }
                     {
                         qint32 repDir = TLV::getInt32(value,43);
                         QString repDirStr = (repDir==0)?"AB":"BA";
                         lblRepDirection->setText("Rep direction = "+repDirStr);
-                        (modeLogger->stream) << "repDir=" << repDirStr << ";";
+                        (reportLogger->stream) << "repDir=" << repDirStr << ";";
                     }
 
                     {
                         double relPos = (double)TLV::getInt32(value,47)/100.0;
                         QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
-                        (modeLogger->stream) << "relPos=" << relPosStr << ";";
+                        (reportLogger->stream) << "relPos=" << relPosStr << ";";
                     }
 
                     {
                         QString forceStr = QString::number(TLV::getInt32(value,51))+"g";
                         lblForceValue->setText("Усилие: "+forceStr);
-                        (modeLogger->stream) << "force=" << forceStr << ";";
+                        (reportLogger->stream) << "force=" << forceStr << ";";
                     }
  
 
@@ -1087,7 +1087,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             wgtPersonal->setVisible(false);
 
             quint8 errorType = value.at(1+6+8);
-            (modeLogger->stream) << "type=" << (int)errorType << ";";
+            (reportLogger->stream) << "type=" << (int)errorType << ";";
 
             switch(errorType)
             {
@@ -1148,8 +1148,8 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             //------------------------------------------------------------------------
         }
 
-        (modeLogger->stream) << "\n";
-        modeLogger->flush();
+        (reportLogger->stream) << "\n";
+        reportLogger->flush();
     }
 
 }

@@ -1,19 +1,19 @@
-#include "ModeLogger.h"
+#include "ReportLogger.h"
 
-ModeLogger::ModeLogger(){
-    file = new QFile("ReportCurrentMode.txt");
+ReportLogger::ReportLogger(QString fileName){
+    file = new QFile(fileName);
     file->open(QIODevice::WriteOnly | QIODevice::Append);
     stream.setDevice(file);
     stream << "\n\n\n";
 }
 
-ModeLogger::~ModeLogger(){
+ReportLogger::~ReportLogger(){
 
     file->close();
     delete file;
 
 }
-void ModeLogger::flush(){
+void ReportLogger::flush(){
 
     static int counter = 0;
 

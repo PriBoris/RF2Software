@@ -15,7 +15,7 @@
 #include "personalbutton.h"
 #include "WidgetTestDynamicStart.h"
 #include "WidgetTestStaticStart.h"
-#include "ModeLogger.h"
+#include "ReportLogger.h"
 #include "qcustomplot.h"
 
 
@@ -23,7 +23,7 @@ class WidgetMode : public QWidget
 {
     Q_OBJECT
 
-    ModeLogger *modeLogger;
+    ReportLogger *reportLogger;
 
     QLabel *lblRxMessageCounter;
     QLabel *lblDateTime;

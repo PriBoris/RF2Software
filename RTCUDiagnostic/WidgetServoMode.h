@@ -7,6 +7,7 @@
 
 #include "serialporttransceiver.h"
 #include "TLV.h"
+#include "ReportLogger.h"
 
 
 class WidgetServoMode : public QWidget{
@@ -26,6 +27,7 @@ class WidgetServoMode : public QWidget{
 
     SerialPortTransceiver *serialPortTransceiver_;
     quint32 rxMessageCounter;
+    ReportLogger *reportLogger;
 
 
 public:

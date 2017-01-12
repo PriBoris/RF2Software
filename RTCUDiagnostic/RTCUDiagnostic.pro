@@ -20,7 +20,6 @@ SOURCES += main.cpp\
     tlvreader.cpp \
     personalbutton.cpp \
     qcustomplot.cpp \
-    ModeLogger.cpp \
     WidgetMachineSettingsExtended.cpp \
     WidgetMachineSettings.cpp \
     WidgetSettingsInteger.cpp \
@@ -35,7 +34,8 @@ SOURCES += main.cpp\
     WidgetPersonalSettings.cpp \
     WidgetServoMode.cpp \
     RTCU.cpp \
-    TLV.cpp
+    TLV.cpp \
+    ReportLogger.cpp
 
 HEADERS  += \
     serialporttransceiver.h \
@@ -43,7 +43,6 @@ HEADERS  += \
     tlvreader.h \
     personalbutton.h \
     qcustomplot.h \
-    ModeLogger.h \
     WidgetMachineSettingsExtended.h \
     WidgetMachineSettings.h \
     WidgetSettingsInteger.h \
@@ -58,4 +57,5 @@ HEADERS  += \
     WidgetPersonalSettings.h \
     WidgetServoMode.h \
     RTCU.h \
-    TLV.h
+    TLV.h \
+    ReportLogger.h

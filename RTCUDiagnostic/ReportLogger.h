@@ -7,13 +7,13 @@
 
 
 
-class ModeLogger
+class ReportLogger
 {
     QFile *file;
 
 public:
-    ModeLogger();
-    ~ModeLogger();
+    ReportLogger(QString fileName);
+    ~ReportLogger();
 
     QTextStream stream;
     void flush();
