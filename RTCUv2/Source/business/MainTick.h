@@ -12,73 +12,66 @@ class MainTick{
 
 private:
 
+
+
 	//-----------------------------------------------------------
 
 	enum Submode{
 
 		INITIALIZING_JustStarted = 0,
-		INITIALIZING_HMIPoweringOff,
-		INITIALIZING_HMIPoweringOn,
-		INITIALIZING_HMIStarting,
-		INITIALIZING_WaitingStableServoConnection,
-
-		IDLE_Idle,
-
-		WAITING_Waiting,
-
-		PERSONAL_Starting,
-		PERSONAL_SettingPositiveSpeed,
-		PERSONAL_SettingNegativeSpeed,
-		PERSONAL_Waiting,
-		PERSONAL_MovingMain,
-		PERSONAL_MovingAux,
-
-		PARKING_Starting,
-		PARKING_SettingPositiveSpeed,
-		PARKING_SettingNegativeSpeed,
-		PARKING_PreparingMain,
-		PARKING_MovingMain,
-		PARKING_PreparingAux,
-		PARKING_MovingAux,
-
-		FTEST_DYNAMIC_Starting,
-		FTEST_DYNAMIC_Homing_SettingPositiveSpeed,
-		FTEST_DYNAMIC_Homing_SettingNegativeSpeed,
-		FTEST_DYNAMIC_Homing_Preparing,
-		FTEST_DYNAMIC_Homing_Moving,
-		FTEST_DYNAMIC_Pause,
-		FTEST_DYNAMIC_Testing_SettingPositiveSpeed,
-		FTEST_DYNAMIC_Testing_SettingNegativeSpeed,
-		FTEST_DYNAMIC_Testing_Preparing,
-		FTEST_DYNAMIC_Testing_Moving,
-
-		FTEST_STATIC_Starting,
-		FTEST_STATIC_Homing_SettingPositiveSpeed,
-		FTEST_STATIC_Homing_SettingNegativeSpeed,
-		FTEST_STATIC_Homing_Preparing,
-		FTEST_STATIC_Homing_Moving,
-		FTEST_STATIC_Pause,
-		FTEST_STATIC_Testing,
-
-
-		EXERCISE_Starting,
-		EXERCISE_Homing_PreparingAux,
-		EXERCISE_Homing_MovingAux,
-		EXERCISE_StartingSet,
-		EXERCISE_Homing_SettingPositiveSpeed,
-		EXERCISE_Homing_SettingNegativeSpeed,
-		EXERCISE_Homing_PreparingMain,
-		EXERCISE_Homing_MovingMain,
-		EXERCISE_Pause,
-		EXERCISE_SettingPositiveSpeed,
-		EXERCISE_SettingNegativeSpeed,
-		EXERCISE_FirstMovement,
-		EXERCISE_FirstInterruption,
-		EXERCISE_SecondMovement,
-		EXERCISE_SecondInterruption,
-
-
-		ERROR_Error,
+		INITIALIZING_HMIPoweringOff = 1,
+		INITIALIZING_HMIPoweringOn = 2,
+		INITIALIZING_HMIStarting = 3,
+		INITIALIZING_WaitingStableServoConnection = 4,
+		//TODO: write 0Hz to servo before any usage
+		IDLE_Idle = 5,
+		WAITING_Waiting =6,
+		PERSONAL_Starting = 7,
+		PERSONAL_SettingPositiveSpeed = 8,
+		PERSONAL_SettingNegativeSpeed = 9,
+		PERSONAL_Waiting = 10,
+		PERSONAL_MovingMain = 11,
+		PERSONAL_MovingAux =12,
+		PARKING_Starting = 13,
+		PARKING_SettingPositiveSpeed = 14,
+		PARKING_SettingNegativeSpeed = 15,
+		PARKING_PreparingMain = 16,
+		PARKING_MovingMain = 17,
+		PARKING_PreparingAux = 18,
+		PARKING_MovingAux = 19,
+		FTEST_DYNAMIC_Starting = 20,
+		FTEST_DYNAMIC_Homing_SettingPositiveSpeed = 21,
+		FTEST_DYNAMIC_Homing_SettingNegativeSpeed = 22,
+		FTEST_DYNAMIC_Homing_Preparing = 23,
+		FTEST_DYNAMIC_Homing_Moving = 24,
+		FTEST_DYNAMIC_Pause = 25,
+		FTEST_DYNAMIC_Testing_SettingPositiveSpeed = 26,
+		FTEST_DYNAMIC_Testing_SettingNegativeSpeed = 27,
+		FTEST_DYNAMIC_Testing_Preparing = 28,
+		FTEST_DYNAMIC_Testing_Moving = 29,
+		FTEST_STATIC_Starting = 30,
+		FTEST_STATIC_Homing_SettingPositiveSpeed = 31,
+		FTEST_STATIC_Homing_SettingNegativeSpeed = 32,
+		FTEST_STATIC_Homing_Preparing = 33,
+		FTEST_STATIC_Homing_Moving = 34,
+		FTEST_STATIC_Pause = 35,
+		FTEST_STATIC_Testing = 36,
+		EXERCISE_Starting = 37,
+		EXERCISE_Homing_PreparingAux = 38,
+		EXERCISE_Homing_MovingAux = 39,
+		EXERCISE_StartingSet = 40,
+		EXERCISE_Homing_SettingPositiveSpeed = 41,
+		EXERCISE_Homing_SettingNegativeSpeed = 42,
+		EXERCISE_Homing_PreparingMain = 43,
+		EXERCISE_Homing_MovingMain = 44,
+		EXERCISE_Pause = 45,
+		EXERCISE_SettingPositiveSpeed = 46,
+		EXERCISE_SettingNegativeSpeed = 47,
+		EXERCISE_FirstMovement = 48,
+		EXERCISE_FirstInterruption = 49,
+		EXERCISE_SecondMovement = 50,
+		EXERCISE_SecondInterruption = 51,
+		FAULT_Fault = 52,
 	};
 	static Submode submode;
 	static Submode submodePrev;
@@ -93,11 +86,10 @@ private:
 	  	TEST_CONCENTRIC=5,
 	  	TEST_ECCENTRIC=6,
 	 	EXERCISE_ISOKINETIC=7,
-		ERROR=8,
+		FAULT=8,
 	  	TEST_STATIC=9,
-
-
 	};
+
 	static Mode mode;
 	static Mode modePrev;
 
@@ -113,6 +105,8 @@ private:
 	static void reportServoModeDefault();
 	static void reportServoModeHeader(uint8_t *message);
 	
+	static float servoFrequencyPositive;
+	static float servoFrequencyNegative;
 	
 
 	//-----------------------------------------------------------
@@ -244,6 +238,7 @@ private:
 		sizeof(uint32_t)+
 		sizeof(NV::RealTimeClock::TCurrentDateTime)+
 		4*sizeof(uint8_t)+
+		2*sizeof(float)+
 		0;
 
 

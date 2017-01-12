@@ -9,7 +9,7 @@
 
 const float Servo::SECONDS_PER_ROTATION_AT_1HZ = 249.4623656f;
 const float Servo::MIN_FREQUENCY = 2.0f;
-const float Servo::MAX_FREQUENCY = 50.0f;
+const float Servo::MAX_FREQUENCY = 30.0f;//50.0f;
 
 
 /*void Servo::parkingBrakeOFF(){

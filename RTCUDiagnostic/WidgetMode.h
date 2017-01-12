@@ -10,7 +10,7 @@
 #include <QTimer>
 
 #include "serialporttransceiver.h"
-#include "tlv.h"
+#include "TLV.h"
 #include "tlvwriter.h"
 #include "personalbutton.h"
 #include "WidgetTestDynamicStart.h"
@@ -121,16 +121,7 @@ class WidgetMode : public QWidget
 
 
 
-    qint32 getInt(QByteArray &array,int offset){
-        qint32 result;
-        memcpy(&result,&array.data()[offset],sizeof(result));
-        return result;
-    }
-    quint32 getUint(QByteArray &array,int offset){
-        quint32 result;
-        memcpy(&result,&array.data()[offset],sizeof(result));
-        return result;
-    }
+
 
 
 

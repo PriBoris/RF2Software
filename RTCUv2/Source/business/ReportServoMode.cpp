@@ -47,6 +47,13 @@ void MainTick::reportServoModeHeader(uint8_t *message){
 	message[12] = (uint8_t)mode;
 	message[13] = (uint8_t)submode;
 
+	memcpy(&message[14],&servoFrequencyPositive,sizeof(servoFrequencyPositive));
+	memcpy(&message[18],&servoFrequencyNegative,sizeof(servoFrequencyNegative));
+
+
+
+
+
 }
 //==================================================================================================================
 	

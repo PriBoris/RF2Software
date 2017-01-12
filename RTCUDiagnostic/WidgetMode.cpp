@@ -345,29 +345,14 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
 
         {
-            lblDateTime->setText(
-                QString("%1").arg(2000+(quint32)value.at(1),4,10,QChar('0'))+
-                "/"+
-                QString("%1").arg(value.at(2),2,10,QChar('0'))+
-                "/"+
-                QString("%1").arg(value.at(3),2,10,QChar('0'))+
-                " "+
-                QString("%1").arg(value.at(4),2,10,QChar('0'))+
-                ":"+
-                QString("%1").arg(value.at(5),2,10,QChar('0'))+
-                ":"+
-                QString("%1").arg(value.at(6),2,10,QChar('0'))
-                );
-            QString machineTimeStr =
-                QString("%1").arg(value.at(4),2,10,QChar('0'))+
-                ":"+
-                QString("%1").arg(value.at(5),2,10,QChar('0'))+
-                ":"+
-                QString("%1").arg(value.at(6),2,10,QChar('0'))
-                ;
+            QString machineTimeStr = TLV::getDateTimeStr(value,1,true);
+            lblDateTime->setText("Machine time: "+machineTimeStr);
+        }            
 
+        {
             QDateTime dateTime(QDateTime::currentDateTime());
             QString pcTimeStr = dateTime.toString("(HH:mm:ss.zzz)");
+            QString machineTimeStr = TLV::getDateTimeStr(value,1,false);
             (modeLogger->stream) << machineTimeStr << pcTimeStr << ";";
         }
 
@@ -403,10 +388,10 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             lblPosition->setVisible(true);
             {
                 QString posStr = 
-                    QString::number(getInt(value,1+6+8+0*4))+" ... "+
-                    QString::number(getInt(value,1+6+8+1*4))+" ... "+
-                    QString::number(getInt(value,1+6+8+2*4))/*+""+
-                    QString::number(getInt(value,1+6+8+3*4))*/
+                    QString::number(TLV::getInt32(value,1+6+8+0*4))+" ... "+
+                    QString::number(TLV::getInt32(value,1+6+8+1*4))+" ... "+
+                    QString::number(TLV::getInt32(value,1+6+8+2*4))/*+""+
+                    QString::number(TLV::getInt32(value,1+6+8+3*4))*/
                     ;
                     lblPosition->setText("Позиция:   "+posStr); 
                     (modeLogger->stream) << "pos=" << posStr << ";";
@@ -577,7 +562,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             wgtPersonal->setVisible(false);
 
             {
-                qint32 phase = getInt(value,23+8);
+                qint32 phase = TLV::getInt32(value,23+8);
                 switch(phase){
                 default:
                     {
@@ -609,7 +594,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
                     lblTimeToTest->setText(
                                 "До начала теста осталось: "+
-                                QString::number(getInt(value,27+8))+" мс"
+                                QString::number(TLV::getInt32(value,27+8))+" мс"
                                 );
 
                     break;
@@ -624,21 +609,21 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     lblForceValue->setVisible(true);
 
                     {
-                        double relPos = (double)getInt(value,27+8)/100.0;
+                        double relPos = (double)TLV::getInt32(value,27+8)/100.0;
                         QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
                         (modeLogger->stream) << "relPos=" << relPosStr << ";";
                     }
 
                     {
-                        QString forceStr = QString::number(getInt(value,31+8))+"g";
+                        QString forceStr = QString::number(TLV::getInt32(value,31+8))+"g";
                         lblForceValue->setText("Усилие: "+forceStr);
                         (modeLogger->stream) << "force=" << forceStr << ";";
                     }
 
                     {
-                        qint32 positionRel = getInt(value,27+8);
-                        qint32 force = getInt(value,31+8);
+                        qint32 positionRel = TLV::getInt32(value,27+8);
+                        qint32 force = TLV::getInt32(value,31+8);
                         plotX.append((double)positionRel/100.0);
                         plotY.append((double)force/1000.0);
                         plotTime += 1.0;
@@ -686,13 +671,13 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
             lblPosition->setText(
                         "Позиция: "+
-                        QString::number(getInt(value,1+6+8+0*4))+" / "+
-                        QString::number(getInt(value,1+6+8+1*4))+" / "+
-                        QString::number(getInt(value,1+6+8+2*4))+" / "+
-                        QString::number(getInt(value,1+6+8+3*4))
+                        QString::number(TLV::getInt32(value,1+6+8+0*4))+" / "+
+                        QString::number(TLV::getInt32(value,1+6+8+1*4))+" / "+
+                        QString::number(TLV::getInt32(value,1+6+8+2*4))+" / "+
+                        QString::number(TLV::getInt32(value,1+6+8+3*4))
                         );
             {
-                qint32 phase = getInt(value,23+8);
+                qint32 phase = TLV::getInt32(value,23+8);
                 switch(phase){
                 default:
                     {
@@ -723,7 +708,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
                     lblTimeToTest->setText(
                                 "До начала теста осталось: "+
-                                QString::number(getInt(value,27+8))+" мс"
+                                QString::number(TLV::getInt32(value,27+8))+" мс"
                                 );
                     break;
                 case Phase::TEST_ECCENTRIC:
@@ -737,19 +722,19 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     lblForceValue->setVisible(true);
 
                     {
-                        double relPos = (double)getInt(value,27+8)/100.0;
+                        double relPos = (double)TLV::getInt32(value,27+8)/100.0;
                         QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
                         (modeLogger->stream) << "relPos=" << relPosStr << ";";
                     }
                     {
-                        QString forceStr = QString::number(getInt(value,31+8))+"g";
+                        QString forceStr = QString::number(TLV::getInt32(value,31+8))+"g";
                         lblForceValue->setText("Усилие: "+forceStr);
                         (modeLogger->stream) << "force=" << forceStr << ";";
                     }
                     {
-                        qint32 positionRel = getInt(value,27+8);
-                        qint32 force = getInt(value,31+8);
+                        qint32 positionRel = TLV::getInt32(value,27+8);
+                        qint32 force = TLV::getInt32(value,31+8);
                         plotX.append((double)positionRel/100.0);
                         plotY.append((double)force/1000.0);
                         plotTime += 1.0;
@@ -789,7 +774,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
 
             {
-                qint32 phase = getInt(value,23+8);
+                qint32 phase = TLV::getInt32(value,23+8);
                 switch(phase){
                 default:
                     {
@@ -806,7 +791,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     }
                     {
                         lblPositionRel->setVisible(true);
-                        double relPos = (double)getInt(value,27+8)/100.0;
+                        double relPos = (double)TLV::getInt32(value,27+8)/100.0;
                         QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
                         (modeLogger->stream) << "relPos=" << relPosStr << ";";
@@ -825,7 +810,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     }
                     {
                         lblPositionRel->setVisible(true);
-                        double relPos = (double)getInt(value,27+8)/100.0;
+                        double relPos = (double)TLV::getInt32(value,27+8)/100.0;
                         QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
                         (modeLogger->stream) << "relPos=" << relPosStr << ";";
@@ -836,7 +821,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
                     lblTimeToTest->setText(
                                 "До начала теста осталось: "+
-                                QString::number(getInt(value,39))+" мс"
+                                QString::number(TLV::getInt32(value,39))+" мс"
                                 );
                     break;
                 case Phase::TEST_STATIC:
@@ -847,7 +832,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     }
                     {
                         lblPositionRel->setVisible(true);
-                        double relPos = (double)getInt(value,27+8)/100.0;
+                        double relPos = (double)TLV::getInt32(value,27+8)/100.0;
                         QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
                         (modeLogger->stream) << "relPos=" << relPosStr << ";";
@@ -857,18 +842,18 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     lblForceValue->setVisible(true);
 
                     {
-                        QString forceStr = QString::number(getInt(value,31+8))+"g";
+                        QString forceStr = QString::number(TLV::getInt32(value,31+8))+"g";
                         lblForceValue->setText("Усилие: "+forceStr);
                         (modeLogger->stream) << "force=" << forceStr << ";";
                     }
                     lblTimeToTest->setText(
                                 "До окончания теста осталось: "+
-                                QString::number(getInt(value,43))+" мс"
+                                QString::number(TLV::getInt32(value,43))+" мс"
                                 );
 
                     {
-                        qint32 positionRel = getInt(value,35);
-                        qint32 force = getInt(value,39);
+                        qint32 positionRel = TLV::getInt32(value,35);
+                        qint32 force = TLV::getInt32(value,39);
                         plotX.append((double)positionRel/100.0);
                         plotY.append((double)force/1000.0);
                         plotTime += 1.0;
@@ -910,7 +895,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
             lblSetIndex->setVisible(true);
 
             {
-                QString setIndexStr = QString::number(getInt(value,35));
+                QString setIndexStr = QString::number(TLV::getInt32(value,35));
                 lblSetIndex->setText("Set index = "+setIndexStr);
                 (modeLogger->stream) << "set=" << setIndexStr << ";";
             }
@@ -918,7 +903,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
             {
                 QString phaseInfo = "Фаза: ";
-                qint32 phase = getInt(value,31);
+                qint32 phase = TLV::getInt32(value,31);
                 switch(phase){
                 default:
                     {
@@ -952,8 +937,8 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     lblTimeToSet->setVisible(true);
 
                     {
-                        lblTimeToSet->setText("Осталось "+QString::number(getInt(value,39)));
-                        (modeLogger->stream) << "timeToSet=" << QString::number(getInt(value,39)) << ";";
+                        lblTimeToSet->setText("Осталось "+QString::number(TLV::getInt32(value,39)));
+                        (modeLogger->stream) << "timeToSet=" << QString::number(TLV::getInt32(value,39)) << ";";
                     }
 
                     lblRepIndex->setVisible(false);
@@ -978,7 +963,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                         (modeLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     {
-                        (modeLogger->stream) << "timeToMove=" << QString::number(getInt(value,39)) << ";";
+                        (modeLogger->stream) << "timeToMove=" << QString::number(TLV::getInt32(value,39)) << ";";
                     }
 
 
@@ -1000,7 +985,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                         (modeLogger->stream) << "phase=" << phaseStr << ";";
                     }
                     {
-                        (modeLogger->stream) << "timeToMove=" << QString::number(getInt(value,39)) << ";";
+                        (modeLogger->stream) << "timeToMove=" << QString::number(TLV::getInt32(value,39)) << ";";
                     }
 
                     break;
@@ -1014,26 +999,26 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                     lblRepDirection->setVisible(true);
 
                     {
-                        QString repIndexStr = QString::number(getInt(value,39));
+                        QString repIndexStr = QString::number(TLV::getInt32(value,39));
                         lblRepIndex->setText("Rep index = "+repIndexStr);
                         (modeLogger->stream) << "repIndex=" << repIndexStr << ";";
                     }
                     {
-                        qint32 repDir = getInt(value,43);
+                        qint32 repDir = TLV::getInt32(value,43);
                         QString repDirStr = (repDir==0)?"AB":"BA";
                         lblRepDirection->setText("Rep direction = "+repDirStr);
                         (modeLogger->stream) << "repDir=" << repDirStr << ";";
                     }
 
                     {
-                        double relPos = (double)getInt(value,47)/100.0;
+                        double relPos = (double)TLV::getInt32(value,47)/100.0;
                         QString relPosStr = QString::number(relPos,'f',3)+"%";
                         lblPositionRel->setText("Относительное положение: "+relPosStr);
                         (modeLogger->stream) << "relPos=" << relPosStr << ";";
                     }
 
                     {
-                        QString forceStr = QString::number(getInt(value,51))+"g";
+                        QString forceStr = QString::number(TLV::getInt32(value,51))+"g";
                         lblForceValue->setText("Усилие: "+forceStr);
                         (modeLogger->stream) << "force=" << forceStr << ";";
                     }
@@ -1043,8 +1028,8 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
  
 
                     {
-                        qint32 positionRel = getInt(value,47);
-                        qint32 force = getInt(value,51);
+                        qint32 positionRel = TLV::getInt32(value,47);
+                        qint32 force = TLV::getInt32(value,51);
                         plotX.append((double)positionRel/100.0);
                         plotY.append((double)force/1000.0);
                         plotTime += 1.0;
@@ -1064,7 +1049,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                 }else if ((phase==Phase::ISOKINETIC_FIRSTINTERRUPTION)||(phase==Phase::ISOKINETIC_SECONDINTERRUPTION)){
 
                     lblTimeToSet->setVisible(true);
-                    lblTimeToSet->setText("Осталось "+QString::number(getInt(value,39)));
+                    lblTimeToSet->setText("Осталось "+QString::number(TLV::getInt32(value,39)));
 
 
                     lblPositionRel->setVisible(false);

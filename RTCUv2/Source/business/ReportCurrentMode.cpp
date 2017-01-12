@@ -544,7 +544,7 @@ void MainTick::reportCurrentMode(){
 		//----------------------------------------------------------------EXERCISE_ISOKINETIC---submode------------------------------
 		break;
 	//-------------------------------------------------------------
-	case ERROR:
+	case FAULT:
 
 		{
 			uint8_t message[MSGLEN_ReportCurrentMode_ERROR];

@@ -42,6 +42,14 @@ WidgetServoMode::WidgetServoMode(
         lblSubmode->setFont(QFont("Verdana",10,QFont::Normal,false));
     }
 
+    {
+        lblServoFrequencyPositive = new QLabel("lblServoFrequencyPositive");
+        lblServoFrequencyPositive->setFont(QFont("Verdana",10,QFont::Normal,false));
+
+        lblServoFrequencyNegative = new QLabel("lblServoFrequencyPositive");
+        lblServoFrequencyNegative->setFont(QFont("Verdana",10,QFont::Normal,false));
+    }
+
 
 
     loMain = new QVBoxLayout;
@@ -50,6 +58,8 @@ WidgetServoMode::WidgetServoMode(
     loMain->addWidget(lblDateTime);
     loMain->addWidget(lblMode);
     loMain->addWidget(lblSubmode);
+    loMain->addWidget(lblServoFrequencyPositive);
+    loMain->addWidget(lblServoFrequencyNegative);
     loMain->addStretch(1);
 
     this->setLayout(loMain);
@@ -72,6 +82,18 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
         }
 
         {
+            quint32 mainTickID = TLV::getUint32(value,0);
+            QString mainTickIDStr = QString::number(mainTickID);
+            lblMainTickID->setText("MainTickID: "+mainTickIDStr);
+
+        }
+
+        {
+            QString machineTimeStr = TLV::getDateTimeStr(value,4,true);
+            lblDateTime->setText("Machine time: "+machineTimeStr);
+        }
+
+        {
             quint8 modeBefore = value.at(10);
             quint8 modeAfter = value.at(12);
 
@@ -82,10 +104,36 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
                 modeStr = RTCU::Mode::getTitle(modeBefore)+" >>> "+RTCU::Mode::getTitle(modeAfter);
             }
 
-            lblMode->setText("Режим: "+modeStr);
+            lblMode->setText("Mode: "+modeStr);
+        }
 
+        {
+            quint8 submodeBefore = value.at(11);
+            quint8 submodeAfter = value.at(13);
+
+            QString submodeStr;
+            if (submodeBefore == submodeAfter){
+                submodeStr = RTCU::Submode::getTitle(submodeBefore);
+            }else{
+                submodeStr = RTCU::Submode::getTitle(submodeBefore)+" >>> "+RTCU::Submode::getTitle(submodeAfter);
+            }
+
+            lblSubmode->setText("Submode: "+submodeStr);
+        }
+
+
+        {
+            float servoFrequencyPositive = TLV::getFloat(value,14);
+            float servoFrequencyNegative = TLV::getFloat(value,18);
+
+            QString servoFrequencyPositiveStr = QString::number(servoFrequencyPositive,'f',2)+"Hz";
+            QString servoFrequencyNegativeStr = QString::number(servoFrequencyNegative,'f',2)+"Hz";
+
+            lblServoFrequencyPositive->setText("Servo F(+): "+servoFrequencyPositiveStr);
+            lblServoFrequencyNegative->setText("Servo F(-): "+servoFrequencyNegativeStr);
 
         }
+
 
     }
 

@@ -16,7 +16,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     serialporttransceiver.cpp \
-    tlv.cpp \
     tlvwriter.cpp \
     tlvreader.cpp \
     personalbutton.cpp \
@@ -35,11 +34,11 @@ SOURCES += main.cpp\
     WidgetMain.cpp \
     WidgetPersonalSettings.cpp \
     WidgetServoMode.cpp \
-    RTCU.cpp
+    RTCU.cpp \
+    TLV.cpp
 
 HEADERS  += \
     serialporttransceiver.h \
-    tlv.h \
     tlvwriter.h \
     tlvreader.h \
     personalbutton.h \
@@ -58,4 +57,5 @@ HEADERS  += \
     WidgetMain.h \
     WidgetPersonalSettings.h \
     WidgetServoMode.h \
-    RTCU.h
+    RTCU.h \
+    TLV.h

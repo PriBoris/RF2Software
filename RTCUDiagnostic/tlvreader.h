@@ -2,7 +2,7 @@
 #define TLVREADER_H
 
 #include <QObject>
-#include "tlv.h"
+#include "TLV.h"
 
 class TLVReader : public QObject,TLV
 {

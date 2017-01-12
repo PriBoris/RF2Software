@@ -7,7 +7,7 @@
 #include <QBoxLayout>
 
 #include "serialporttransceiver.h"
-#include "tlv.h"
+#include "TLV.h"
 #include "tlvwriter.h"
 
 

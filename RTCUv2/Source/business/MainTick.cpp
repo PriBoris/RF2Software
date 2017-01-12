@@ -39,11 +39,13 @@ uint_fast8_t MainTick::rangeAdjustmentTimeoutCounter;
 uint32_t MainTick::profilerStartTimestamp = 0;
 uint32_t MainTick::profilerLastValue = 0;
 uint32_t MainTick::profilerMaxValue = 0;
-MainTick::Submode MainTick::profilerMaxValueSubmode = ERROR_Error;
-MainTick::Submode MainTick::profilerStartSubmode = ERROR_Error;
+MainTick::Submode MainTick::profilerMaxValueSubmode = FAULT_Fault;
+MainTick::Submode MainTick::profilerStartSubmode = FAULT_Fault;
 
 uint32_t MainTick::tickID;
 
+float MainTick::servoFrequencyPositive = 0.0f;
+float MainTick::servoFrequencyNegative = 0.0f;
 
 //==================================================================================================================
 void MainTick::init(){
@@ -101,7 +103,7 @@ void MainTick::process(){ //called every 100ms
 	}
 
 	if (Errors::asserted()){
-		setSubmode(ERROR_Error);
+		setSubmode(FAULT_Fault);
 	}
 
 
@@ -349,7 +351,7 @@ void MainTick::process(){ //called every 100ms
 				//TODO: countdown is necessary here
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(true,RangeAdjustment::servoFrequency));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=RangeAdjustment::servoFrequency));
 
 		break;
 	//--------------------------------------------------PERSONAL----------------------------------
@@ -366,7 +368,7 @@ void MainTick::process(){ //called every 100ms
 			}
 		}
 
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(false,-RangeAdjustment::servoFrequency));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=-RangeAdjustment::servoFrequency));
 
 		break;
 	//--------------------------------------------------PERSONAL----------------------------------
@@ -602,7 +604,7 @@ void MainTick::process(){ //called every 100ms
 				//TODO: countdown is necessary here
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(true,Parking::servoFrequencyPositive));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=Parking::servoFrequencyPositive));
 
 
 		break;
@@ -619,7 +621,7 @@ void MainTick::process(){ //called every 100ms
 				//TODO: countdown is necessary here
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(false,Parking::servoFrequencyNegative));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Parking::servoFrequencyNegative));
 
 
 		break;
@@ -734,7 +736,7 @@ void MainTick::process(){ //called every 100ms
 				//TODO: countdown is necessary here
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(true,Parking::servoFrequencyPositive));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=Parking::servoFrequencyPositive));
 
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
@@ -749,7 +751,7 @@ void MainTick::process(){ //called every 100ms
 				//TODO: countdown is necessary here
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(false,Parking::servoFrequencyNegative));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Parking::servoFrequencyNegative));
 
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
@@ -832,7 +834,7 @@ void MainTick::process(){ //called every 100ms
 				//TODO: countdown is necessary here
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(true,ForceTestDynamic::servoFrequencyPositive));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=ForceTestDynamic::servoFrequencyPositive));
 
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
@@ -847,7 +849,7 @@ void MainTick::process(){ //called every 100ms
 				//TODO: countdown is necessary here
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(false,ForceTestDynamic::servoFrequencyNegative));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=ForceTestDynamic::servoFrequencyNegative));
 
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
@@ -919,7 +921,7 @@ void MainTick::process(){ //called every 100ms
 				//TODO: countdown is necessary here
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(true,Parking::servoFrequencyPositive));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=Parking::servoFrequencyPositive));
 		break;
 	//------------------------------------------------FTEST--STATIC----------------------------------
 	case FTEST_STATIC_Homing_SettingNegativeSpeed:
@@ -933,7 +935,7 @@ void MainTick::process(){ //called every 100ms
 				//TODO: countdown is necessary here
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(false,Parking::servoFrequencyNegative));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Parking::servoFrequencyNegative));
 		break;
 	//------------------------------------------------FTEST--STATIC----------------------------------
 	case FTEST_STATIC_Homing_Preparing:
@@ -1080,7 +1082,7 @@ void MainTick::process(){ //called every 100ms
 				//TODO: countdown is necessary here
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(true,Parking::servoFrequencyPositive));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=Parking::servoFrequencyPositive));
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
@@ -1095,7 +1097,7 @@ void MainTick::process(){ //called every 100ms
 				//TODO: countdown is necessary here
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(false,Parking::servoFrequencyNegative));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Parking::servoFrequencyNegative));
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
@@ -1168,7 +1170,7 @@ void MainTick::process(){ //called every 100ms
 				//TODO: countdown is necessary here
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(true,Excercise::servoFrequencyPositive));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=Excercise::servoFrequencyPositive));
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
@@ -1186,7 +1188,7 @@ void MainTick::process(){ //called every 100ms
 				//TODO: countdown is necessary here
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(false,Excercise::servoFrequencyNegative));
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Excercise::servoFrequencyNegative));
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
@@ -1353,7 +1355,7 @@ void MainTick::process(){ //called every 100ms
 
 	//------------------------------------------------------------------------------------
 	//------------------------------------------------------------------------------------
-	case ERROR_Error:
+	case FAULT_Fault:
 
 		Servo::brake(true);
 		Servo::movePositive(false);

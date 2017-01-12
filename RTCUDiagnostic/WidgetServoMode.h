@@ -6,7 +6,7 @@
 #include <QBoxLayout>
 
 #include "serialporttransceiver.h"
-#include "tlv.h"
+#include "TLV.h"
 
 
 class WidgetServoMode : public QWidget{
@@ -17,6 +17,10 @@ class WidgetServoMode : public QWidget{
     QLabel *lblDateTime;
     QLabel *lblMode;
     QLabel *lblSubmode;
+
+    QLabel *lblServoFrequencyPositive;
+    QLabel *lblServoFrequencyNegative;
+
 
     QVBoxLayout *loMain;
 

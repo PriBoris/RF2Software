@@ -100,8 +100,8 @@ void MainTick::setSubmode(MainTick::Submode newSubmode){
 		break;
 
 
-	case ERROR_Error:
-		mode = ERROR;
+	case FAULT_Fault:
+		mode = FAULT;
 		break;
 	}
 

@@ -4,8 +4,7 @@
 #include <QObject>
 #include <QDebug>
 
-class TLV
-{
+class TLV{
 
 protected:
 
@@ -61,8 +60,10 @@ public:
 
 
 
-
-
+    static qint32 getInt32(QByteArray &array,int offset);
+    static quint32 getUint32(QByteArray &array,int offset);
+    static QString getDateTimeStr(QByteArray &array,int offset,bool showDate=true);
+    static float getFloat(QByteArray &array,int offset);
 
 
 
