@@ -22,6 +22,9 @@ class WidgetServoMode : public QWidget{
     QLabel *lblServoFrequencyPositive;
     QLabel *lblServoFrequencyNegative;
 
+    QLabel *lblServoCommand;
+
+
 
     QVBoxLayout *loMain;
 

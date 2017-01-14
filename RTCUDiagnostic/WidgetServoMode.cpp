@@ -55,6 +55,11 @@ WidgetServoMode::WidgetServoMode(
         lblServoFrequencyNegative->setFont(QFont("Verdana",10,QFont::Normal,false));
     }
 
+    {
+        lblServoCommand = new QLabel("");
+        lblServoCommand->setFont(QFont("Verdana",10,QFont::Bold,false));
+    }
+
 
 
     loMain = new QVBoxLayout;
@@ -65,6 +70,7 @@ WidgetServoMode::WidgetServoMode(
     loMain->addWidget(lblSubmode);
     loMain->addWidget(lblServoFrequencyPositive);
     loMain->addWidget(lblServoFrequencyNegative);
+    loMain->addWidget(lblServoCommand);
     loMain->addStretch(1);
 
     this->setLayout(loMain);
@@ -152,6 +158,29 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
 			(reportLogger->stream) << servoFrequencyNegativeStr << ";";
  
         }
+
+        if (value.length()==22){
+            lblServoCommand->setText("");
+        }else if (value.length()==26){
+            qint32 servoCommand = TLV::getInt32(value,22);
+            switch(servoCommand){
+            default:
+                lblServoCommand->setText("???");
+                break;
+            case 0:
+                lblServoCommand->setText("STOP");
+                break;
+            case 1:
+                lblServoCommand->setText(">>>>");
+                break;
+            case -1:
+                lblServoCommand->setText("<<<<");
+                break;
+            }
+        }else{
+            lblServoCommand->setText("");
+        }
+
 
         (reportLogger->stream) << "\n";
         reportLogger->flush();

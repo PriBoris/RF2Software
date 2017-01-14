@@ -671,10 +671,12 @@ void MainTick::process(){ //called every 100ms
 			Servo::moveNegative(false);
 			setSubmode(PARKING_PreparingAux);
 
+			reportServoMode(REPORT_SERVO_MODE_STOP);
 		}
 
-
 		processFieldbus();
+		
+		
 
 
 		break;

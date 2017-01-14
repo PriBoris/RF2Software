@@ -14,22 +14,15 @@ void MainTick::reportServoModeDefault(){
 	
 	if (reportServoModeIssued==false){
 
-
-
 		uint8_t message[MSGLEN_ReportServoMode_DEFAULT];
 		memset(message,0,sizeof(message));
 		reportServoModeHeader(message);
 
-
 		Diagnostics::protocol.sendPacket(Protocol::TAG_ReportServoMode,message,sizeof(message));
-
-
 
 	}else{
 		reportServoModeIssued = false;
 	}
-
-	
 	
 }
 //==================================================================================================================
@@ -50,10 +43,22 @@ void MainTick::reportServoModeHeader(uint8_t *message){
 	memcpy(&message[14],&servoFrequencyPositive,sizeof(servoFrequencyPositive));
 	memcpy(&message[18],&servoFrequencyNegative,sizeof(servoFrequencyNegative));
 
+}
+//==================================================================================================================
+void MainTick::reportServoMode(int32_t servoCommand){
 
+	uint8_t message[MSGLEN_ReportServoMode];
+	memset(message,0,sizeof(message));
+	reportServoModeHeader(message);
 
-
+	memcpy(&message[22],&servoCommand,sizeof(servoCommand));
+	
+	Diagnostics::protocol.sendPacket(Protocol::TAG_ReportServoMode,message,sizeof(message));
+	
+	reportServoModeIssued = true;
 
 }
 //==================================================================================================================
-	
+
+
+

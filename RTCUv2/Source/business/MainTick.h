@@ -104,6 +104,12 @@ private:
 	static bool reportServoModeIssued;
 	static void reportServoModeDefault();
 	static void reportServoModeHeader(uint8_t *message);
+	static void reportServoMode(int32_t servoCommand);
+	
+	static const int32_t REPORT_SERVO_MODE_STOP = 0;
+	static const int32_t REPORT_SERVO_MODE_POSITIVE = 1;
+	static const int32_t REPORT_SERVO_MODE_NEGATIVE = 2;
+	
 	
 	static float servoFrequencyPositive;
 	static float servoFrequencyNegative;
@@ -241,6 +247,15 @@ private:
 		2*sizeof(float)+
 		0;
 
+	static const uint16_t MSGLEN_ReportServoMode = 
+		sizeof(uint32_t)+
+		sizeof(NV::RealTimeClock::TCurrentDateTime)+
+		4*sizeof(uint8_t)+
+		2*sizeof(float)+
+		1*sizeof(int32_t)+
+		0;
+		
+		
 
 
 	//-----------------------------------------------------------
