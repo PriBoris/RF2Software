@@ -7,6 +7,7 @@
 
 
 bool MainTick::reportServoModeIssued = false;
+int32_t MainTick::actualServoCommand = REPORT_SERVO_MODE_STOP;
 
 
 //==================================================================================================================
@@ -52,11 +53,25 @@ void MainTick::reportServoMode(int32_t servoCommand){
 	reportServoModeHeader(message);
 
 	memcpy(&message[22],&servoCommand,sizeof(servoCommand));
+	actualServoCommand = servoCommand;
+
 	
 	Diagnostics::protocol.sendPacket(Protocol::TAG_ReportServoMode,message,sizeof(message));
 	
 	reportServoModeIssued = true;
 
+}
+void MainTick::reportServoModePositive(){
+	reportServoMode(REPORT_SERVO_MODE_POSITIVE);
+}
+void MainTick::reportServoModeNegative(){
+	reportServoMode(REPORT_SERVO_MODE_NEGATIVE);
+}
+void MainTick::reportServoModeStop(){
+	reportServoMode(REPORT_SERVO_MODE_STOP);
+}
+void MainTick::reportServoModeContinue(){
+	reportServoMode(actualServoCommand);
 }
 //==================================================================================================================
 

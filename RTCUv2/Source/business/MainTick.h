@@ -104,16 +104,25 @@ private:
 	static bool reportServoModeIssued;
 	static void reportServoModeDefault();
 	static void reportServoModeHeader(uint8_t *message);
+
 	static void reportServoMode(int32_t servoCommand);
+
+
+	static void reportServoModePositive();
+	static void reportServoModeNegative();
+	static void reportServoModeStop();
+	static void reportServoModeContinue();
 	
+
+	static int32_t actualServoCommand;
 	static const int32_t REPORT_SERVO_MODE_STOP = 0;
 	static const int32_t REPORT_SERVO_MODE_POSITIVE = 1;
-	static const int32_t REPORT_SERVO_MODE_NEGATIVE = 2;
-	
+	static const int32_t REPORT_SERVO_MODE_NEGATIVE = -1;
 	
 	static float servoFrequencyPositive;
 	static float servoFrequencyNegative;
-	
+
+
 
 	//-----------------------------------------------------------
 

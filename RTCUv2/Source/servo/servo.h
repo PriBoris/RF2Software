@@ -22,23 +22,10 @@ public:
 	static const bool POSITIVE_DIRECTION = true;
 	static const bool NEGATIVE_DIRECTION = false;
 
-
-	// static void parkingBrakeON();	
-	// static void parkingBrakeOFF();	
-	// static void moveLeftON();//positive
-	// static void moveLeftOFF();
-	//static void moveRightON();//negative
-	//static void moveRightOFF();
-
 	static void parkingBrake(bool brake);	
 	static void movePositive(bool move);
 	static void moveNegative(bool move);
 	static void brake(bool on);
-
-/*	static void stopON();
-	static void stopOFF();
-*/	
-	//TODO: rename right/left to positive/negative
 
 	static bool validateActualPosition();
 	static bool validateActualPosition(bool direction);

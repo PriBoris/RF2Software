@@ -392,9 +392,13 @@ void MainTick::process(){ //called every 100ms
 					switch(RangeAdjustment::actualButtonID){
 					case RangeAdjustment::BUTTONID_MAIN_MINUS:
 						if (true==Servo::validateActualPosition(Servo::NEGATIVE_DIRECTION)){
+
+							Servo::movePositive(false);
 							Servo::moveNegative(true);
 							Servo::brake(false);
 							setSubmode(PERSONAL_MovingMain);
+							reportServoModeNegative();
+
 							rangeAdjustmentTimeoutCounter = TIMEOUT_RangeAdjusmentMessage;
 						}else{
 							//DebugConsole::pushMessage(" #unable to move further+\0");
@@ -406,8 +410,11 @@ void MainTick::process(){ //called every 100ms
 						if (true==Servo::validateActualPosition(Servo::POSITIVE_DIRECTION)){
 
 							Servo::movePositive(true);
+							Servo::moveNegative(false);
 							Servo::brake(false);
 							setSubmode(PERSONAL_MovingMain);
+							reportServoModePositive();
+
 							rangeAdjustmentTimeoutCounter = TIMEOUT_RangeAdjusmentMessage;
 						}else{
 							//DebugConsole::pushMessage(" #unable to move further-\0");
@@ -476,6 +483,7 @@ void MainTick::process(){ //called every 100ms
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
 			setSubmode(PERSONAL_Waiting);
+			reportServoModeStop();
 
 		}else if (
 			(RangeAdjustment::BUTTONID_MAIN_MINUS==RangeAdjustment::actualButtonID)&&
@@ -486,6 +494,7 @@ void MainTick::process(){ //called every 100ms
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
 			setSubmode(PERSONAL_Waiting);
+			reportServoModeStop();
 
 		}else if ((rangeAdjustmentTimeoutCounter--)==0){
 
@@ -493,6 +502,7 @@ void MainTick::process(){ //called every 100ms
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
 			setSubmode(PERSONAL_Waiting);
+			reportServoModeStop();
 
 		}else{
 
@@ -500,10 +510,13 @@ void MainTick::process(){ //called every 100ms
 			if (message!=NULL){
 				switch(message->tag){
 				case Protocol::TAG_PersonalExit:
+
 					Servo::brake(true);
 					Servo::movePositive(false);
 					Servo::moveNegative(false);
 					setSubmode(WAITING_Waiting);
+					reportServoModeStop();
+
 					break;
 				case Protocol::TAG_PersonalButtonHold:
 
@@ -511,12 +524,14 @@ void MainTick::process(){ //called every 100ms
 
 						rangeAdjustmentTimeoutCounter = TIMEOUT_RangeAdjusmentMessage;
 						//keep moving
+						reportServoModeContinue();
 
 					}else{
 						Servo::brake(true);
 						Servo::movePositive(false);
 						Servo::moveNegative(false);
 						setSubmode(PERSONAL_Waiting);
+						reportServoModeStop();
 					}
 					break;
 
@@ -526,8 +541,12 @@ void MainTick::process(){ //called every 100ms
 					Servo::movePositive(false);
 					Servo::moveNegative(false);
 					setSubmode(PERSONAL_Waiting);
+					reportServoModeStop();
 
 				}
+			}else{
+
+				reportServoModeContinue();				
 			}			
 		}
 
@@ -633,14 +652,25 @@ void MainTick::process(){ //called every 100ms
 		if (PositionTask::checkPosition(PersonalSettings::protocolStruct.positionMainParking)==false){
 
 			if (PositionTask::getDirection(PersonalSettings::protocolStruct.positionMainParking)==Servo::POSITIVE_DIRECTION){
+				Servo::brake(false);
 				Servo::movePositive(true);
-				Servo::brake(false);
+				Servo::moveNegative(false);
+				setSubmode(PARKING_MovingMain);
+
+				reportServoModePositive();
+
+
 			}else{
-				Servo::moveNegative(true);
 				Servo::brake(false);
+				Servo::movePositive(false);
+				Servo::moveNegative(true);
+				setSubmode(PARKING_MovingMain);
+
+				reportServoModeNegative();
+
+
 			}						
 
-			setSubmode(PARKING_MovingMain);
 		}else{
 			setSubmode(PARKING_PreparingAux);
 		}
@@ -671,7 +701,9 @@ void MainTick::process(){ //called every 100ms
 			Servo::moveNegative(false);
 			setSubmode(PARKING_PreparingAux);
 
-			reportServoMode(REPORT_SERVO_MODE_STOP);
+			reportServoModeStop();
+		}else{
+			reportServoModeContinue();
 		}
 
 		processFieldbus();
@@ -763,15 +795,22 @@ void MainTick::process(){ //called every 100ms
 
 			if (PositionTask::getDirection(ForceTestDynamic::getParkingPosition())==Servo::POSITIVE_DIRECTION){
 
+				Servo::brake(false);
 				Servo::movePositive(true);
-				Servo::brake(false);
-			}else{
-				Servo::moveNegative(true);
-				Servo::brake(false);
+				Servo::moveNegative(false);
 
+				setSubmode(FTEST_DYNAMIC_Homing_Moving);
+				reportServoModePositive();
+			}else{
+
+				Servo::brake(false);
+				Servo::movePositive(false);
+				Servo::moveNegative(true);
+
+				setSubmode(FTEST_DYNAMIC_Homing_Moving);
+				reportServoModeNegative();
 			}						
 
-			setSubmode(FTEST_DYNAMIC_Homing_Moving);
 		}else{
 			setSubmode(FTEST_DYNAMIC_Pause);
 		}
@@ -795,6 +834,11 @@ void MainTick::process(){ //called every 100ms
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
 			setSubmode(FTEST_DYNAMIC_Pause);
+			reportServoModeStop();
+
+		}else{
+
+			reportServoModeContinue();
 
 		}
 
@@ -860,16 +904,24 @@ void MainTick::process(){ //called every 100ms
 		if (PositionTask::checkPosition(ForceTestDynamic::getSecondPosition())==false){
 
 			if (PositionTask::getDirection(ForceTestDynamic::getSecondPosition())==Servo::POSITIVE_DIRECTION){
+
 				Servo::movePositive(true);
+				Servo::moveNegative(false);
 				Servo::brake(false);
 
+				setSubmode(FTEST_DYNAMIC_Testing_Moving);
+				reportServoModePositive();
+
 			}else{
+
+				Servo::movePositive(false);
 				Servo::moveNegative(true);
 				Servo::brake(false);
 
+				setSubmode(FTEST_DYNAMIC_Testing_Moving);
+				reportServoModeNegative();
 			}						
 
-			setSubmode(FTEST_DYNAMIC_Testing_Moving);
 		}else{
 			setSubmode(WAITING_Waiting);
 		}
@@ -892,8 +944,13 @@ void MainTick::process(){ //called every 100ms
 			Servo::brake(true);
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
-			setSubmode(WAITING_Waiting);
 
+			setSubmode(WAITING_Waiting);
+			reportServoModeStop();
+
+		}else{
+
+			reportServoModeContinue();
 		}
 
 
@@ -942,21 +999,29 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------FTEST--STATIC----------------------------------
 	case FTEST_STATIC_Homing_Preparing:
 
-
 		if (PositionTask::checkPosition(ForceTestStatic::getTestPosition())==false){
 
 			if (PositionTask::getDirection(ForceTestStatic::getTestPosition())==Servo::POSITIVE_DIRECTION){
+
 				Servo::movePositive(true);
+				Servo::moveNegative(false);
 				Servo::brake(false);
 
+				setSubmode(FTEST_STATIC_Homing_Moving);
+				reportServoModePositive();
+
 			}else{
+
+				Servo::movePositive(false);
 				Servo::moveNegative(true);
 				Servo::brake(false);
 
+				setSubmode(FTEST_STATIC_Homing_Moving);
+				reportServoModeNegative();
 			}						
 
-			setSubmode(FTEST_STATIC_Homing_Moving);
 		}else{
+
 			setSubmode(FTEST_STATIC_Pause);
 		}
 
@@ -966,17 +1031,27 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------FTEST--STATIC----------------------------------
 	case FTEST_STATIC_Homing_Moving:
 
-
 		if (true==RxMessageQueue::cancelMessageReceived()){
+
 			Servo::brake(true);
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
+
 			setSubmode(WAITING_Waiting);
+			reportServoModeStop();
+
 		}else if (PositionTask::checkPosition(ForceTestStatic::getTestPosition())==true){
+
 			Servo::brake(true);
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
+
 			setSubmode(FTEST_STATIC_Pause);
+			reportServoModeStop();
+
+		}else{
+
+			reportServoModeContinue();
 		}
 
 		processFieldbus();
@@ -1108,13 +1183,22 @@ void MainTick::process(){ //called every 100ms
 		if (PositionTask::checkPosition(Excercise::getPositionMainHoming())==false){
 
 			if (PositionTask::getDirection(Excercise::getPositionMainHoming())==Servo::POSITIVE_DIRECTION){
+
+				Servo::moveNegative(false);
 				Servo::movePositive(true);
 				Servo::brake(false);
+
+				setSubmode(EXERCISE_Homing_MovingMain);
+				reportServoModePositive();
 			}else{
+
+				Servo::movePositive(false);
 				Servo::moveNegative(true);
 				Servo::brake(false);
+
+				setSubmode(EXERCISE_Homing_MovingMain);
+				reportServoModeNegative();
 			}						
-			setSubmode(EXERCISE_Homing_MovingMain);
 		}else{
 			setSubmode(EXERCISE_Pause);
 		}
@@ -1130,6 +1214,7 @@ void MainTick::process(){ //called every 100ms
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
 			setSubmode(WAITING_Waiting);
+			reportServoModeStop();
 
 		}else if (PositionTask::checkPosition(Excercise::getPositionMainHoming())==true){
 
@@ -1137,6 +1222,10 @@ void MainTick::process(){ //called every 100ms
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
 			setSubmode(EXERCISE_Pause);
+			reportServoModeStop();
+		}else{
+
+			reportServoModeContinue();
 		}
 
 		processFieldbus();
@@ -1153,7 +1242,6 @@ void MainTick::process(){ //called every 100ms
 
 			Excercise::recalculateServoFrequency();
 			setSubmode(EXERCISE_SettingPositiveSpeed);
-
 
 		}
 
@@ -1183,11 +1271,13 @@ void MainTick::process(){ //called every 100ms
 		}else{
 			if (Fieldbus::checkSetFrequencyResponse(false,Excercise::servoFrequencyNegative)==true){
 
-
 				Excercise::repetitionStart();
 				setSubmode(EXERCISE_FirstMovement);
+
 			}else{
+
 				//TODO: countdown is necessary here
+
 			}
 		}
 		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Excercise::servoFrequencyNegative));
@@ -1197,21 +1287,33 @@ void MainTick::process(){ //called every 100ms
 	case EXERCISE_FirstMovement:
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
+
 			Servo::brake(true);
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
+
 			setSubmode(WAITING_Waiting);
+			reportServoModeStop();
 
 		}else if (PositionTask::checkPosition(Excercise::getPositionMainFirstMovement(),Excercise::getSpeedFirstMovement())==false){
 
 			if (PositionTask::getDirection(Excercise::getPositionMainFirstMovement())==Servo::NEGATIVE_DIRECTION){
+
 				Servo::moveNegative(true);
 				Servo::movePositive(false);
 				Servo::brake(false);
+
+				reportServoModeNegative();
+
+
 			}else{
+
 				Servo::movePositive(true);
 				Servo::moveNegative(false);
 				Servo::brake(false);
+
+				reportServoModePositive();
+
 			}						
 
 		}else if (Excercise::firstInterruptionEnabled()){
@@ -1219,7 +1321,9 @@ void MainTick::process(){ //called every 100ms
 			Servo::brake(true);
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
+
 			setSubmode(EXERCISE_FirstInterruption);
+			reportServoModeStop();
 			Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
 
 		}else{
@@ -1230,6 +1334,7 @@ void MainTick::process(){ //called every 100ms
 			Servo::moveNegative(false);
 
 			setSubmode(EXERCISE_SecondMovement);
+			reportServoModeStop();
 			Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
 
 		}
@@ -1246,8 +1351,12 @@ void MainTick::process(){ //called every 100ms
 			Servo::brake(true);
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
+
 			setSubmode(WAITING_Waiting);
+			reportServoModeStop();
+
 		}else if (Excercise::isFirstInterruptionDone()==true){
+
 			setSubmode(EXERCISE_SecondMovement);
 
 		}
@@ -1260,20 +1369,33 @@ void MainTick::process(){ //called every 100ms
 
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
+
 			Servo::brake(true);
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
+
 			setSubmode(WAITING_Waiting);
+			reportServoModeStop();
+
+
 		}else if (PositionTask::checkPosition(Excercise::getPositionMainSecondMovement(),Excercise::getSpeedSecondMovement())==false){
 
 			if (PositionTask::getDirection(Excercise::getPositionMainSecondMovement())==Servo::NEGATIVE_DIRECTION){
+
 				Servo::moveNegative(true);
 				Servo::movePositive(false);
 				Servo::brake(false);
+
+				reportServoModeNegative();
+
 			}else{
+
 				Servo::movePositive(true);
 				Servo::moveNegative(false);
 				Servo::brake(false);
+
+				reportServoModePositive();
+
 			}						
 
 		}else if (Excercise::secondInterruptionEnabled()){
@@ -1281,7 +1403,9 @@ void MainTick::process(){ //called every 100ms
 			Servo::brake(true);
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
+
 			setSubmode(EXERCISE_SecondInterruption);
+			reportServoModeStop();
 			Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
 
 		}else{
@@ -1292,11 +1416,13 @@ void MainTick::process(){ //called every 100ms
 				Servo::brake(true);
 				Servo::movePositive(false);
 				Servo::moveNegative(false);
+
 				if (Excercise::isExcerciseDone()==true){
 					setSubmode(WAITING_Waiting);
 				}else{
 					setSubmode(EXERCISE_StartingSet);
 				}
+				reportServoModeStop();
 
 			}else{
 
@@ -1326,7 +1452,10 @@ void MainTick::process(){ //called every 100ms
 			Servo::brake(true);
 			Servo::movePositive(false);
 			Servo::moveNegative(false);
+
 			setSubmode(WAITING_Waiting);
+			reportServoModeStop();
+
 		}else if (Excercise::isSecondInterruptionDone()==true){
 			Excercise::repetitionDone();
 			if (Excercise::isSetDone()==true){
@@ -1334,15 +1463,17 @@ void MainTick::process(){ //called every 100ms
 				Servo::brake(true);
 				Servo::movePositive(false);
 				Servo::moveNegative(false);
+
 				if (Excercise::isExcerciseDone()==true){
 					setSubmode(WAITING_Waiting);
 				}else{
 					setSubmode(EXERCISE_StartingSet);
 				}
+				reportServoModeStop();
 
 			}else{			
 				Excercise::repetitionStart();
-				setSubmode(EXERCISE_FirstMovement);
+				setSubmode(EXERCISE_FirstMovement);	
 			}
 		}
 

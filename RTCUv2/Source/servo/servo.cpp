@@ -11,14 +11,7 @@ const float Servo::SECONDS_PER_ROTATION_AT_1HZ = 249.4623656f;
 const float Servo::MIN_FREQUENCY = 2.0f;
 const float Servo::MAX_FREQUENCY = 30.0f;//50.0f;
 
-
-/*void Servo::parkingBrakeOFF(){
-	GPIOB->BSRRL = (1<<2);
-}	
-void Servo::parkingBrakeON(){
-	GPIOB->BSRRH = (1<<2);
-}
-*/
+//==================================================================================================================
 void Servo::parkingBrake(bool brake){
 	if (brake==false){
 		// GPIOB->BSRRL = (1<<2);
@@ -28,17 +21,7 @@ void Servo::parkingBrake(bool brake){
 		GPIOD->BSRRH = (1<<14);
 	}
 }
-
-
-
-
-// void Servo::moveLeftON(){
-// 	GPIOE->BSRRL = (1<<3);
-// }
-// void Servo::moveLeftOFF(){
-// 	GPIOE->BSRRH = (1<<3);
-// }
-
+//==================================================================================================================
 void Servo::movePositive(bool move){
 	if (move==false){
 		GPIOE->BSRRH = (1<<3);
@@ -46,15 +29,7 @@ void Servo::movePositive(bool move){
 		GPIOE->BSRRL = (1<<3);
 	}
 }
-
-
-// void Servo::moveRightON(){
-// 	GPIOE->BSRRL = (1<<4);
-// }
-// void Servo::moveRightOFF(){
-// 	GPIOE->BSRRH = (1<<4);
-// }
-
+//==================================================================================================================
 void Servo::moveNegative(bool move){
 	if (move==false){
 		GPIOE->BSRRH = (1<<4);
@@ -62,27 +37,15 @@ void Servo::moveNegative(bool move){
 		GPIOE->BSRRL = (1<<4);
 	}
 }
-
-
-
-/*void Servo::stopON(){
-	GPIOE->BSRRL = (1<<1);
-}
-void Servo::stopOFF(){
-	GPIOE->BSRRH = (1<<1);
-}
-*/
+//==================================================================================================================
 void Servo::brake(bool on){
 	if (on==false){
 		GPIOE->BSRRH = (1<<1);
 	}else{
 		GPIOE->BSRRL = (1<<1);
 	}
-
 }
-
-
-
+//==================================================================================================================
 bool Servo::validateActualPosition(){
 
 	int32_t encoderActualValue = Encoder::getValue();
@@ -95,6 +58,7 @@ bool Servo::validateActualPosition(){
 	}
 
 }
+//==================================================================================================================
 bool Servo::validateActualPosition(bool direction){
 
 	int32_t encoderActualValue = Encoder::getValue();

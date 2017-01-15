@@ -163,20 +163,23 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
             lblServoCommand->setText("");
         }else if (value.length()==26){
             qint32 servoCommand = TLV::getInt32(value,22);
+            QString servoCommandStr;
             switch(servoCommand){
             default:
-                lblServoCommand->setText("???");
+                servoCommandStr = QString::number(servoCommand) + "?";
                 break;
             case 0:
-                lblServoCommand->setText("STOP");
+                servoCommandStr = "STOP";
                 break;
             case 1:
-                lblServoCommand->setText(">>>>");
+                servoCommandStr = ">>>>";
                 break;
             case -1:
-                lblServoCommand->setText("<<<<");
+                servoCommandStr = "<<<<";
                 break;
             }
+            lblServoCommand->setText("COMMAND:"+servoCommandStr);
+            (reportLogger->stream) << "COMMAND:" << servoCommandStr <<";";
         }else{
             lblServoCommand->setText("");
         }
