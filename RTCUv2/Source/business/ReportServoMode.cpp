@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "hmi/diagnostics.h"
+#include "servo/encoder.h"
 
 
 bool MainTick::reportServoModeIssued = false;
@@ -44,6 +45,15 @@ void MainTick::reportServoModeHeader(uint8_t *message){
 	memcpy(&message[14],&servoFrequencyPositive,sizeof(servoFrequencyPositive));
 	memcpy(&message[18],&servoFrequencyNegative,sizeof(servoFrequencyNegative));
 
+	{
+		int32_t encoderValue = Encoder::getValue();
+		memcpy(
+			&message[22],
+			&encoderValue,
+			sizeof(int32_t)
+			);
+	}
+
 }
 //==================================================================================================================
 void MainTick::reportServoMode(int32_t servoCommand){
@@ -52,7 +62,7 @@ void MainTick::reportServoMode(int32_t servoCommand){
 	memset(message,0,sizeof(message));
 	reportServoModeHeader(message);
 
-	memcpy(&message[22],&servoCommand,sizeof(servoCommand));
+	memcpy(&message[26],&servoCommand,sizeof(servoCommand));
 	actualServoCommand = servoCommand;
 
 	

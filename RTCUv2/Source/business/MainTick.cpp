@@ -545,7 +545,6 @@ void MainTick::process(){ //called every 100ms
 
 				}
 			}else{
-
 				reportServoModeContinue();				
 			}			
 		}
@@ -1295,7 +1294,12 @@ void MainTick::process(){ //called every 100ms
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-		}else if (PositionTask::checkPosition(Excercise::getPositionMainFirstMovement(),Excercise::getSpeedFirstMovement())==false){
+		}else if (
+			PositionTask::checkPosition(
+				Excercise::getPositionMainFirstMovement(),
+				Excercise::getSpeedFirstMovement()
+				)==false
+			){
 
 			if (PositionTask::getDirection(Excercise::getPositionMainFirstMovement())==Servo::NEGATIVE_DIRECTION){
 
@@ -1378,7 +1382,12 @@ void MainTick::process(){ //called every 100ms
 			reportServoModeStop();
 
 
-		}else if (PositionTask::checkPosition(Excercise::getPositionMainSecondMovement(),Excercise::getSpeedSecondMovement())==false){
+		}else if (
+			PositionTask::checkPosition(
+				Excercise::getPositionMainSecondMovement(),
+				Excercise::getSpeedSecondMovement()
+				)==false
+			){
 
 			if (PositionTask::getDirection(Excercise::getPositionMainSecondMovement())==Servo::NEGATIVE_DIRECTION){
 
@@ -1431,8 +1440,6 @@ void MainTick::process(){ //called every 100ms
 				Servo::movePositive(false);
 				Servo::moveNegative(false);
 
-
-
 				Excercise::repetitionStart();
 				setSubmode(EXERCISE_FirstMovement);
 			}
@@ -1449,6 +1456,7 @@ void MainTick::process(){ //called every 100ms
 	case EXERCISE_SecondInterruption:
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
+			
 			Servo::brake(true);
 			Servo::movePositive(false);
 			Servo::moveNegative(false);

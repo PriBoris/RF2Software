@@ -254,6 +254,7 @@ private:
 		sizeof(NV::RealTimeClock::TCurrentDateTime)+
 		4*sizeof(uint8_t)+
 		2*sizeof(float)+
+		1*sizeof(int32_t)+
 		0;
 
 	static const uint16_t MSGLEN_ReportServoMode = 
@@ -261,6 +262,7 @@ private:
 		sizeof(NV::RealTimeClock::TCurrentDateTime)+
 		4*sizeof(uint8_t)+
 		2*sizeof(float)+
+		1*sizeof(int32_t)+
 		1*sizeof(int32_t)+
 		0;
 		

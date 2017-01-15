@@ -19,8 +19,8 @@
 #include "qcustomplot.h"
 
 
-class WidgetMode : public QWidget
-{
+class WidgetMode : public QWidget{
+
     Q_OBJECT
 
     ReportLogger *reportLogger;
@@ -77,6 +77,8 @@ class WidgetMode : public QWidget
     double getMax(QVector<double> &data);
     double getMin(QVector<double> &data);
     double plotTime;
+
+
 
 
 

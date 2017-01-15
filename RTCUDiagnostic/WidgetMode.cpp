@@ -202,6 +202,7 @@ WidgetMode::WidgetMode(
         plotForceVsTime->graph(0)->setLineStyle(QCPGraph::lsNone);
         plotForceVsTime->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
 
+
         btnPlotForceReset = new QPushButton("clear plot");btnPlotForceReset->setFixedWidth(300);
         btnPlotForceReset->setFont(QFont("Verdana",10,QFont::Normal,true));
         plotTime = 0;
@@ -635,7 +636,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                         plotForceVsTime->yAxis->setRange(getMin(plotY), getMax(plotY));
                         plotForceVsTime->graph(0)->setData(plotT, plotY);
                         plotForceVsTime->replot();
-                        
                     }
 
                     break;
@@ -1041,7 +1041,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                         plotForceVsTime->yAxis->setRange(getMin(plotY), getMax(plotY));
                         plotForceVsTime->graph(0)->setData(plotT, plotY);
                         plotForceVsTime->replot();
-
                     }
 
 

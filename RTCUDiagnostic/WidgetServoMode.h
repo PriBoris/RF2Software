@@ -9,6 +9,8 @@
 #include "TLV.h"
 #include "ReportLogger.h"
 
+#include "qcustomplot.h"
+
 
 class WidgetServoMode : public QWidget{
     Q_OBJECT
@@ -21,10 +23,16 @@ class WidgetServoMode : public QWidget{
 
     QLabel *lblServoFrequencyPositive;
     QLabel *lblServoFrequencyNegative;
+    QLabel *lblPosition;
 
     QLabel *lblServoCommand;
 
-
+    QCustomPlot* plotPositionVsTime;
+    QVector<double> plotPositionData,plotTimeData;
+    double plotTime;
+    double getMaxPosition(QVector<double> &positionData, double defaultPosition);
+    double getMinPosition(QVector<double> &positionData, double defaultPosition);
+ 
 
     QVBoxLayout *loMain;
 

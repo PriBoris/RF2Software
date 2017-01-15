@@ -1,3 +1,5 @@
 *.suo
 *.sublime-workspace
 ~*.docx
+
+Docs/~*.tmp

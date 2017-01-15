@@ -56,11 +56,29 @@ WidgetServoMode::WidgetServoMode(
     }
 
     {
+        lblPosition = new QLabel("lblPosition");
+        lblPosition->setFont(QFont("Verdana",10,QFont::Normal,false));
+    }
+
+    {
         lblServoCommand = new QLabel("");
         lblServoCommand->setFont(QFont("Verdana",10,QFont::Bold,false));
     }
 
+    {
+        plotPositionVsTime = new QCustomPlot;
+        plotPositionVsTime->addGraph();
+        plotPositionVsTime->graph(0)->setPen(QPen(Qt::red));
+        plotPositionVsTime->yAxis->setVisible(true);
+        plotPositionVsTime->setFixedSize(900,300);
+        plotPositionVsTime->xAxis->setRange(0, 1);
+        plotPositionVsTime->yAxis->setLabel("position []");
+        plotPositionVsTime->xAxis->setLabel("time [s]");
+        //plotPositionVsTime->graph(0)->setLineStyle(QCPGraph::lsNone);
+        //plotPositionVsTime->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
 
+        plotTime = 0.0;
+    }
 
     loMain = new QVBoxLayout;
     loMain->addWidget(lblRxMessageCounter);
@@ -70,7 +88,9 @@ WidgetServoMode::WidgetServoMode(
     loMain->addWidget(lblSubmode);
     loMain->addWidget(lblServoFrequencyPositive);
     loMain->addWidget(lblServoFrequencyNegative);
+    loMain->addWidget(lblPosition);
     loMain->addWidget(lblServoCommand);
+    loMain->addWidget(plotPositionVsTime);
     loMain->addStretch(1);
 
     this->setLayout(loMain);
@@ -159,10 +179,41 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
  
         }
 
-        if (value.length()==22){
+        {
+            qint32 position = TLV::getInt32(value,22);
+            QString positionStr = QString::number(position);
+            lblPosition->setText("Position: "+positionStr);
+            (reportLogger->stream) << positionStr << ";";
+        }
+
+        {
+            double position = (double)TLV::getInt32(value,22);
+            plotPositionData.append(position);
+            plotTime += 0.1;
+            plotTimeData.append(plotTime);
+
+            double maxPosition = getMaxPosition(plotPositionData,1000.0)+1.0;
+            double minPosition = getMinPosition(plotPositionData,0.0)-1.0;
+            double maxTime = getMaxPosition(plotTimeData,1.0);
+            double minTime = getMinPosition(plotTimeData,0.0);
+
+            plotPositionVsTime->xAxis->setRange(minTime, maxTime);
+            plotPositionVsTime->yAxis->setRange(minPosition, maxPosition);
+            plotPositionVsTime->graph(0)->setData(plotTimeData, plotPositionData);
+            plotPositionVsTime->replot();
+
+            if (plotPositionData.length()>(10*60*2)){
+                plotPositionData.pop_front();
+                plotTimeData.pop_front();
+            }
+
+        }
+
+
+        if (value.length()==26){
             lblServoCommand->setText("");
-        }else if (value.length()==26){
-            qint32 servoCommand = TLV::getInt32(value,22);
+        }else if (value.length()==30){
+            qint32 servoCommand = TLV::getInt32(value,26);
             QString servoCommandStr;
             switch(servoCommand){
             default:
@@ -192,5 +243,35 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
 
 }
 //=================================================================================================
+double WidgetServoMode::getMaxPosition(QVector<double> &positionData, double defaultPosition){
+    if (positionData.length()==0){
+        return defaultPosition;
+    }else{
+        double result = positionData.at(0);
+        for(int i=1;i<positionData.length();i++){
+            if (positionData.at(i)>result){
+                result = positionData.at(i);
+            }
+        }
+        return result;
+   }
 
+}
+//=================================================================================================
+double WidgetServoMode::getMinPosition(QVector<double> &positionData, double defaultPosition){
+    if (positionData.length()==0){
+        return defaultPosition;
+    }else{
+        double result = positionData.at(0);
+        for(int i=1;i<positionData.length();i++){
+            if (positionData.at(i)<result){
+                result = positionData.at(i);
+            }
+        }
+        return result;
+    }
+
+}
+//=================================================================================================
+ 
 
