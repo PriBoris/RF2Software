@@ -121,7 +121,12 @@ private:
 	
 	static float servoFrequencyPositive;
 	static float servoFrequencyNegative;
+	//-----------------------------------------------------------
 
+	static uint32_t excerciseFirstMovementTickCounter;
+	static uint32_t excerciseSecondMovementTickCounter;
+	static bool excerciseFirstMovementDirection;
+	static bool excerciseSecondMovementDirection;
 
 
 	//-----------------------------------------------------------

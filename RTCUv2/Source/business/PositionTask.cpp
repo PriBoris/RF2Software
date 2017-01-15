@@ -28,11 +28,11 @@ bool PositionTask::checkPosition(int32_t taskPosition){
 
 }
 //=================================================================================================
-bool PositionTask::checkPosition(int32_t taskPosition,int32_t taskSpeed){
+/*bool PositionTask::checkPosition(int32_t taskPosition,int32_t taskSpeed){
 
 	return checkPosition(taskPosition);
 
-/*
+
 	int32_t actualPosition = Encoder::getValue();
 	
 	int32_t permissibleError;
@@ -59,10 +59,10 @@ bool PositionTask::checkPosition(int32_t taskPosition,int32_t taskSpeed){
 	}else{
 		return true;// [actualPosition] is close to [parkingPosition]
 	}
-*/
 
 
-}
+
+}*/
 //=================================================================================================
 bool PositionTask::getDirection(int32_t taskPosition){
 

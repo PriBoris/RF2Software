@@ -74,8 +74,6 @@ WidgetServoMode::WidgetServoMode(
         plotPositionVsTime->xAxis->setRange(0, 1);
         plotPositionVsTime->yAxis->setLabel("position []");
         plotPositionVsTime->xAxis->setLabel("time [s]");
-        //plotPositionVsTime->graph(0)->setLineStyle(QCPGraph::lsNone);
-        //plotPositionVsTime->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
 
         plotTime = 0.0;
     }

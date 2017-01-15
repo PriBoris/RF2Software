@@ -9,7 +9,7 @@ class PositionTask{
 public:
 
 	static bool checkPosition(int32_t taskPosition);
-	static bool checkPosition(int32_t taskPosition,int32_t taskSpeed);
+	//static bool checkPosition(int32_t taskPosition,int32_t taskSpeed);
 
 
 	static bool getDirection(int32_t taskPosition);
