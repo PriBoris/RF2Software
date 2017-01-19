@@ -184,13 +184,13 @@ WidgetExcerciseSettings::WidgetExcerciseSettings(
         loReadTable->addWidget(&lblSpeedBA[i],5,1+i);
         loReadTable->addWidget(&lblRepsCount[i],6,1+i);
 
-        lblPauseTime[i].setText("...");
-        lblFirstInterruptionTime[i].setText("...");
-        lblSecondInterruptionTime[i].setText("...");
-        lblStartPoint[i].setText("...");
-        lblSpeedAB[i].setText("...");
-        lblSpeedBA[i].setText("...");
-        lblRepsCount[i].setText("...");
+        lblPauseTime[i].setText("unknown");
+        lblFirstInterruptionTime[i].setText("unknown");
+        lblSecondInterruptionTime[i].setText("unknown");
+        lblStartPoint[i].setText("unknown");
+        lblSpeedAB[i].setText("unknown");
+        lblSpeedBA[i].setText("unknown");
+        lblRepsCount[i].setText("unknown");
         lblPauseTime[i].setStyleSheet("border: 1px solid");
         lblFirstInterruptionTime[i].setStyleSheet("border: 1px solid");
         lblSecondInterruptionTime[i].setStyleSheet("border: 1px solid");
@@ -287,11 +287,10 @@ void WidgetExcerciseSettings::slotWriteSettings()
     }
 }
 //============================================================================================================
+void WidgetExcerciseSettings::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
-void WidgetExcerciseSettings::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value)
-{
-    if (tag==TLV::TAG_ReportIsokineticExcerciseSettings)
-    {
+    if (tag==TLV::TAG_ReportIsokineticExcerciseSettings){
+        
         rxMessageCounter++;
         lblRxMessageCounter->setText(
                     "Сообщений: "+QString::number(rxMessageCounter)+" "
@@ -303,8 +302,8 @@ void WidgetExcerciseSettings::newMessageReceived(quint8 tag,quint32 msgID,QByteA
         qint32 setCount = value.length()/sizeof(IsokineticSetSettings);
         wgtSetCount->setReadValue(setCount);
 
-        for(int i=0;i<MAX_SET_COUNT;i++)
-        {
+        for(int i=0;i<MAX_SET_COUNT;i++){
+
             lblPauseTime[i].setText("---");
             lblFirstInterruptionTime[i].setText("---");
             lblSecondInterruptionTime[i].setText("---");
@@ -316,8 +315,8 @@ void WidgetExcerciseSettings::newMessageReceived(quint8 tag,quint32 msgID,QByteA
 
         IsokineticSetSettings deviceSetSettings[MAX_SET_COUNT];
         memcpy(deviceSetSettings,value.data(),setCount*sizeof(IsokineticSetSettings));
-        for(int setIndex=0;setIndex<setCount;setIndex++)
-        {
+        for(int setIndex=0;setIndex<setCount;setIndex++){
+
             lblPauseTime[setIndex].setText(QString::number(deviceSetSettings[setIndex].pauseTime));
             lblFirstInterruptionTime[setIndex].setText(QString::number(deviceSetSettings[setIndex].firstInterruptionTime));
             lblSecondInterruptionTime[setIndex].setText(QString::number(deviceSetSettings[setIndex].secondInterruptionTime));

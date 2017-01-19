@@ -17,6 +17,7 @@
 #include "WidgetMachineSettings.h"
 #include "WidgetMachineSettingsExtended.h"
 #include "WidgetExcerciseSettings.h"
+#include "WidgetGenericSetSettings.h"
 #include "WidgetNFC.h"
 #include "WidgetConsole.h"
 
@@ -33,6 +34,7 @@ class WidgetMain : public QWidget{
     WidgetMachineSettings *widgetMachineSettings;
     WidgetMachineSettingsExtended *widgetMachineSettingsExtended;
     WidgetExcerciseSettings *widgetExcerciseSettings;
+    WidgetGenericSetSettings *widgetGenericSetSettings;
     WidgetNFC *widgetNFC;
     WidgetConsole *widgetConsole;
 
@@ -41,6 +43,7 @@ class WidgetMain : public QWidget{
     QPushButton *btnTabPersonalSettings;
     QPushButton *btnTabMachineSettings;
     QPushButton *btnTabExcerciseSettings;
+    QPushButton *btnTabGenericSetSettings;
     QPushButton *btnTabNFC;
     QPushButton *btnTabConsole;
     QHBoxLayout *loTabs;
@@ -61,8 +64,9 @@ class WidgetMain : public QWidget{
     static const int TAB_MachineSettings=1;
     static const int TAB_PersonalSettings=2;
     static const int TAB_ExcerciseSettings=3;
-    static const int TAB_NFC=4;
-    static const int TAB_CONSOLE=5;
+    static const int TAB_GenericSetSettings=4;
+    static const int TAB_NFC=5;
+    static const int TAB_CONSOLE=6;
 
     void saveGeometry();
     void restoreGeometry();
