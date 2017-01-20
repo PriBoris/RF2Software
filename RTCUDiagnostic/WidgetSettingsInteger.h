@@ -6,9 +6,7 @@
 #include <QLineEdit>
 #include <QBoxLayout>
 #include <QValidator>
-
 #include <QSettings>
-#include <QDebug>
 
 
 
@@ -40,7 +38,7 @@ public:
 
     void setReadValue(qint32 newValue);
 
-    void clearReadValue();
+    //void clearReadValue();
 
     void setUnknownReadValue();
 
@@ -49,6 +47,8 @@ public:
     void setValidator(QValidator *validator);
 
 signals:
+
+    void signalEditingFinished();
 
 public slots:
     void editingFinished();

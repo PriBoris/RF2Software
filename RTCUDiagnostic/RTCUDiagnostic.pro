@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     RTCU.cpp \
     TLV.cpp \
     ReportLogger.cpp \
-    WidgetGenericSetSettings.cpp
+    WidgetGenericSetSettings.cpp \
+    WidgetGenericMoveSettings.cpp
 
 HEADERS  += \
     serialporttransceiver.h \
@@ -60,4 +61,5 @@ HEADERS  += \
     RTCU.h \
     TLV.h \
     ReportLogger.h \
-    WidgetGenericSetSettings.h
+    WidgetGenericSetSettings.h \
+    WidgetGenericMoveSettings.h

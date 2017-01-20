@@ -35,7 +35,7 @@ public:
             );
     float getWriteValue();
     void setReadValue(float newValue);
-    void clearReadValue();
+    //void clearReadValue();
     void setUnknownReadValue();
     void setValidator(QValidator *validator);
 

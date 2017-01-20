@@ -264,11 +264,12 @@ void WidgetExcerciseSettings::slotWriteSettings()
         ;
 
 
-    if (serialPortTransceiver_->isPortOK()==true)
-    {
+    if (serialPortTransceiver_->isPortOK()==true){
+
         qint32 setCount = wgtSetCount->getWriteValue();
-        if ((setCount>0)&&(setCount<=MAX_SET_COUNT))
-        {
+
+        if ((setCount>0)&&(setCount<=MAX_SET_COUNT)){
+
             QByteArray valueArray;
             valueArray.append((char*)setSettings,setCount*sizeof(IsokineticSetSettings));
             TLVWriter tlv(TLV::TAG_LoadIsokineticExcerciseSettings,valueArray);

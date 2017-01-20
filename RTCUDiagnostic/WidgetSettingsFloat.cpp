@@ -53,9 +53,9 @@ void WidgetSettingsFloat::setReadValue(float newValue) {
     lblReadValue->setText(QString::number(value));
 };
 //=================================================================================================
-void WidgetSettingsFloat::clearReadValue() {
-    lblReadValue->setText("unknown");
-}
+//void WidgetSettingsFloat::clearReadValue() {
+//    lblReadValue->setText("unknown");
+//}
 //=================================================================================================
 void WidgetSettingsFloat::setUnknownReadValue() {
     lblReadValue->setText("unknown");
