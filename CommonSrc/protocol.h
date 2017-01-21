@@ -112,7 +112,7 @@ private:
 		static const uint8_t TAG_ReportMachineSettings = 0x03;
 		static const uint8_t TAG_RfidProximity = 0x04;
 		static const uint8_t TAG_RtcuDebugMessage = 0x05;
-		static const uint8_t TAG_ReportGenericExcerciseSettings = 0x06;
+		static const uint8_t TAG_ReportGenericSetSettings = 0x06;
 		static const uint8_t TAG_ReportMachineSettingsExtended = 0x07;
 		static const uint8_t TAG_ReportServoMode = 0x08;
 		
@@ -133,8 +133,8 @@ private:
 		static const uint8_t TAG_ResetError = 0x4D;
 		static const uint8_t TAG_Cancel = 0x4E;
 		static const uint8_t TAG_TestStatic = 0x4F;
-		static const uint8_t TAG_LoadGenericExcerciseSettings = 0x50;
-		static const uint8_t TAG_GenericExcerciseIsokinetic = 0x51;
+		static const uint8_t TAG_LoadGenericSetSettings = 0x50;
+		static const uint8_t TAG_GenericSet = 0x51;
 		static const uint8_t TAG_LoadMachineSettingsExtended = 0x52;
 
 

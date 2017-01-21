@@ -33,6 +33,7 @@
 #include "business/MachineSettings.h"
 #include "business/PersonalSettings.h"
 #include "business/ExcerciseSettings.h"
+#include "business/GenericSetSettings.h"
 
 
 
@@ -82,6 +83,7 @@ int main(void){
 	MachineSettings::init();
 	PersonalSettings::init();
 	ExcerciseSettings::init();
+	GenericSetSettings::init();
 
 	Heartbeat::startMainTick();
 
