@@ -38,6 +38,8 @@ public:
 
 private:
 
+	static uint32_t getSetSizeBytes();
+
 };
 
 

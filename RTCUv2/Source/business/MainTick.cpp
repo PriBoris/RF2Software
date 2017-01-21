@@ -9,6 +9,7 @@
 #include "business/MachineSettings.h"
 #include "business/PersonalSettings.h"
 #include "business/ExcerciseSettings.h"
+#include "business/GenericSetSettings.h"
 #include "business/RangeAdjustment.h"
 #include "business/Parking.h"
 #include "business/ForceTestDynamic.h"
@@ -251,6 +252,7 @@ void MainTick::process(){ //called every 100ms
 				MachineSettings::report();
 				PersonalSettings::report();
 				ExcerciseSettings::report();
+				GenericSetSettings::report();
 				reportSettingsCounter = 0;
 			}
 		}
