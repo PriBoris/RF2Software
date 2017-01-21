@@ -76,7 +76,7 @@ qint32 WidgetGenericMoveSettings::getDestinationPositionWriteValue(){
 }
 //=================================================================================================
 qint32 WidgetGenericMoveSettings::getSpeedWriteValue(){
-	return edtWriteValue1->text().toInt();
+	return edtWriteValue2->text().toInt();
 }
 //=================================================================================================
 void WidgetGenericMoveSettings::setReadValue(qint32 newDestinationPositionValue, qint32 newSpeedValue){

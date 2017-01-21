@@ -42,7 +42,7 @@ public:
 
 private:
 
-	static bool checkSet(Set *set);
+	static bool checkSet(Set &setToCheck);
 
 
 };

@@ -267,6 +267,9 @@ void MainTick::process(){ //called every 100ms
 				case Protocol::TAG_LoadExcerciseSettings:
 					ExcerciseSettings::load(message);
 					break;
+				case Protocol::TAG_LoadGenericSetSettings:
+					GenericSetSettings::load(message);
+					break;
 				case Protocol::TAG_LoadMachineSettingsExtended:
 					MachineSettings::load(message);
 					break;

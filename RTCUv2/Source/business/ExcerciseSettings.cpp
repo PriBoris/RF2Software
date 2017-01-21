@@ -70,7 +70,7 @@ void ExcerciseSettings::load(RxMessage *message){
 					&(message->value[s*sizeof(Set)]),
 					sizeof(Set)
 					);
-				if (checkSet(&newSet)==true){
+				if (checkSet(newSet)==true){
 					newSetCountChecked++;
 				}
 			}
@@ -104,7 +104,7 @@ void ExcerciseSettings::load(RxMessage *message){
 	
 }
 //=================================================================================================
-bool ExcerciseSettings::checkSet(Set *set){
+bool ExcerciseSettings::checkSet(Set &setToCheck){
 
 
 

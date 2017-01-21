@@ -90,8 +90,72 @@ void WidgetGenericSetSettings::newMessageReceived(quint8 tag,quint32 msgID,QByte
 					+" байт)"
 					);
 
+		if (checkMessageLength(value.length())==true){
+
+
+			Set newSet;
+			memcpy(&newSet,value.data(),value.length());
+
+			if (newSet.moveCount == getMoveCountFromLength(value.length())){
+
+				wgtPause1->setReadValue(newSet.pause1);
+				wgtPause2->setReadValue(newSet.pause2);
+				wgtStartPositionRel->setReadValue(newSet.startPosition);
+				wgtMoveCount->setReadValue(newSet.moveCount);
+
+                for(int move=0;move<MOVE_COUNT_MAX;move++){
+
+                    if (move<newSet.moveCount){
+                        wgtsMove.at(move)->setReadValue(
+                        	newSet.moves[move].destinationPosition,
+                        	newSet.moves[move].speed
+                        	);
+                    }else{
+                        wgtsMove.at(move)->setUnknownReadValues();
+                    }
+                }
+			}else{
+				//bad message
+			}
+
+		}else{
+			//bad message
+		}
+
+
+
+
+
 
 	}
+
+}
+
+//=================================================================================================
+bool WidgetGenericSetSettings::checkMessageLength(int messageLength){
+
+	const int moveLength = sizeof(qint32)*2;
+	const int headerLength = sizeof(qint32)*4;
+
+	int minLength = headerLength + 1*moveLength;
+	int maxLength = headerLength + MOVE_COUNT_MAX*moveLength;
+
+	if (messageLength<minLength){
+		return false;
+	}else if (messageLength>maxLength){
+		return false;
+	}else{
+        return ((messageLength-headerLength)%moveLength)==0;
+	}
+
+}
+//=================================================================================================
+qint32 WidgetGenericSetSettings::getMoveCountFromLength(int messageLength){
+
+	const int moveLength = sizeof(qint32)*2;
+	const int headerLength = sizeof(qint32)*4;
+
+	return (messageLength - headerLength) / moveLength;
 
 }
 //=================================================================================================

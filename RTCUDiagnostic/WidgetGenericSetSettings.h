@@ -46,6 +46,24 @@ class WidgetGenericSetSettings : public QWidget{
 	SerialPortTransceiver *serialPortTransceiver_;
 	quint32 rxMessageCounter;
 
+	bool checkMessageLength(int messageLength);
+	qint32 getMoveCountFromLength(int messageLength);
+
+	struct Move{
+		qint32 destinationPosition;
+		qint32 speed;
+	};
+
+	struct Set{
+		qint32 pause1;
+		qint32 pause2;
+		qint32 startPosition;
+		qint32 moveCount;
+		Move moves[MOVE_COUNT_MAX];
+	};
+
+
+
 public:
 	explicit WidgetGenericSetSettings(
 		SerialPortTransceiver *serialPortTransceiver,

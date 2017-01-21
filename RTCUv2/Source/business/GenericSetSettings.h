@@ -16,6 +16,7 @@ public:
 		int32_t speed;
 	};
 
+	static const uint32_t MOVE_COUNT_MIN = (1);
 	static const uint32_t MOVE_COUNT_MAX = (50);
 
 	struct Set{
@@ -27,6 +28,7 @@ public:
 	};
 
 	static Set set;	
+	static Set newSet;
 
 	static void init();	
 	static void report();
@@ -39,6 +41,10 @@ public:
 private:
 
 	static uint32_t getSetSizeBytes();
+	static bool checkSetSizeBytes(uint32_t sizeBytes);
+	static bool checkSet(Set &setToCheck);
+
+
 
 };
 
