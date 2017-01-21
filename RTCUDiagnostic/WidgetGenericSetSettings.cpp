@@ -35,7 +35,7 @@ WidgetGenericSetSettings::WidgetGenericSetSettings(
 			wgtsMove.at(move)->setValidators(
 				new QIntValidator(0,10000),
 				new QIntValidator(1000,100000)
-				);    
+			 	);    
 
 		}
 
@@ -103,23 +103,39 @@ void WidgetGenericSetSettings::newMessageReceived(quint8 tag,quint32 msgID,QByte
 				wgtStartPositionRel->setReadValue(newSet.startPosition);
 				wgtMoveCount->setReadValue(newSet.moveCount);
 
-                for(int move=0;move<MOVE_COUNT_MAX;move++){
+				for(int move=0;move<MOVE_COUNT_MAX;move++){
 
-                    if (move<newSet.moveCount){
-                        wgtsMove.at(move)->setReadValue(
-                        	newSet.moves[move].destinationPosition,
-                        	newSet.moves[move].speed
-                        	);
-                    }else{
-                        wgtsMove.at(move)->setUnknownReadValues();
-                    }
-                }
+					if (move<newSet.moveCount){
+						wgtsMove.at(move)->setReadValue(
+							newSet.moves[move].destinationPosition,
+							newSet.moves[move].speed
+							);
+					}else{
+						wgtsMove.at(move)->setUnknownReadValues();
+					}
+				}
 			}else{
 				//bad message
+				wgtPause1->setUnknownReadValue();
+				wgtPause2->setUnknownReadValue();
+				wgtStartPositionRel->setUnknownReadValue();
+				wgtMoveCount->setUnknownReadValue();
+				for(int move=0;move<MOVE_COUNT_MAX;move++){
+					wgtsMove.at(move)->setUnknownReadValues();
+				}
 			}
 
 		}else{
-			//bad message
+			//empty message
+
+			wgtPause1->setUnknownReadValue();
+			wgtPause2->setUnknownReadValue();
+			wgtStartPositionRel->setUnknownReadValue();
+			wgtMoveCount->setUnknownReadValue();
+			for(int move=0;move<MOVE_COUNT_MAX;move++){
+				wgtsMove.at(move)->setUnknownReadValues();
+			}
+
 		}
 
 
@@ -145,7 +161,7 @@ bool WidgetGenericSetSettings::checkMessageLength(int messageLength){
 	}else if (messageLength>maxLength){
 		return false;
 	}else{
-        return ((messageLength-headerLength)%moveLength)==0;
+		return ((messageLength-headerLength)%moveLength)==0;
 	}
 
 }
@@ -191,8 +207,8 @@ void WidgetGenericSetSettings::slotWriteSettings(){
 			qint32 destinationPosition = wgtsMove.at(move)->getDestinationPositionWriteValue();
 			qint32 speed = wgtsMove.at(move)->getSpeedWriteValue();
 
-	        valueArray.append((char*)&destinationPosition,sizeof(destinationPosition));
-	        valueArray.append((char*)&speed,sizeof(speed));
+			valueArray.append((char*)&destinationPosition,sizeof(destinationPosition));
+			valueArray.append((char*)&speed,sizeof(speed));
 		}
 
 

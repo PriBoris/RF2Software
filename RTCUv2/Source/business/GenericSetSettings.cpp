@@ -87,7 +87,32 @@ bool GenericSetSettings::checkSetSizeBytes(uint32_t sizeBytes){
 //=================================================================================================
 bool GenericSetSettings::checkSet(Set &setToCheck){
 
-	return true;
+	if (
+		(setToCheck.pause1<0)||
+		(setToCheck.pause2<0)||
+		(setToCheck.startPosition<0)||
+		(setToCheck.startPosition>10000)||
+		(setToCheck.moveCount<MOVE_COUNT_MIN)||
+		(setToCheck.moveCount>MOVE_COUNT_MAX)||
+		false
+		){
+
+		return false;
+	}else{
+		
+			for(int32_t moveIndex=0;moveIndex<setToCheck.moveCount;moveIndex++){
+				if (
+					(setToCheck.moves[moveIndex].destinationPosition<0)||
+					(setToCheck.moves[moveIndex].destinationPosition>10000)||
+					(setToCheck.moves[moveIndex].speed<0)||
+					false
+					){
+						return false;
+				}
+			}
+		
+		return true;
+	}
+
 }
 //=================================================================================================
-
