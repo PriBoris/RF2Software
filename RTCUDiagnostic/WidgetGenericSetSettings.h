@@ -13,6 +13,8 @@
 #include "WidgetSettingsInteger.h"
 #include "WidgetGenericMoveSettings.h"
 
+#include "qcustomplot.h"
+
 
 
 class WidgetGenericSetSettings : public QWidget{
@@ -38,6 +40,7 @@ class WidgetGenericSetSettings : public QWidget{
 
     QPushButton *btnWriteSettings;
 
+    QCustomPlot* plotPositionVsTime;
 
 
 
@@ -81,6 +84,7 @@ public slots:
 
 	void slotWriteSettings();
 
+	void slotEditingFinished();
 
 };
 

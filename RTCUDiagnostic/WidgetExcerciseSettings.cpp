@@ -337,8 +337,8 @@ void WidgetExcerciseSettings::newMessageReceived(quint8 tag,quint32 msgID,QByteA
 
 }
 //============================================================================================================
-void WidgetExcerciseSettings::setTableEditingFinished()
-{
+void WidgetExcerciseSettings::setTableEditingFinished(){
+    
     //qDebug() << "WidgetExcerciseSettings::setTableEditingFinished";
     for(int setIndex=0;setIndex<MAX_SET_COUNT;setIndex++)
     {

@@ -69,6 +69,8 @@ void WidgetGenericMoveSettings::editingFinished(){
 	value2 = edtWriteValue2->text().toInt();
 	settings->setValue(registryName_+"DestinationPosition",value1);
 	settings->setValue(registryName_+"Speed",value2);
+
+	emit signalEditingFinished();
 }
 //=================================================================================================
 qint32 WidgetGenericMoveSettings::getDestinationPositionWriteValue(){

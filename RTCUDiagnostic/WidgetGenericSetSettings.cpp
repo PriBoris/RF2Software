@@ -2,6 +2,7 @@
 
 #include "Utils.h"
 
+#include <QDebug>
 
 WidgetGenericSetSettings::WidgetGenericSetSettings(
 	SerialPortTransceiver *serialPortTransceiver,
@@ -59,6 +60,24 @@ WidgetGenericSetSettings::WidgetGenericSetSettings(
 
 	}
 
+	{
+
+		plotPositionVsTime = new QCustomPlot;
+		plotPositionVsTime->addGraph();
+		plotPositionVsTime->graph(0)->setPen(QPen(Qt::blue));
+		plotPositionVsTime->yAxis->setVisible(true);
+		plotPositionVsTime->setFixedSize(700,200);
+        plotPositionVsTime->xAxis->setRange(0, 1.0);
+		plotPositionVsTime->yAxis->setRange(0.0, 100.0);
+		plotPositionVsTime->xAxis->setLabel("time [s]");
+		plotPositionVsTime->yAxis->setLabel("position [%]");
+        plotPositionVsTime->graph(0)->setLineStyle(QCPGraph::lsLine);
+        plotPositionVsTime->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
+
+
+	}
+
+
 	loMain = new QVBoxLayout;
 
 	loMain->addWidget(lblRxMessageCounter);
@@ -75,6 +94,8 @@ WidgetGenericSetSettings::WidgetGenericSetSettings(
 		loMain->addWidget(wgtsMove.at(move));
 	}
 	loMain->addSpacing(10);
+	loMain->addWidget(plotPositionVsTime);
+	loMain->addSpacing(10);
 	loMain->addWidget(btnWriteSettings);
 
 	loMain->addStretch(1);
@@ -82,10 +103,22 @@ WidgetGenericSetSettings::WidgetGenericSetSettings(
 	this->setLayout(loMain);
 
 
-	connect(wgtMoveCount,SIGNAL(signalEditingFinished()),this,SLOT(slotMoveCountUpdated()));
+    connect(wgtMoveCount,SIGNAL(signalEditingFinished()),this,SLOT(slotMoveCountUpdated()));
 	slotMoveCountUpdated();
 
 	connect(btnWriteSettings,SIGNAL(clicked(bool)),SLOT(slotWriteSettings()));
+
+
+	connect(wgtPause1,SIGNAL(signalEditingFinished()),SLOT(slotEditingFinished()));
+	connect(wgtPause2,SIGNAL(signalEditingFinished()),SLOT(slotEditingFinished()));
+	connect(wgtStartPositionRel,SIGNAL(signalEditingFinished()),SLOT(slotEditingFinished()));
+	connect(wgtMoveCount,SIGNAL(signalEditingFinished()),SLOT(slotEditingFinished()));
+	for(int move=0;move<MOVE_COUNT_MAX;move++){
+		connect(wgtsMove.at(move),SIGNAL(signalEditingFinished()),SLOT(slotEditingFinished()));
+	}
+
+
+    slotEditingFinished();
 
 
 }
@@ -235,6 +268,47 @@ void WidgetGenericSetSettings::slotWriteSettings(){
 	}
 
 	
+}
+//=================================================================================================
+void WidgetGenericSetSettings::slotEditingFinished(){
+
+	qint32 pause1 = wgtPause1->getWriteValue();
+	qint32 pause2 = wgtPause2->getWriteValue();
+	qint32 startPositionRel = wgtStartPositionRel->getWriteValue();
+	qint32 moveCount = wgtMoveCount->getWriteValue();
+
+    QVector<double> plotTime,plotPosition;
+	double timeS = 0.0;
+
+	plotTime.append(timeS);
+    plotPosition.append((double)startPositionRel/100.0);
+
+	timeS += (double)pause2/1000.0;
+	plotTime.append(timeS);
+    plotPosition.append((double)startPositionRel/100.0);
+
+    for(qint32 move = 0;move<moveCount;move++){
+
+        qint32 destinationPosition = wgtsMove.at(move)->getDestinationPositionWriteValue();
+        qint32 speed = wgtsMove.at(move)->getSpeedWriteValue();
+
+        timeS += (double)speed/1000.0;
+        plotTime.append(timeS);
+        plotPosition.append((double)destinationPosition/100.0);
+
+
+    }
+
+
+
+    plotPositionVsTime->xAxis->setRange(0.0, timeS);
+
+
+	plotPositionVsTime->graph(0)->setData(plotTime, plotPosition);
+	plotPositionVsTime->replot();
+
+    qDebug() << plotTime << plotPosition;
+
 }
 //=================================================================================================
 

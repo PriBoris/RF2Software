@@ -48,6 +48,9 @@ public:
 
 signals:
 
+    void signalEditingFinished();
+
+
 public slots:
 
     void editingFinished();
