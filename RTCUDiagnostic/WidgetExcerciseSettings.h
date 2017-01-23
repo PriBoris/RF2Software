@@ -34,6 +34,7 @@ class WidgetExcerciseSettings : public QWidget{
 
     Q_OBJECT
     QLabel *lblRxMessageCounter;
+    QLabel *lblTxMessageCounter;
 
     WidgetSettingsInteger *wgtSetCount;
 
@@ -74,6 +75,7 @@ class WidgetExcerciseSettings : public QWidget{
 
     SerialPortTransceiver *serialPortTransceiver_;
     quint32 rxMessageCounter;
+    quint32 txMessageCounter;
     QSettings *settings;
 
 public:

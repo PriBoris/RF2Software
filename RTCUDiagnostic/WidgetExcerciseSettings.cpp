@@ -1,5 +1,8 @@
 #include "WidgetExcerciseSettings.h"
 
+#include "Utils.h"
+
+
 WidgetExcerciseSettings::WidgetExcerciseSettings(
         SerialPortTransceiver *serialPortTransceiver,
         QWidget *parent
@@ -11,9 +14,15 @@ WidgetExcerciseSettings::WidgetExcerciseSettings(
     settings = new QSettings;
 
     {
-        rxMessageCounter = 0;
-        lblRxMessageCounter = new QLabel("lblRxMessageCounter");
+        lblRxMessageCounter = new QLabel;
+        lblTxMessageCounter = new QLabel;
+
         lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblTxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+
+        Utils::MessageCounterInitialize("Rx",rxMessageCounter,lblRxMessageCounter);
+        Utils::MessageCounterInitialize("Tx",txMessageCounter,lblTxMessageCounter);
+
     }
 
     wgtSetCount = new WidgetSettingsInteger("SetCount","ExcerciseSettings_SetCount",3);
@@ -227,6 +236,7 @@ WidgetExcerciseSettings::WidgetExcerciseSettings(
     loMain = new QVBoxLayout;
 
     loMain->addWidget(lblRxMessageCounter);
+    loMain->addWidget(lblTxMessageCounter);
     loMain->addSpacing(10);
 
     loMain->addWidget(wgtSetCount);
@@ -276,9 +286,10 @@ void WidgetExcerciseSettings::slotWriteSettings()
             QByteArray *txArray = tlv.getStuffedArray();
             serialPortTransceiver_->write(*txArray);
             delete txArray;
-        }
-        else
-        {
+
+            Utils::MessageCounterIncrement("Tx",txMessageCounter,lblTxMessageCounter,valueArray);
+
+        }else{
              qDebug() << "WidgetExcerciseSettings::slotWriteSettings error, bad setCount";
         }
 
@@ -292,13 +303,7 @@ void WidgetExcerciseSettings::newMessageReceived(quint8 tag,quint32 msgID,QByteA
 
     if (tag==TLV::TAG_ReportIsokineticExcerciseSettings){
         
-        rxMessageCounter++;
-        lblRxMessageCounter->setText(
-                    "Сообщений: "+QString::number(rxMessageCounter)+" "
-                    +"(длина последнего = "
-                    +QString::number(value.length())
-                    +" байт)"
-                    );
+        Utils::MessageCounterIncrement("Rx",rxMessageCounter,lblRxMessageCounter,value);
 
         qint32 setCount = value.length()/sizeof(IsokineticSetSettings);
         wgtSetCount->setReadValue(setCount);

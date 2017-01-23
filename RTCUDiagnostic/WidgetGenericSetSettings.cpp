@@ -1,5 +1,7 @@
 #include "WidgetGenericSetSettings.h"
 
+#include "Utils.h"
+
 
 WidgetGenericSetSettings::WidgetGenericSetSettings(
 	SerialPortTransceiver *serialPortTransceiver,
@@ -8,11 +10,20 @@ WidgetGenericSetSettings::WidgetGenericSetSettings(
 
 	serialPortTransceiver_ = serialPortTransceiver;
 
-	{
-		rxMessageCounter = 0;
-		lblRxMessageCounter = new QLabel("lblRxMessageCounter");
-		lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
-	}
+    {
+        lblRxMessageCounter = new QLabel;
+        lblTxMessageCounter = new QLabel;
+
+        lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+        lblTxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+
+        Utils::MessageCounterInitialize("Rx",rxMessageCounter,lblRxMessageCounter);
+        Utils::MessageCounterInitialize("Tx",txMessageCounter,lblTxMessageCounter);
+
+    }
+
+
+
 
 	{
 		wgtPause1 = new WidgetSettingsInteger("Pause1","GenericSet_Pause1",1000);
@@ -51,6 +62,7 @@ WidgetGenericSetSettings::WidgetGenericSetSettings(
 	loMain = new QVBoxLayout;
 
 	loMain->addWidget(lblRxMessageCounter);
+	loMain->addWidget(lblTxMessageCounter);
 	loMain->addSpacing(10);
 
 	loMain->addWidget(wgtPause1);
@@ -82,13 +94,8 @@ void WidgetGenericSetSettings::newMessageReceived(quint8 tag,quint32 msgID,QByte
 
 	if (tag==TLV::TAG_ReportGenericSetSettings){
 		
-		rxMessageCounter++;
-		lblRxMessageCounter->setText(
-					"Сообщений: "+QString::number(rxMessageCounter)+" "
-					+"(длина последнего = "
-					+QString::number(value.length())
-					+" байт)"
-					);
+        Utils::MessageCounterIncrement("Rx",rxMessageCounter,lblRxMessageCounter,value);
+
 
 		if (checkMessageLength(value.length())==true){
 
@@ -217,6 +224,11 @@ void WidgetGenericSetSettings::slotWriteSettings(){
 		QByteArray *txArray = tlv.getStuffedArray();
 		serialPortTransceiver_->write(*txArray);
 		delete txArray;
+
+        Utils::MessageCounterIncrement("Tx",txMessageCounter,lblTxMessageCounter,valueArray);
+
+
+
 
 
 

@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     TLV.cpp \
     ReportLogger.cpp \
     WidgetGenericSetSettings.cpp \
-    WidgetGenericMoveSettings.cpp
+    WidgetGenericMoveSettings.cpp \
+    Utils.cpp
 
 HEADERS  += \
     serialporttransceiver.h \
@@ -62,4 +63,5 @@ HEADERS  += \
     TLV.h \
     ReportLogger.h \
     WidgetGenericSetSettings.h \
-    WidgetGenericMoveSettings.h
+    WidgetGenericMoveSettings.h \
+    Utils.h

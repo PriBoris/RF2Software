@@ -20,6 +20,7 @@ class WidgetGenericSetSettings : public QWidget{
 	Q_OBJECT
 
 	QLabel *lblRxMessageCounter;
+	QLabel *lblTxMessageCounter;
 
 	QLabel *lblPause1Title;
 	QLabel *lblPause2Title;
@@ -45,6 +46,7 @@ class WidgetGenericSetSettings : public QWidget{
 
 	SerialPortTransceiver *serialPortTransceiver_;
 	quint32 rxMessageCounter;
+	quint32 txMessageCounter;
 
 	bool checkMessageLength(int messageLength);
 	qint32 getMoveCountFromLength(int messageLength);

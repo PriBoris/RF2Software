@@ -17,6 +17,7 @@
 
 #include "WidgetSettingsInteger.h"
 
+#include "Utils.h"
 
 struct PersonalSettings{
 
@@ -40,6 +41,8 @@ class WidgetPersonalSettings : public QWidget{
     Q_OBJECT
 
     QLabel *lblRxMessageCounter;
+    QLabel *lblTxMessageCounter;
+
     WidgetSettingsInteger *wgtPositionMainA;
     WidgetSettingsInteger *wgtPositionMainB;
     WidgetSettingsInteger *wgtPositionParking;
@@ -56,6 +59,7 @@ class WidgetPersonalSettings : public QWidget{
 
     SerialPortTransceiver *serialPortTransceiver_;
     quint32 rxMessageCounter;
+    quint32 txMessageCounter;
 
 
 

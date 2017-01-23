@@ -56,6 +56,7 @@ private:
 		FTEST_STATIC_Homing_Moving = 34,
 		FTEST_STATIC_Pause = 35,
 		FTEST_STATIC_Testing = 36,
+
 		EXERCISE_Starting = 37,
 		EXERCISE_Homing_PreparingAux = 38,
 		EXERCISE_Homing_MovingAux = 39,
@@ -71,7 +72,10 @@ private:
 		EXERCISE_FirstInterruption = 49,
 		EXERCISE_SecondMovement = 50,
 		EXERCISE_SecondInterruption = 51,
-		FAULT_Fault = 52,
+
+		GENERIC_SET_Starting = 52,
+
+		FAULT_Fault = 53,
 	};
 	static Submode submode;
 	static Submode submodePrev;

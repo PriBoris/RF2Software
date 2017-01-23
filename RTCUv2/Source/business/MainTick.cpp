@@ -325,6 +325,16 @@ void MainTick::process(){ //called every 100ms
 						//DebugConsole::pushMessage(" #ExcerciseIsokinetic\0");
 					}
 					break;
+				case Protocol::TAG_GenericSet:
+					if (
+						(MachineSettings::protocolStructExtendedValid==true)&&
+						(PersonalSettings::protocolStructValid==true)&&
+						(GenericSetSettings::valid==true)
+					){
+						//setSubmode(GENERIC_SET_Starting);
+						//DebugConsole::pushMessage(" #GenericSet\0");
+					}
+					break;
 				}
 			}else{
 
@@ -1584,12 +1594,15 @@ void MainTick::process(){ //called every 100ms
 		processFieldbus();
 
 		break;
-	//------------------------------------------------EXCERCISE----------------------------------
+	//------------------------------------------------GENERIC-SET---------------------------------
+	//------------------------------------------------GENERIC-SET---------------------------------
 
 
+	case GENERIC_SET_Starting:
 
+		processFieldbus();
 
-
+		break;
 	//------------------------------------------------------------------------------------
 	//------------------------------------------------------------------------------------
 	case FAULT_Fault:
