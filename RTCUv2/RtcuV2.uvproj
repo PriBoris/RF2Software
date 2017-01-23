@@ -790,6 +790,16 @@
               <FileType>5</FileType>
               <FilePath>.\Source\business\GenericSetSettings.h</FilePath>
             </File>
+            <File>
+              <FileName>GenericSet.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Source\business\GenericSet.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>GenericSet.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\business\GenericSet.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

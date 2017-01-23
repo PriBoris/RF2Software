@@ -95,10 +95,16 @@ void MainTick::setSubmode(MainTick::Submode newSubmode){
 	case EXERCISE_SecondMovement:
 	case EXERCISE_SecondInterruption:
 
-
 		mode = EXERCISE_ISOKINETIC;
 		break;
 
+	case GENERIC_SET_Starting:
+	case GENERIC_SET_Homing_PreparingAux:
+	case GENERIC_SET_Homing_MovingAux:
+	case GENERIC_SET_Pause1:
+
+		mode = GENERIC_SET;
+		break;
 
 	case FAULT_Fault:
 		mode = FAULT;

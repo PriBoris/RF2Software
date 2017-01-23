@@ -10,6 +10,7 @@
 #include "business/Errors.h"
 #include "business/PositionTask.h"
 #include "business/Excercise.h"
+#include "business/GenericSet.h"
 #include "business/ExcerciseSettings.h"
 
 #include "hmi/diagnostics.h"
@@ -542,6 +543,50 @@ void MainTick::reportCurrentMode(){
 			break;
 		}
 		//----------------------------------------------------------------EXERCISE_ISOKINETIC---submode------------------------------
+		break;
+	//-------------------------------------------------------------
+	case GENERIC_SET:
+
+		switch(submode){
+		//----------------------------------------------------------------GENERIC_SET---submode------------------------------
+		case GENERIC_SET_Starting:
+		case GENERIC_SET_Homing_PreparingAux:
+		case GENERIC_SET_Homing_MovingAux:
+		case GENERIC_SET_Pause1:
+
+			{
+				uint8_t message[MSGLEN_ReportCurrentMode_GENERIC_SET_Pause1];
+				memset(message,0,sizeof(message));
+				reportCurrentModeHeader(message);
+				reportCurrentModePosition(message);
+
+				int32_t phase = GenericSet::PHASE_PAUSE1;
+				memcpy(
+					&message[MSGPOS_GENERIC_SET_Phase],
+					&phase,
+					sizeof(int32_t)
+					);
+
+				int32_t pauseTimeRemaining = GenericSet::getPause1TimeRemaining();
+				memcpy(
+					&message[MSGPOS_GENERIC_SET_PauseTimeRemaining],
+					&pauseTimeRemaining,
+					sizeof(int32_t)
+					);
+
+				Diagnostics::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,message,sizeof(message));
+				HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,message,sizeof(message));
+			}
+
+
+
+			break;
+		//----------------------------------------------------------------GENERIC_SET---submode------------------------------
+
+
+		}			
+
+
 		break;
 	//-------------------------------------------------------------
 	case FAULT:

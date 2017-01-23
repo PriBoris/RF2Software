@@ -74,8 +74,13 @@ private:
 		EXERCISE_SecondInterruption = 51,
 
 		GENERIC_SET_Starting = 52,
+		GENERIC_SET_Homing_PreparingAux = 53,
+		GENERIC_SET_Homing_MovingAux = 54,
+		GENERIC_SET_Pause1 = 55,
 
-		FAULT_Fault = 53,
+
+
+		FAULT_Fault = 56,
 	};
 	static Submode submode;
 	static Submode submodePrev;
@@ -92,6 +97,7 @@ private:
 	 	EXERCISE_ISOKINETIC=7,
 		FAULT=8,
 	  	TEST_STATIC=9,
+	  	GENERIC_SET=10,
 	};
 
 	static Mode mode;
@@ -135,18 +141,19 @@ private:
 
 	//-----------------------------------------------------------
 
-	static const uint16_t MSGLEN_Mode = 1;
+	static const uint16_t MSGLEN_Mode = sizeof(uint8_t);
 	static const uint16_t MSGLEN_CurrentDateTime = sizeof(NV::RealTimeClock::TCurrentDateTime);
-	static const uint16_t MSGLEN_OdometerTimeWay = 8;
-	static const uint16_t MSGLEN_Position = 16;
-	static const uint16_t MSGLEN_Phase = 4;
-	static const uint16_t MSGLEN_SetIndex = 4;
-	static const uint16_t MSGLEN_RepIndex = 4;
-	static const uint16_t MSGLEN_RepDirection = 4;
-	static const uint16_t MSGLEN_PositionRel = 4;
-	static const uint16_t MSGLEN_Force = 4;
-	static const uint16_t MSGLEN_TimeToSet = 4;
-	static const uint16_t MSGLEN_TimeToMovement = 4;
+	static const uint16_t MSGLEN_OdometerTimeWay = 2*sizeof(int32_t);
+	static const uint16_t MSGLEN_Position = 4*sizeof(int32_t);
+	static const uint16_t MSGLEN_Phase = sizeof(int32_t);
+	static const uint16_t MSGLEN_SetIndex = sizeof(int32_t);
+	static const uint16_t MSGLEN_RepIndex = sizeof(int32_t);
+	static const uint16_t MSGLEN_RepDirection = sizeof(int32_t);
+	static const uint16_t MSGLEN_PositionRel = sizeof(int32_t);
+	static const uint16_t MSGLEN_Force = sizeof(int32_t);
+	static const uint16_t MSGLEN_TimeToSet = sizeof(int32_t);
+	static const uint16_t MSGLEN_TimeToMovement = sizeof(int32_t);
+	static const uint16_t MSGLEN_PauseTimeRemaining = sizeof(int32_t);
 
 
 	static const uint16_t MSGLEN_ReportCurrentMode_INITIALIZING = (1+sizeof(NV::RealTimeClock::TCurrentDateTime)+MSGLEN_OdometerTimeWay);
@@ -189,6 +196,10 @@ private:
 		MSGLEN_TimeToMovement+
 		0;//43
 
+	static const uint16_t MSGLEN_ReportCurrentMode_GENERIC_SET_Pause1 = 
+		MSGLEN_Mode+MSGLEN_CurrentDateTime+MSGLEN_OdometerTimeWay+MSGLEN_Position+
+		MSGLEN_Phase+MSGLEN_PauseTimeRemaining+
+		0;//39
 
 
 
@@ -255,6 +266,16 @@ private:
 		MSGLEN_Phase+
 		MSGLEN_SetIndex+
 		0;
+
+	static const uint16_t MSGPOS_GENERIC_SET_Phase = 
+		MSGLEN_Mode+MSGLEN_CurrentDateTime+MSGLEN_OdometerTimeWay+MSGLEN_Position+
+		0;
+
+	static const uint16_t MSGPOS_GENERIC_SET_PauseTimeRemaining = 
+		MSGLEN_Mode+MSGLEN_CurrentDateTime+MSGLEN_OdometerTimeWay+MSGLEN_Position+
+		MSGLEN_Phase+
+		0;
+
 
 	//-----------------------------------------------------------
 

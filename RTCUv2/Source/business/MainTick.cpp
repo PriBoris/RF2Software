@@ -16,6 +16,7 @@
 #include "business/ForceTestStatic.h"
 #include "business/PositionTask.h"
 #include "business/Excercise.h"
+#include "business/GenericSet.h"
 
 #include "hmi/diagnostics.h"
 #include "hmi/hmi.h"
@@ -331,7 +332,7 @@ void MainTick::process(){ //called every 100ms
 						(PersonalSettings::protocolStructValid==true)&&
 						(GenericSetSettings::valid==true)
 					){
-						//setSubmode(GENERIC_SET_Starting);
+						setSubmode(GENERIC_SET_Starting);
 						//DebugConsole::pushMessage(" #GenericSet\0");
 					}
 					break;
@@ -1596,13 +1597,77 @@ void MainTick::process(){ //called every 100ms
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
 	//------------------------------------------------GENERIC-SET---------------------------------
-
-
 	case GENERIC_SET_Starting:
+
+
+		GenericSet::start();
+		Parking::recalculateServoFrequency();
+
+		setSubmode(GENERIC_SET_Homing_PreparingAux);
 
 		processFieldbus();
 
 		break;
+	//------------------------------------------------GENERIC-SET---------------------------------
+	case GENERIC_SET_Homing_PreparingAux:
+
+		Actuators::enable(
+			0,
+			PersonalSettings::protocolStruct.positionAux1,
+			MachineSettings::protocolStructExtended.positionAux1Min,
+			MachineSettings::protocolStructExtended.positionAux1Max
+		);	
+		Actuators::enable(
+			1,
+			PersonalSettings::protocolStruct.positionAux2,
+			MachineSettings::protocolStructExtended.positionAux2Min,
+			MachineSettings::protocolStructExtended.positionAux2Max
+		);	
+		setSubmode(GENERIC_SET_Homing_MovingAux);
+
+		processFieldbus();
+
+
+		break;
+	//------------------------------------------------GENERIC-SET---------------------------------
+	case GENERIC_SET_Homing_MovingAux:
+
+		if (true==RxMessageQueue::cancelMessageReceived()){
+			Actuators::disable(0);
+			Actuators::disable(1);
+			setSubmode(WAITING_Waiting);
+		}else if ((Actuators::targetPositionReached(0)==true)&&(Actuators::targetPositionReached(1)==true)){
+			Actuators::disable(0);
+			Actuators::disable(1);
+			
+			GenericSet::pause1Start();
+			setSubmode(GENERIC_SET_Pause1);
+
+		}
+
+		processFieldbus();
+
+		break;
+	//------------------------------------------------GENERIC-SET---------------------------------
+	case GENERIC_SET_Pause1:
+
+		if (true==RxMessageQueue::cancelMessageReceived()){
+
+			setSubmode(WAITING_Waiting);
+
+		}else if (GenericSet::isPause1Done()==true){
+
+			//Excercise::recalculateServoFrequency();
+			//setSubmode(EXERCISE_SettingPositiveSpeed);
+
+		}
+
+		processFieldbus();
+
+		break;
+	//------------------------------------------------GENERIC-SET---------------------------------
+
+
 	//------------------------------------------------------------------------------------
 	//------------------------------------------------------------------------------------
 	case FAULT_Fault:

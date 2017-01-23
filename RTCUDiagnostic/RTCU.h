@@ -28,7 +28,7 @@ public:
 		static const quint8 EXCERCISE_ISOKINETIC = 7;
 		static const quint8 FAULT = 8;
 		static const quint8 TEST_STATIC = 9;
-		static const quint8 GENERIC_EXERCISE_ISOKINETIC = 10;
+        static const quint8 GENERIC_SET = 10;
 
 
         static void init();
@@ -95,7 +95,15 @@ public:
 		static const quint8 EXERCISE_FirstInterruption = 49;
 		static const quint8 EXERCISE_SecondMovement = 50;
 		static const quint8 EXERCISE_SecondInterruption = 51;
-		static const quint8 ERROR_Error = 52;
+
+
+        static const quint8 GENERIC_SET_Starting = 52;
+        static const quint8 GENERIC_SET_Homing_PreparingAux = 53;
+        static const quint8 GENERIC_SET_Homing_MovingAux = 54;
+        static const quint8 GENERIC_SET_Pause1 = 55;
+
+
+        static const quint8 ERROR_Error = 56;
 
 
     };
