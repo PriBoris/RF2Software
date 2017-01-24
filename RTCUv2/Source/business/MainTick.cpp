@@ -1660,12 +1660,10 @@ void MainTick::process(){ //called every 100ms
 
 			setSubmode(WAITING_Waiting);
 
-			processFieldbus();
-			
+		
 		}else if (GenericSet::isPauseDone()==true){
 
 			Parking::recalculateServoFrequency();
-			
 			
 			setSubmode(GENERIC_SET_Homing_SettingPositiveSpeed);
 
@@ -1697,9 +1695,70 @@ void MainTick::process(){ //called every 100ms
 			servoFrequencyNegative=Parking::servoFrequencyNegative
 			));			
 	
-		GenericSet::pause2Start();
-		setSubmode(GENERIC_SET_Pause2);
+		//GenericSet::pause2Start();setSubmode(GENERIC_SET_Pause2);
+		setSubmode(GENERIC_SET_Homing_PreparingMain);
 	
+
+		break;
+	//------------------------------------------------GENERIC-SET---------------------------------
+	case GENERIC_SET_Homing_PreparingMain:
+
+		if (PositionTask::checkPosition(GenericSet::getPositionMainStart())==false){
+
+			if (PositionTask::getDirection(GenericSet::getPositionMainStart())==Servo::POSITIVE_DIRECTION){
+
+				Servo::movePositive();
+
+				setSubmode(GENERIC_SET_Homing_MovingMain);
+				reportServoModePositive();
+			}else{
+
+				Servo::moveNegative();
+
+				setSubmode(GENERIC_SET_Homing_MovingMain);
+				reportServoModeNegative();
+			}						
+		}else{
+			GenericSet::pause2Start();
+			setSubmode(GENERIC_SET_Pause2);
+		}
+		processFieldbus();
+
+		break;
+	//------------------------------------------------GENERIC-SET---------------------------------
+	case GENERIC_SET_Homing_MovingMain:
+
+		if (true==RxMessageQueue::cancelMessageReceived()){
+
+			Servo::brake();
+			setSubmode(WAITING_Waiting);
+			reportServoModeStop();
+
+		}else{
+
+			bool positionTaskIsComplete = 
+				PositionTask::checkPosition(
+					GenericSet::getPositionMainStart(),
+					Servo::getMoveDirection()
+					);
+
+			if (positionTaskIsComplete==true){
+
+				Servo::brake();
+
+				GenericSet::pause2Start();
+				setSubmode(GENERIC_SET_Pause2);
+				reportServoModeStop();
+
+			}else{
+
+				reportServoModeContinue();
+
+			}
+
+		}
+
+		processFieldbus();
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
@@ -1709,13 +1768,10 @@ void MainTick::process(){ //called every 100ms
 
 			setSubmode(WAITING_Waiting);
 
-			processFieldbus();
-			
 		}else if (GenericSet::isPauseDone()==true){
 
-
-			//setSubmode(GENERIC_SET_Homing_SettingPositiveSpeed);
-
+			setSubmode(WAITING_Waiting);
+			__asm("	nop");
 
 		}else{
 			__asm("	nop");

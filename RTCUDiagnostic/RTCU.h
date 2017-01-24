@@ -101,16 +101,16 @@ public:
         static const quint8 GENERIC_SET_Homing_PreparingAux = 53;
         static const quint8 GENERIC_SET_Homing_MovingAux = 54;
         static const quint8 GENERIC_SET_Pause1 = 55;
-
-
 		static const quint8 GENERIC_SET_Homing_SettingPositiveSpeed = 56;
 		static const quint8 GENERIC_SET_Homing_SettingNegativeSpeed = 57;
-		static const quint8 GENERIC_SET_Pause2 = 58;
+		static const quint8 GENERIC_SET_Homing_PreparingMain = 58;
+		static const quint8 GENERIC_SET_Homing_MovingMain = 59;		
+		static const quint8 GENERIC_SET_Pause2 = 60;
 
 
 
 
-        static const quint8 ERROR_Error = 59;
+        static const quint8 ERROR_Error = 61;
 
 
     };

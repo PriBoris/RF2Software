@@ -11,6 +11,9 @@ const float Servo::SECONDS_PER_ROTATION_AT_1HZ = 249.4623656f;
 const float Servo::MIN_FREQUENCY = 2.0f;
 const float Servo::MAX_FREQUENCY = 30.0f;//50.0f;
 
+bool Servo::actualMoveDirection = POSITIVE_DIRECTION;
+
+
 //==================================================================================================================
 void Servo::parkingBrake(bool brake){
 	if (brake==false){
@@ -46,6 +49,30 @@ void Servo::brake(bool on){
 	}
 }
 //==================================================================================================================
+void Servo::movePositive(void){
+	moveNegative(false);
+	movePositive(true);
+	brake(false);
+	actualMoveDirection = POSITIVE_DIRECTION;
+}
+void Servo::moveNegative(void){
+	movePositive(false);
+	moveNegative(true);
+	brake(false);
+	actualMoveDirection = NEGATIVE_DIRECTION;
+}
+void Servo::brake(void){
+	brake(true);
+	movePositive(false);
+	moveNegative(false);
+}
+bool Servo::getMoveDirection(){
+	return actualMoveDirection;
+}
+//==================================================================================================================
+
+
+
 bool Servo::validateActualPosition(){
 
 	int32_t encoderActualValue = Encoder::getValue();

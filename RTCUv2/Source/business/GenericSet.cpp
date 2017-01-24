@@ -2,7 +2,7 @@
 #include "GenericSet.h"
 
 #include "GenericSetSettings.h"
-
+#include "PositionTask.h"
 
 int32_t GenericSet::pauseCounterMsec;
 
@@ -12,7 +12,7 @@ int32_t GenericSet::pauseCounterMsec;
 //=================================================================================================
 void GenericSet::start(){
 
-
+	pauseCounterMsec = 0;
 
 }
 //=================================================================================================
@@ -36,6 +36,11 @@ bool GenericSet::isPauseDone(){
 //=================================================================================================
 int32_t GenericSet::getPauseTimeRemaining(){
 	return pauseCounterMsec;
+}
+//=================================================================================================
+int32_t GenericSet::getPositionMainStart(){
+
+	return PositionTask::relPositionToAbsPosition(GenericSetSettings::set.startPosition);
 }
 //=================================================================================================
 

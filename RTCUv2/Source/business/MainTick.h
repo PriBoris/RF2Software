@@ -79,10 +79,13 @@ private:
 		GENERIC_SET_Pause1 = 55,
 		GENERIC_SET_Homing_SettingPositiveSpeed = 56,
 		GENERIC_SET_Homing_SettingNegativeSpeed = 57,
-		GENERIC_SET_Pause2 = 58,
+		GENERIC_SET_Homing_PreparingMain = 58,
+		GENERIC_SET_Homing_MovingMain = 59,
+
+		GENERIC_SET_Pause2 = 60,
 
 
-		FAULT_Fault = 59,
+		FAULT_Fault = 61,
 	};
 	static Submode submode;
 	static Submode submodePrev;

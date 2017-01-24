@@ -28,6 +28,34 @@ bool PositionTask::checkPosition(int32_t taskPosition){
 
 }
 //=================================================================================================
+bool PositionTask::checkPosition(int32_t taskPosition, bool servoMoveDirection){
+
+	int32_t actualPosition = Encoder::getValue();
+
+	int32_t permissibleError = MachineSettings::getMainRange()/100; //1%
+
+	if (servoMoveDirection==Servo::POSITIVE_DIRECTION){
+
+		if (actualPosition>(taskPosition-permissibleError)){
+			return true;
+		}else{
+			return false;
+		}
+
+	}else{
+
+		if (actualPosition<(taskPosition+permissibleError)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+
+}
+
+
+//=================================================================================================
 /*bool PositionTask::checkPosition(int32_t taskPosition,int32_t taskSpeed){
 
 	return checkPosition(taskPosition);

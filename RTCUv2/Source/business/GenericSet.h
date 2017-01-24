@@ -26,7 +26,7 @@ public:
 	static bool isPauseDone();
 	static int32_t getPauseTimeRemaining();
 
-
+	static int32_t getPositionMainStart();
 
 };
 
