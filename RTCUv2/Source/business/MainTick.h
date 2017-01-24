@@ -325,6 +325,10 @@ private:
 //-----------------------------------------------------------
 
 	static void processFieldbus();
+	static uint32_t fieldbusErrorCounter;
+	static uint32_t fieldbusErrorCounterMax;
+	static const uint32_t FIELDBUS_FAULT_TRESHOLD = 4;
+
 
 	static uint32_t tickID;
 

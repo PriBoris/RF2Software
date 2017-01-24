@@ -54,6 +54,10 @@ uint32_t MainTick::excerciseSecondMovementTickCounter;
 bool MainTick::excerciseFirstMovementDirection;
 bool MainTick::excerciseSecondMovementDirection;
 
+uint32_t MainTick::fieldbusErrorCounter;
+uint32_t MainTick::fieldbusErrorCounterMax;
+
+
 
 //==================================================================================================================
 void MainTick::init(){
@@ -63,6 +67,8 @@ void MainTick::init(){
 	submodePrev = submode;
 	tickID = 0;
 
+	fieldbusErrorCounter = 0;
+	fieldbusErrorCounterMax = 0;
 
 }
 //==================================================================================================================
@@ -1719,11 +1725,24 @@ void MainTick::profilerStop(){
 //==================================================================================================================
 void MainTick::processFieldbus(){
 
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-			//DebugConsole::pushMessage(" #FieldbusResponseLost\0");
+	if (Fieldbus::responseIsValid()==false){
+		fieldbusErrorCounter++;
+		if (fieldbusErrorCounter>fieldbusErrorCounterMax){
+			fieldbusErrorCounterMax = fieldbusErrorCounter;
 		}
-		Fieldbus::pushUSSRequest(USS::makeInverterReadyRequest());
+
+		//DebugConsole::pushMessage(" #FieldbusResponseLost\0");
+		if (fieldbusErrorCounter>=FIELDBUS_FAULT_TRESHOLD){
+			Errors::setFlag(Errors::FLAG_USS_RESPONSE);	
+			fieldbusErrorCounterMax = 0;
+			//DebugConsole::pushMessage(" #FieldbusResponseLost FAULT\0");
+		}
+
+	}else{
+		fieldbusErrorCounter = 0;
+
+	}
+	Fieldbus::pushUSSRequest(USS::makeInverterReadyRequest());
 
 }
 //==================================================================================================================
