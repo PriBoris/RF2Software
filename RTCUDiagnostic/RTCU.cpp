@@ -95,6 +95,9 @@ void RTCU::Submode::init(){
 	titles[(quint8)GENERIC_SET_Homing_PreparingAux] = "GENERIC_SET_Homing_PreparingAux";
 	titles[(quint8)GENERIC_SET_Homing_MovingAux] = "GENERIC_SET_Homing_MovingAux";
 	titles[(quint8)GENERIC_SET_Pause1] = "GENERIC_SET_Pause1";
+	titles[(quint8)GENERIC_SET_Homing_SettingPositiveSpeed] = "GENERIC_SET_Homing_SettingPositiveSpeed";
+	titles[(quint8)GENERIC_SET_Homing_SettingNegativeSpeed] = "GENERIC_SET_Homing_SettingNegativeSpeed";
+	titles[(quint8)GENERIC_SET_Pause2] = "GENERIC_SET_Pause2";
 
 
 	

@@ -1142,8 +1142,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
 					{
 						lblTimeToSet->setVisible(true);
-						lblTimeToSet->setText("Осталось "+QString::number(TLV::getInt32(value,35)));
-						(reportLogger->stream) << "pauseTimeRemaining=" << QString::number(TLV::getInt32(value,39)) << ";";
+						QString pauseTimeRemainingStr = QString::number(TLV::getInt32(value,35))+"ms";
+						lblTimeToSet->setText("Осталось "+pauseTimeRemainingStr);
+						(reportLogger->stream) << "pauseTimeRemaining=" << pauseTimeRemainingStr << ";";
 					}
 
 					break;
@@ -1171,8 +1172,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
 					{
 						lblTimeToSet->setVisible(true);
-						lblTimeToSet->setText("Осталось "+QString::number(TLV::getInt32(value,35)));
-						(reportLogger->stream) << "pauseTimeRemaining=" << QString::number(TLV::getInt32(value,39)) << ";";
+						QString pauseTimeRemainingStr = QString::number(TLV::getInt32(value,35))+"ms";
+						lblTimeToSet->setText("Осталось "+pauseTimeRemainingStr);
+						(reportLogger->stream) << "pauseTimeRemaining=" << pauseTimeRemainingStr << ";";
 					}
 
 

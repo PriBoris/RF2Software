@@ -77,10 +77,12 @@ private:
 		GENERIC_SET_Homing_PreparingAux = 53,
 		GENERIC_SET_Homing_MovingAux = 54,
 		GENERIC_SET_Pause1 = 55,
+		GENERIC_SET_Homing_SettingPositiveSpeed = 56,
+		GENERIC_SET_Homing_SettingNegativeSpeed = 57,
+		GENERIC_SET_Pause2 = 58,
 
 
-
-		FAULT_Fault = 56,
+		FAULT_Fault = 59,
 	};
 	static Submode submode;
 	static Submode submodePrev;
@@ -196,10 +198,15 @@ private:
 		MSGLEN_TimeToMovement+
 		0;//43
 
-	static const uint16_t MSGLEN_ReportCurrentMode_GENERIC_SET_Pause1 = 
+	static const uint16_t MSGLEN_ReportCurrentMode_GENERIC_SET_Pause = 
 		MSGLEN_Mode+MSGLEN_CurrentDateTime+MSGLEN_OdometerTimeWay+MSGLEN_Position+
 		MSGLEN_Phase+MSGLEN_PauseTimeRemaining+
 		0;//39
+
+	static const uint16_t MSGLEN_ReportCurrentMode_GENERIC_SET_Homing = 
+		MSGLEN_Mode+MSGLEN_CurrentDateTime+MSGLEN_OdometerTimeWay+MSGLEN_Position+
+		MSGLEN_Phase+
+		0;//35
 
 
 

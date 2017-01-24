@@ -1607,7 +1607,6 @@ void MainTick::process(){ //called every 100ms
 
 
 		GenericSet::start();
-		Parking::recalculateServoFrequency();
 
 		setSubmode(GENERIC_SET_Homing_PreparingAux);
 
@@ -1661,17 +1660,75 @@ void MainTick::process(){ //called every 100ms
 
 			setSubmode(WAITING_Waiting);
 
-		}else if (GenericSet::isPause1Done()==true){
+			processFieldbus();
+			
+		}else if (GenericSet::isPauseDone()==true){
 
-			//Excercise::recalculateServoFrequency();
-			//setSubmode(EXERCISE_SettingPositiveSpeed);
+			Parking::recalculateServoFrequency();
+			
+			
+			setSubmode(GENERIC_SET_Homing_SettingPositiveSpeed);
 
+		}else{
+			
+			__asm("	nop");
 		}
 
 		processFieldbus();
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
+	case GENERIC_SET_Homing_SettingPositiveSpeed:
+
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(
+			Servo::POSITIVE_DIRECTION,
+			servoFrequencyPositive=Parking::servoFrequencyPositive
+			));			
+
+		setSubmode(GENERIC_SET_Homing_SettingNegativeSpeed);
+	
+	
+		break;
+	//------------------------------------------------GENERIC-SET---------------------------------
+	case GENERIC_SET_Homing_SettingNegativeSpeed:
+
+		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(
+			Servo::NEGATIVE_DIRECTION,
+			servoFrequencyNegative=Parking::servoFrequencyNegative
+			));			
+	
+		GenericSet::pause2Start();
+		setSubmode(GENERIC_SET_Pause2);
+	
+
+		break;
+	//------------------------------------------------GENERIC-SET---------------------------------
+	case GENERIC_SET_Pause2:
+
+		if (true==RxMessageQueue::cancelMessageReceived()){
+
+			setSubmode(WAITING_Waiting);
+
+			processFieldbus();
+			
+		}else if (GenericSet::isPauseDone()==true){
+
+
+			//setSubmode(GENERIC_SET_Homing_SettingPositiveSpeed);
+
+
+		}else{
+			__asm("	nop");
+		}
+
+		processFieldbus();
+	
+	
+		break;
+	//------------------------------------------------GENERIC-SET---------------------------------
+
+
+
 
 
 	//------------------------------------------------------------------------------------

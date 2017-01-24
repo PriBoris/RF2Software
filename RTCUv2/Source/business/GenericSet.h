@@ -8,7 +8,7 @@ class GenericSet{
 private:
 
 
-	static int32_t pause1CounterMsec;
+	static int32_t pauseCounterMsec;
 
 public:
 
@@ -22,8 +22,10 @@ public:
 
 
 	static void pause1Start();
-	static bool isPause1Done();
-	static int32_t getPause1TimeRemaining();
+	static void pause2Start();
+	static bool isPauseDone();
+	static int32_t getPauseTimeRemaining();
+
 
 
 };

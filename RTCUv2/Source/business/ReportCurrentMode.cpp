@@ -12,6 +12,7 @@
 #include "business/Excercise.h"
 #include "business/GenericSet.h"
 #include "business/ExcerciseSettings.h"
+#include "business/GenericSetSettings.h"
 
 #include "hmi/diagnostics.h"
 #include "hmi/hmi.h"
@@ -552,10 +553,10 @@ void MainTick::reportCurrentMode(){
 		case GENERIC_SET_Starting:
 		case GENERIC_SET_Homing_PreparingAux:
 		case GENERIC_SET_Homing_MovingAux:
-		case GENERIC_SET_Pause1:
 
 			{
-				uint8_t message[MSGLEN_ReportCurrentMode_GENERIC_SET_Pause1];
+
+				uint8_t message[MSGLEN_ReportCurrentMode_GENERIC_SET_Pause];
 				memset(message,0,sizeof(message));
 				reportCurrentModeHeader(message);
 				reportCurrentModePosition(message);
@@ -567,7 +568,39 @@ void MainTick::reportCurrentMode(){
 					sizeof(int32_t)
 					);
 
-				int32_t pauseTimeRemaining = GenericSet::getPause1TimeRemaining();
+				int32_t pauseTimeRemaining = GenericSetSettings::set.pause1;
+				memcpy(
+					&message[MSGPOS_GENERIC_SET_PauseTimeRemaining],
+					&pauseTimeRemaining,
+					sizeof(int32_t)
+					);
+
+				Diagnostics::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,message,sizeof(message));
+				HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,message,sizeof(message));
+
+
+
+			}
+
+			break;
+		//----------------------------------------------------------------GENERIC_SET---submode------------------------------
+
+		case GENERIC_SET_Pause1:
+
+			{
+				uint8_t message[MSGLEN_ReportCurrentMode_GENERIC_SET_Pause];
+				memset(message,0,sizeof(message));
+				reportCurrentModeHeader(message);
+				reportCurrentModePosition(message);
+
+				int32_t phase = GenericSet::PHASE_PAUSE1;
+				memcpy(
+					&message[MSGPOS_GENERIC_SET_Phase],
+					&phase,
+					sizeof(int32_t)
+					);
+
+				int32_t pauseTimeRemaining = GenericSet::getPauseTimeRemaining();
 				memcpy(
 					&message[MSGPOS_GENERIC_SET_PauseTimeRemaining],
 					&pauseTimeRemaining,
@@ -577,13 +610,56 @@ void MainTick::reportCurrentMode(){
 				Diagnostics::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,message,sizeof(message));
 				HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,message,sizeof(message));
 			}
-
-
-
 			break;
 		//----------------------------------------------------------------GENERIC_SET---submode------------------------------
+		case GENERIC_SET_Pause2:
 
+			{
+				uint8_t message[MSGLEN_ReportCurrentMode_GENERIC_SET_Pause];
+				memset(message,0,sizeof(message));
+				reportCurrentModeHeader(message);
+				reportCurrentModePosition(message);
 
+				int32_t phase = GenericSet::PHASE_PAUSE2;
+				memcpy(
+					&message[MSGPOS_GENERIC_SET_Phase],
+					&phase,
+					sizeof(int32_t)
+					);
+
+				int32_t pauseTimeRemaining = GenericSet::getPauseTimeRemaining();
+				memcpy(
+					&message[MSGPOS_GENERIC_SET_PauseTimeRemaining],
+					&pauseTimeRemaining,
+					sizeof(int32_t)
+					);
+
+				Diagnostics::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,message,sizeof(message));
+				HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,message,sizeof(message));
+			}
+			break;
+		//----------------------------------------------------------------GENERIC_SET---submode------------------------------
+		case GENERIC_SET_Homing_SettingPositiveSpeed:
+		case GENERIC_SET_Homing_SettingNegativeSpeed:
+
+			{
+				uint8_t message[MSGLEN_ReportCurrentMode_GENERIC_SET_Homing];
+				memset(message,0,sizeof(message));
+				reportCurrentModeHeader(message);
+				reportCurrentModePosition(message);
+
+				int32_t phase = GenericSet::PHASE_HOMING;
+				memcpy(
+					&message[MSGPOS_GENERIC_SET_Phase],
+					&phase,
+					sizeof(int32_t)
+					);
+
+				Diagnostics::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,message,sizeof(message));
+				HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,message,sizeof(message));
+			}
+			break;
+		//----------------------------------------------------------------GENERIC_SET---submode------------------------------
 		}			
 
 

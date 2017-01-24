@@ -103,7 +103,14 @@ public:
         static const quint8 GENERIC_SET_Pause1 = 55;
 
 
-        static const quint8 ERROR_Error = 56;
+		static const quint8 GENERIC_SET_Homing_SettingPositiveSpeed = 56;
+		static const quint8 GENERIC_SET_Homing_SettingNegativeSpeed = 57;
+		static const quint8 GENERIC_SET_Pause2 = 58;
+
+
+
+
+        static const quint8 ERROR_Error = 59;
 
 
     };

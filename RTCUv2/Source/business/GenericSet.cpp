@@ -4,7 +4,7 @@
 #include "GenericSetSettings.h"
 
 
-int32_t GenericSet::pause1CounterMsec;
+int32_t GenericSet::pauseCounterMsec;
 
 
 
@@ -17,27 +17,25 @@ void GenericSet::start(){
 }
 //=================================================================================================
 void GenericSet::pause1Start(){
-
-	pause1CounterMsec = GenericSetSettings::set.pause1;
-
-
+	pauseCounterMsec = GenericSetSettings::set.pause1;
+}
+void GenericSet::pause2Start(){
+	pauseCounterMsec = GenericSetSettings::set.pause2;
 }
 //=================================================================================================
-bool GenericSet::isPause1Done(){
+bool GenericSet::isPauseDone(){
 
-	if (pause1CounterMsec<=0){
-		pause1CounterMsec = 0;
+	if (pauseCounterMsec<=0){
+		pauseCounterMsec = 0;
 		return true;
 	}else{
-		pause1CounterMsec-=100;
+		pauseCounterMsec-=100;
 		return false;
 	}
-
-
 }
 //=================================================================================================
-int32_t GenericSet::getPause1TimeRemaining(){
-	return pause1CounterMsec;
+int32_t GenericSet::getPauseTimeRemaining(){
+	return pauseCounterMsec;
 }
 //=================================================================================================
 
