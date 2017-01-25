@@ -90,8 +90,8 @@ bool GenericSetSettings::checkSet(Set &setToCheck){
 	if (
 		(setToCheck.pause1<0)||
 		(setToCheck.pause2<0)||
-		(setToCheck.startPosition<0)||
-		(setToCheck.startPosition>10000)||
+		(setToCheck.startPositionRel<0)||
+		(setToCheck.startPositionRel>10000)||
 		(setToCheck.moveCount<MOVE_COUNT_MIN)||
 		(setToCheck.moveCount>MOVE_COUNT_MAX)||
 		false
@@ -102,8 +102,8 @@ bool GenericSetSettings::checkSet(Set &setToCheck){
 		
 			for(int32_t moveIndex=0;moveIndex<setToCheck.moveCount;moveIndex++){
 				if (
-					(setToCheck.moves[moveIndex].destinationPosition<0)||
-					(setToCheck.moves[moveIndex].destinationPosition>10000)||
+					(setToCheck.moves[moveIndex].destinationPositionRel<0)||
+					(setToCheck.moves[moveIndex].destinationPositionRel>10000)||
 					(setToCheck.moves[moveIndex].speed<0)||
 					false
 					){

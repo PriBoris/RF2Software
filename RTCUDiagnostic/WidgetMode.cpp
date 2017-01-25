@@ -1185,10 +1185,32 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
-					lblPositionRel->setVisible(true);
-					lblTimeToSet->setVisible(true);
-					lblRepIndex->setVisible(true);
-					lblForceValue->setVisible(true);
+
+                    lblTimeToSet->setVisible(false);
+
+                    {
+                        lblRepIndex->setVisible(true);
+                        QString moveIndexStr = QString::number(TLV::getInt32(value,35));
+                        lblRepIndex->setText("Движение: "+moveIndexStr);
+                        (reportLogger->stream) << "moveIndex=" << moveIndexStr << ";";
+                    }\
+                    {
+                        lblPositionRel->setVisible(true);
+                        double relPos = (double)TLV::getInt32(value,39)/100.0;
+                        QString relPosStr = QString::number(relPos,'f',3)+"%";
+                        lblPositionRel->setText("Относительное положение: "+relPosStr);
+                        (reportLogger->stream) << "relPos=" << relPosStr << ";";
+                    }
+
+
+                    {
+                        lblForceValue->setVisible(true);
+                        QString forceStr = QString::number(TLV::getInt32(value,43))+"g";
+                        lblForceValue->setText("Усилие: "+forceStr);
+                        (reportLogger->stream) << "force=" << forceStr << ";";
+                    }
+
+
 
 					break;
 

@@ -1771,6 +1771,9 @@ void MainTick::process(){ //called every 100ms
 		}else if (GenericSet::isPauseDone()==true){
 
 			setSubmode(WAITING_Waiting);
+
+			setSubmode(GENERIC_SET_Move_Preparing);
+
 			__asm("	nop");
 
 		}else{
@@ -1780,6 +1783,71 @@ void MainTick::process(){ //called every 100ms
 		processFieldbus();
 	
 	
+		break;
+	//------------------------------------------------GENERIC-SET---------------------------------
+	case GENERIC_SET_Move_Preparing:
+
+		if (PositionTask::getDirection(GenericSet::getMoveDestinationPosition())==Servo::POSITIVE_DIRECTION){
+
+			Servo::movePositive();
+
+			setSubmode(GENERIC_SET_Move_Moving);
+			reportServoModePositive();
+		}else{
+
+			Servo::moveNegative();
+
+			setSubmode(GENERIC_SET_Move_Moving);
+			reportServoModeNegative();
+		}	
+
+		processFieldbus();
+
+		break;
+	//------------------------------------------------GENERIC-SET---------------------------------
+	case GENERIC_SET_Move_Moving:
+
+		if (true==RxMessageQueue::cancelMessageReceived()){
+
+			Servo::brake();
+			setSubmode(WAITING_Waiting);
+			reportServoModeStop();
+
+		}else{
+
+			bool positionTaskIsComplete = 
+				PositionTask::checkPosition(
+					GenericSet::getMoveDestinationPosition(),
+					Servo::getMoveDirection()
+					);
+
+			if (positionTaskIsComplete==true){
+
+				Servo::brake();
+
+				GenericSet::moveComplete();
+				if (GenericSet::isSetComplete()==false){
+
+					setSubmode(GENERIC_SET_Move_Preparing);
+
+				}else{
+
+					setSubmode(WAITING_Waiting);
+
+				}
+
+				reportServoModeStop();
+
+			}else{
+
+				reportServoModeContinue();
+
+			}
+
+		}
+
+		processFieldbus();
+
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
 

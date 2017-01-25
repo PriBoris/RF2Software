@@ -23,7 +23,7 @@ private:
 		INITIALIZING_HMIPoweringOn = 2,
 		INITIALIZING_HMIStarting = 3,
 		INITIALIZING_WaitingStableServoConnection = 4,
-		//TODO: write 0Hz to servo before any usage
+		//TODO: write 0Hz to servo before any use
 		IDLE_Idle = 5,
 		WAITING_Waiting =6,
 		PERSONAL_Starting = 7,
@@ -81,11 +81,13 @@ private:
 		GENERIC_SET_Homing_SettingNegativeSpeed = 57,
 		GENERIC_SET_Homing_PreparingMain = 58,
 		GENERIC_SET_Homing_MovingMain = 59,
-
 		GENERIC_SET_Pause2 = 60,
+		GENERIC_SET_Move_Preparing = 61,
+		GENERIC_SET_Move_Moving = 62,
 
 
-		FAULT_Fault = 61,
+
+		FAULT_Fault = 63,
 	};
 	static Submode submode;
 	static Submode submodePrev;
@@ -152,6 +154,7 @@ private:
 	static const uint16_t MSGLEN_Position = 4*sizeof(int32_t);
 	static const uint16_t MSGLEN_Phase = sizeof(int32_t);
 	static const uint16_t MSGLEN_SetIndex = sizeof(int32_t);
+	static const uint16_t MSGLEN_MoveIndex = sizeof(int32_t);
 	static const uint16_t MSGLEN_RepIndex = sizeof(int32_t);
 	static const uint16_t MSGLEN_RepDirection = sizeof(int32_t);
 	static const uint16_t MSGLEN_PositionRel = sizeof(int32_t);
@@ -211,6 +214,13 @@ private:
 		MSGLEN_Phase+
 		0;//35
 
+	static const uint16_t MSGLEN_ReportCurrentMode_GENERIC_SET_Move = 
+		MSGLEN_Mode+MSGLEN_CurrentDateTime+MSGLEN_OdometerTimeWay+MSGLEN_Position+
+		MSGLEN_Phase+
+		MSGLEN_MoveIndex+
+		MSGLEN_PositionRel+
+		MSGLEN_Force+
+		0;//47
 
 
 	static const uint16_t MSGPOS_Mode = 0;
@@ -285,6 +295,23 @@ private:
 		MSGLEN_Mode+MSGLEN_CurrentDateTime+MSGLEN_OdometerTimeWay+MSGLEN_Position+
 		MSGLEN_Phase+
 		0;
+
+	static const uint16_t MSGPOS_GENERIC_SET_MoveIndex = 
+		MSGLEN_Mode+MSGLEN_CurrentDateTime+MSGLEN_OdometerTimeWay+MSGLEN_Position+
+		MSGLEN_Phase+
+		0;
+	static const uint16_t MSGPOS_GENERIC_SET_PositionRel = 
+		MSGLEN_Mode+MSGLEN_CurrentDateTime+MSGLEN_OdometerTimeWay+MSGLEN_Position+
+		MSGLEN_Phase+
+		MSGLEN_MoveIndex+
+		0;
+	static const uint16_t MSGPOS_GENERIC_SET_Force = 
+		MSGLEN_Mode+MSGLEN_CurrentDateTime+MSGLEN_OdometerTimeWay+MSGLEN_Position+
+		MSGLEN_Phase+
+		MSGLEN_MoveIndex+
+		MSGLEN_PositionRel+
+		0;
+
 
 
 	//-----------------------------------------------------------

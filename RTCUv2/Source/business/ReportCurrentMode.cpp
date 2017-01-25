@@ -644,6 +644,7 @@ void MainTick::reportCurrentMode(){
 		case GENERIC_SET_Homing_PreparingMain:
 		case GENERIC_SET_Homing_MovingMain:
 
+
 			{
 				uint8_t message[MSGLEN_ReportCurrentMode_GENERIC_SET_Homing];
 				memset(message,0,sizeof(message));
@@ -662,10 +663,60 @@ void MainTick::reportCurrentMode(){
 			}
 			break;
 		//----------------------------------------------------------------GENERIC_SET---submode------------------------------
+		case GENERIC_SET_Move_Preparing:
+		case GENERIC_SET_Move_Moving:
+		
+			{
+
+
+				uint8_t message[MSGLEN_ReportCurrentMode_GENERIC_SET_Move];
+				memset(message,0,sizeof(message));
+				reportCurrentModeHeader(message);
+				reportCurrentModePosition(message);
+
+				int32_t phase = GenericSet::PHASE_GENERIC_MOVE;
+				memcpy(
+					&message[MSGPOS_GENERIC_SET_Phase],
+					&phase,
+					MSGLEN_Phase
+					);
+
+				int32_t moveIndex = GenericSet::getMoveIndex();
+				memcpy(
+					&message[MSGPOS_GENERIC_SET_MoveIndex],
+					&moveIndex,
+					MSGLEN_MoveIndex
+					);
+
+				int32_t positionRel = PositionTask::getRelativePosition();
+				memcpy(
+					&message[MSGPOS_GENERIC_SET_PositionRel],
+					&positionRel,
+					MSGLEN_PositionRel
+					);
+
+				int32_t force = StrainGauge::getFilteredValue();
+				memcpy(
+					&message[MSGPOS_GENERIC_SET_Force],
+					&force,
+					MSGLEN_Force
+					);
+
+				Diagnostics::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,message,sizeof(message));
+				HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,message,sizeof(message));
+
+			}
+
+			break;
+		//----------------------------------------------------------------GENERIC_SET---submode------------------------------
 		}			
 
 
 		break;
+
+
+
+
 	//-------------------------------------------------------------
 	case FAULT:
 

@@ -12,7 +12,7 @@ class GenericSetSettings{
 public:
 
 	struct Move{
-		int32_t destinationPosition;
+		int32_t destinationPositionRel;
 		int32_t speed;
 	};
 
@@ -22,7 +22,7 @@ public:
 	struct Set{
 		int32_t pause1;
 		int32_t pause2;
-		int32_t startPosition;
+		int32_t startPositionRel;
 		int32_t moveCount;
 		Move moves[MOVE_COUNT_MAX];
 	};

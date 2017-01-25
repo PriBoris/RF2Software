@@ -10,6 +10,8 @@ private:
 
 	static int32_t pauseCounterMsec;
 
+	static int32_t moveIndex;
+
 public:
 
 	static const int32_t PHASE_PAUSE1 = 9;
@@ -27,6 +29,13 @@ public:
 	static int32_t getPauseTimeRemaining();
 
 	static int32_t getPositionMainStart();
+
+
+	static void moveComplete();
+	static bool isSetComplete();
+
+	static int32_t getMoveDestinationPosition();
+	static int32_t getMoveIndex();
 
 };
 

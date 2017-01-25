@@ -6,6 +6,7 @@
 
 int32_t GenericSet::pauseCounterMsec;
 
+int32_t GenericSet::moveIndex;
 
 
 
@@ -13,7 +14,7 @@ int32_t GenericSet::pauseCounterMsec;
 void GenericSet::start(){
 
 	pauseCounterMsec = 0;
-
+	moveIndex= 0;
 }
 //=================================================================================================
 void GenericSet::pause1Start(){
@@ -40,8 +41,37 @@ int32_t GenericSet::getPauseTimeRemaining(){
 //=================================================================================================
 int32_t GenericSet::getPositionMainStart(){
 
-	return PositionTask::relPositionToAbsPosition(GenericSetSettings::set.startPosition);
+	return 
+		PositionTask::relPositionToAbsPosition(
+			GenericSetSettings::set.startPositionRel
+			);
 }
 //=================================================================================================
+void GenericSet::moveComplete(){
+	moveIndex++;
+}
+//=================================================================================================
+bool GenericSet::isSetComplete(){
+	return (moveIndex==GenericSetSettings::set.moveCount);
+}
+//=================================================================================================
+int32_t GenericSet::getMoveDestinationPosition(){
+
+	if (moveIndex<GenericSetSettings::set.moveCount){
+		return 
+			PositionTask::relPositionToAbsPosition(
+				GenericSetSettings::set.moves[moveIndex].destinationPositionRel
+				);
+	}else{
+		return 0;
+	}
+	
+}
+//=================================================================================================
+int32_t GenericSet::getMoveIndex(){
+	return moveIndex;
+}
+//=================================================================================================
+
 
 
