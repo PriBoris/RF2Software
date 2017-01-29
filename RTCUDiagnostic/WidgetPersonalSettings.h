@@ -17,7 +17,6 @@
 
 #include "WidgetSettingsInteger.h"
 
-#include "Utils.h"
 
 struct PersonalSettings{
 

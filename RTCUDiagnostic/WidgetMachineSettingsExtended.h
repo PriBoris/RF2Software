@@ -13,6 +13,7 @@
 
 #include "WidgetSettingsInteger.h"
 #include "WidgetSettingsFloat.h"
+#include "ReportLogger.h"
 
 
 struct TMachineSettingsExtended{
@@ -40,6 +41,7 @@ class WidgetMachineSettingsExtended : public QWidget
     Q_OBJECT
 
     QLabel *lblRxMessageCounter;
+    QLabel *lblTxMessageCounter;
 
 	WidgetSettingsInteger *wgtPositionMainMax;
     WidgetSettingsInteger *wgtPositionMainMin;
@@ -65,13 +67,17 @@ class WidgetMachineSettingsExtended : public QWidget
 
     SerialPortTransceiver *serialPortTransceiver_;
     quint32 rxMessageCounter;
+    quint32 txMessageCounter;
 
+    ReportLogger *reportLogger;
 
 public:
     explicit WidgetMachineSettingsExtended(
             SerialPortTransceiver *serialPortTransceiver,
             QWidget *parent = 0
             );
+    ~WidgetMachineSettingsExtended();
+    
 signals:
 
 public slots:

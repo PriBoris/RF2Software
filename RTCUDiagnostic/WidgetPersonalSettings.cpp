@@ -1,5 +1,6 @@
 #include "WidgetPersonalSettings.h"
 
+#include "Utils.h"
 
 //============================================================================================================
 WidgetPersonalSettings::WidgetPersonalSettings(

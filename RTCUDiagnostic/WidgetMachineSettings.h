@@ -14,8 +14,8 @@
 #include "TLV.h"
 #include "tlvwriter.h"
 
-
 #include "WidgetSettingsInteger.h"
+#include "ReportLogger.h"
 
 struct TMachineSettings{
 
@@ -59,11 +59,14 @@ class WidgetMachineSettings : public QWidget{
     SerialPortTransceiver *serialPortTransceiver_;
     quint32 rxMessageCounter;
 
+    ReportLogger *reportLogger;
+
 public:
     explicit WidgetMachineSettings(
             SerialPortTransceiver *serialPortTransceiver,
             QWidget *parent = 0
             );
+    ~WidgetMachineSettings();
 
 signals:
 

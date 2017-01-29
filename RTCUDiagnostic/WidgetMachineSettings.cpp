@@ -1,5 +1,16 @@
+
 #include "WidgetMachineSettings.h"
 
+#include <QDateTime>
+
+#include "Utils.h"
+
+
+//=================================================================================================
+WidgetMachineSettings::~WidgetMachineSettings(){
+    delete reportLogger;
+}
+//=================================================================================================
 WidgetMachineSettings::WidgetMachineSettings(
         SerialPortTransceiver *serialPortTransceiver,
         QWidget *parent
@@ -8,8 +19,17 @@ WidgetMachineSettings::WidgetMachineSettings(
     serialPortTransceiver_ = serialPortTransceiver;
     rxMessageCounter = 0;
 
-    lblRxMessageCounter = new QLabel("lblRxMessageCounter");
-    lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+    reportLogger = new ReportLogger("ReportMachineSettings.txt");
+
+    {
+        lblRxMessageCounter = new QLabel;
+
+        lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+
+        Utils::MessageCounterInitialize("Rx",rxMessageCounter,lblRxMessageCounter);
+
+    }
+
 
     {
         wgtPositionMainMax = new WidgetSettingsInteger("positionMainMax","MachineSettings_PositionMainMax",99);
@@ -105,13 +125,14 @@ void WidgetMachineSettings::newMessageReceived(quint8 tag,quint32 msgID,QByteArr
 
     if (tag==TLV::TAG_ReportMachineSettings){
 
-        rxMessageCounter++;
-        lblRxMessageCounter->setText(
-                    "Сообщений: "+QString::number(rxMessageCounter)+" "
-                    +"(длина последнего = "
-                    +QString::number(value.length())
-                    +" байт)"
-                    );
+        Utils::MessageCounterIncrement("Rx",rxMessageCounter,lblRxMessageCounter,value);
+
+        {
+            QDateTime dateTime(QDateTime::currentDateTime());
+            QString pcTimeStr = dateTime.toString("yyyy-MM-dd HH:mm:ss");
+            (reportLogger->stream) << pcTimeStr << "\n";
+        }
+
 
         if (value.length()==sizeof(TMachineSettings)){
 
@@ -129,6 +150,18 @@ void WidgetMachineSettings::newMessageReceived(quint8 tag,quint32 msgID,QByteArr
             wgtSpeedAbsMainMax->setReadValue(machineSettings.speedAbsMainMax);
             wgtSpeedAbsMainPersonal->setReadValue(machineSettings.speedAbsMainPersonal);
 
+            (reportLogger->stream) << "positionMainMax=" << QString::number(machineSettings.positionMainMax) << "\n";
+            (reportLogger->stream) << "positionMainMin=" << QString::number(machineSettings.positionMainMin) << "\n";
+            (reportLogger->stream) << "positionAux1Max=" << QString::number(machineSettings.positionAux1Max) << "\n";
+            (reportLogger->stream) << "positionAux1Min=" << QString::number(machineSettings.positionAux1Min) << "\n";
+            (reportLogger->stream) << "positionAux2Max=" << QString::number(machineSettings.positionAux2Max) << "\n";
+            (reportLogger->stream) << "positionAux2Min=" << QString::number(machineSettings.positionAux2Min) << "\n";
+            (reportLogger->stream) << "positionAux3Max=" << QString::number(machineSettings.positionAux3Max) << "\n";
+            (reportLogger->stream) << "positionAux3Min=" << QString::number(machineSettings.positionAux3Min) << "\n";
+            (reportLogger->stream) << "speedAbsMainMax=" << QString::number(machineSettings.speedAbsMainMax) << "\n";
+            (reportLogger->stream) << "speedAbsMainPersonal=" << QString::number(machineSettings.speedAbsMainPersonal) << "\n";
+
+
         }else{
 
             wgtPositionMainMax->setUnknownReadValue();
@@ -145,6 +178,8 @@ void WidgetMachineSettings::newMessageReceived(quint8 tag,quint32 msgID,QByteArr
 
         }
 
+        (reportLogger->stream) << "\n";
+        reportLogger->flush();
 
     }
 
