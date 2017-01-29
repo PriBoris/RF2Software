@@ -675,39 +675,34 @@ void MainTick::process(){ //called every 100ms
 	case PARKING_PreparingMain:
 
 		//MessageQueue::flush();
+		{
+			bool positionTaskIsNotNeeded = 
+				PositionTask::checkPositionStatically(
+					PersonalSettings::protocolStruct.positionMainParking
+					);
 
-		if (PositionTask::checkPosition(PersonalSettings::protocolStruct.positionMainParking)==false){
+			if (positionTaskIsNotNeeded==true){
 
-			if (PositionTask::getDirection(PersonalSettings::protocolStruct.positionMainParking)==Servo::POSITIVE_DIRECTION){
-				Servo::brake(false);
-				Servo::movePositive(true);
-				Servo::moveNegative(false);
-				setSubmode(PARKING_MovingMain);
-
-				reportServoModePositive();
-
+				Servo::brake();				
+				setSubmode(PARKING_PreparingAux);
+				reportServoModeStop();
 
 			}else{
-				Servo::brake(false);
-				Servo::movePositive(false);
-				Servo::moveNegative(true);
-				setSubmode(PARKING_MovingMain);
 
-				reportServoModeNegative();
+				if (PositionTask::getDirection(PersonalSettings::protocolStruct.positionMainParking)==Servo::POSITIVE_DIRECTION){
 
-
-			}						
-
-		}else{
-			setSubmode(PARKING_PreparingAux);
+					Servo::movePositive();
+					setSubmode(PARKING_MovingMain);
+					reportServoModePositive();
+				}else{
+					Servo::moveNegative();
+					setSubmode(PARKING_MovingMain);
+					reportServoModeNegative();
+				}
+			}	
 		}
 
-
-
-
 		processFieldbus();
-
-
 
 		break;
 	//-------------------------------------------------PARKING-----------------------------------
@@ -715,28 +710,31 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
+			Servo::brake();
 			setSubmode(WAITING_Waiting);	
-
-
-		}else if (PositionTask::checkPosition(PersonalSettings::protocolStruct.positionMainParking)==true){
-
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
-			setSubmode(PARKING_PreparingAux);
-
 			reportServoModeStop();
+
 		}else{
-			reportServoModeContinue();
+
+			bool positionTaskIsComplete = 
+				PositionTask::checkPositionDynamically(
+					PersonalSettings::protocolStruct.positionMainParking,
+					Servo::getMoveDirection()
+					);
+
+			if (positionTaskIsComplete==true){
+
+				Servo::brake();				
+				setSubmode(PARKING_PreparingAux);
+				reportServoModeStop();
+
+			}else{
+				reportServoModeContinue();
+
+			}
 		}
 
 		processFieldbus();
-		
-		
-
 
 		break;
 	//-------------------------------------------------PARKING-----------------------------------
@@ -818,7 +816,7 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Homing_Preparing:
 
-		if (PositionTask::checkPosition(ForceTestDynamic::getParkingPosition())==false){
+		if (PositionTask::checkPositionStatically(ForceTestDynamic::getParkingPosition())==false){
 
 			if (PositionTask::getDirection(ForceTestDynamic::getParkingPosition())==Servo::POSITIVE_DIRECTION){
 
@@ -855,7 +853,7 @@ void MainTick::process(){ //called every 100ms
 			Servo::moveNegative(false);
 			setSubmode(WAITING_Waiting);
 
-		}else if (PositionTask::checkPosition(ForceTestDynamic::getParkingPosition())==true){
+		}else if (PositionTask::checkPositionStatically(ForceTestDynamic::getParkingPosition())==true){
 
 			Servo::brake(true);
 			Servo::movePositive(false);
@@ -928,7 +926,7 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Testing_Preparing:
 
-		if (PositionTask::checkPosition(ForceTestDynamic::getSecondPosition())==false){
+		if (PositionTask::checkPositionStatically(ForceTestDynamic::getSecondPosition())==false){
 
 			if (PositionTask::getDirection(ForceTestDynamic::getSecondPosition())==Servo::POSITIVE_DIRECTION){
 
@@ -965,7 +963,7 @@ void MainTick::process(){ //called every 100ms
 
 		if (
 			(true==RxMessageQueue::cancelMessageReceived())||
-			(PositionTask::checkPosition(ForceTestDynamic::getSecondPosition())==true)
+			(PositionTask::checkPositionStatically(ForceTestDynamic::getSecondPosition())==true)
 		){
 
 			Servo::brake(true);
@@ -1026,7 +1024,7 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------FTEST--STATIC----------------------------------
 	case FTEST_STATIC_Homing_Preparing:
 
-		if (PositionTask::checkPosition(ForceTestStatic::getTestPosition())==false){
+		if (PositionTask::checkPositionStatically(ForceTestStatic::getTestPosition())==false){
 
 			if (PositionTask::getDirection(ForceTestStatic::getTestPosition())==Servo::POSITIVE_DIRECTION){
 
@@ -1067,7 +1065,7 @@ void MainTick::process(){ //called every 100ms
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-		}else if (PositionTask::checkPosition(ForceTestStatic::getTestPosition())==true){
+		}else if (PositionTask::checkPositionStatically(ForceTestStatic::getTestPosition())==true){
 
 			Servo::brake(true);
 			Servo::movePositive(false);
@@ -1206,7 +1204,7 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------EXCERCISE----------------------------------
 	case EXERCISE_Homing_PreparingMain:
 
-		if (PositionTask::checkPosition(Excercise::getPositionMainHoming())==false){
+		if (PositionTask::checkPositionStatically(Excercise::getPositionMainHoming())==false){
 
 			if (PositionTask::getDirection(Excercise::getPositionMainHoming())==Servo::POSITIVE_DIRECTION){
 
@@ -1242,7 +1240,7 @@ void MainTick::process(){ //called every 100ms
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-		}else if (PositionTask::checkPosition(Excercise::getPositionMainHoming())==true){
+		}else if (PositionTask::checkPositionStatically(Excercise::getPositionMainHoming())==true){
 
 			Servo::brake(true);
 			Servo::movePositive(false);
@@ -1328,7 +1326,7 @@ void MainTick::process(){ //called every 100ms
 
 		}else{
 
-			bool positionGoalAchieved = PositionTask::checkPosition(Excercise::getPositionMainFirstMovement());
+			bool positionGoalAchieved = PositionTask::checkPositionStatically(Excercise::getPositionMainFirstMovement());
 
 			if (positionGoalAchieved==false){
 
@@ -1434,7 +1432,7 @@ void MainTick::process(){ //called every 100ms
 
 		}else{
 
-			bool positionGoalAchieved = PositionTask::checkPosition(Excercise::getPositionMainSecondMovement());
+			bool positionGoalAchieved = PositionTask::checkPositionStatically(Excercise::getPositionMainSecondMovement());
 
 			if (positionGoalAchieved==false){
 
@@ -1703,7 +1701,7 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------GENERIC-SET---------------------------------
 	case GENERIC_SET_Homing_PreparingMain:
 
-		if (PositionTask::checkPosition(GenericSet::getPositionMainStart())==false){
+		if (PositionTask::checkPositionStatically(GenericSet::getPositionMainStart())==false){
 
 			if (PositionTask::getDirection(GenericSet::getPositionMainStart())==Servo::POSITIVE_DIRECTION){
 
@@ -1737,7 +1735,7 @@ void MainTick::process(){ //called every 100ms
 		}else{
 
 			bool positionTaskIsComplete = 
-				PositionTask::checkPosition(
+				PositionTask::checkPositionDynamically(
 					GenericSet::getPositionMainStart(),
 					Servo::getMoveDirection()
 					);
@@ -1816,7 +1814,7 @@ void MainTick::process(){ //called every 100ms
 		}else{
 
 			bool positionTaskIsComplete = 
-				PositionTask::checkPosition(
+				PositionTask::checkPositionDynamically(
 					GenericSet::getMoveDestinationPosition(),
 					Servo::getMoveDirection()
 					);

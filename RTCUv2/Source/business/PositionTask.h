@@ -8,8 +8,9 @@ class PositionTask{
 
 public:
 
-	static bool checkPosition(int32_t taskPosition);
-	static bool checkPosition(int32_t taskPosition, bool servoMoveDirection);
+	static bool checkPositionStatically(int32_t taskPosition);
+	
+	static bool checkPositionDynamically(int32_t taskPosition, bool servoMoveDirection);
 
 
 	//static bool checkPosition(int32_t taskPosition,int32_t taskSpeed);

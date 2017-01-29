@@ -12,7 +12,7 @@
 #include "servo/encoder.h"
 
 //=================================================================================================
-bool PositionTask::checkPosition(int32_t taskPosition){
+bool PositionTask::checkPositionStatically(int32_t taskPosition){
 
 	int32_t actualPosition = Encoder::getValue();
 	
@@ -28,7 +28,7 @@ bool PositionTask::checkPosition(int32_t taskPosition){
 
 }
 //=================================================================================================
-bool PositionTask::checkPosition(int32_t taskPosition, bool servoMoveDirection){
+bool PositionTask::checkPositionDynamically(int32_t taskPosition, bool servoMoveDirection){
 
 	int32_t actualPosition = Encoder::getValue();
 
