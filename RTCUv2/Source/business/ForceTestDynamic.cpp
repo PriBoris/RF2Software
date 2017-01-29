@@ -50,12 +50,22 @@ bool ForceTestDynamic::load(RxMessage *message){
 	}
 }
 //=================================================================================================
-int32_t ForceTestDynamic::getParkingPosition(){
+int32_t ForceTestDynamic::getStartPosition(){
 
 	if (testType==CONCENTRIC){
 		return PersonalSettings::protocolStruct.positionMainB;
 	}else{
 		return PersonalSettings::protocolStruct.positionMainA;
+	}
+
+}
+//=================================================================================================
+int32_t ForceTestDynamic::getStopPosition(){
+
+	if (testType==CONCENTRIC){
+		return PersonalSettings::protocolStruct.positionMainA;
+	}else{
+		return PersonalSettings::protocolStruct.positionMainB;
 	}
 
 }
@@ -77,15 +87,3 @@ void ForceTestDynamic::recalculateServoFrequency(){
 
 }
 //=================================================================================================
-int32_t ForceTestDynamic::getSecondPosition(){
-
-	if (testType==CONCENTRIC){
-		return PersonalSettings::protocolStruct.positionMainA;
-	}else{
-		return PersonalSettings::protocolStruct.positionMainB;
-	}
-
-}
-//=================================================================================================
-
-

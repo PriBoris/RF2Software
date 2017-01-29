@@ -20,8 +20,8 @@ public:
 	static bool load(RxMessage *message);
 	static int32_t pauseBeforeTestMsec;
 
-	static int32_t getParkingPosition();
-	static int32_t getSecondPosition();
+	static int32_t getStartPosition();
+	static int32_t getStopPosition();
 
 	static void recalculateServoFrequency();
 

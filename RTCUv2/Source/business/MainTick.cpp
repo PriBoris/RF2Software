@@ -816,30 +816,36 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Homing_Preparing:
 
-		if (PositionTask::checkPositionStatically(ForceTestDynamic::getParkingPosition())==false){
+		{
+			bool positionTaskIsNotNeeded = 
+				PositionTask::checkPositionStatically(
+					ForceTestDynamic::getStartPosition()
+					);
 
-			if (PositionTask::getDirection(ForceTestDynamic::getParkingPosition())==Servo::POSITIVE_DIRECTION){
+			if (positionTaskIsNotNeeded==true){
 
-				Servo::brake(false);
-				Servo::movePositive(true);
-				Servo::moveNegative(false);
+				//skip
+				Servo::brake();				
+				setSubmode(FTEST_DYNAMIC_Pause);
+				reportServoModeStop();
 
-				setSubmode(FTEST_DYNAMIC_Homing_Moving);
-				reportServoModePositive();
 			}else{
 
-				Servo::brake(false);
-				Servo::movePositive(false);
-				Servo::moveNegative(true);
+				if (PositionTask::getDirection(ForceTestDynamic::getStartPosition())==Servo::POSITIVE_DIRECTION){
 
-				setSubmode(FTEST_DYNAMIC_Homing_Moving);
-				reportServoModeNegative();
-			}						
+					Servo::movePositive();
+					setSubmode(FTEST_DYNAMIC_Homing_Moving);
+					reportServoModePositive();
+				}else{
 
-		}else{
-			setSubmode(FTEST_DYNAMIC_Pause);
+					Servo::moveNegative();
+					setSubmode(FTEST_DYNAMIC_Homing_Moving);
+					reportServoModeNegative();
+				}	
+
+			}
+
 		}
-
 
 		processFieldbus();
 		break;
@@ -848,41 +854,44 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
+			Servo::brake();
 			setSubmode(WAITING_Waiting);
-
-		}else if (PositionTask::checkPositionStatically(ForceTestDynamic::getParkingPosition())==true){
-
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
-			setSubmode(FTEST_DYNAMIC_Pause);
 			reportServoModeStop();
 
 		}else{
 
-			reportServoModeContinue();
+			bool positionTaskIsComplete = 
+				PositionTask::checkPositionDynamically(
+					ForceTestDynamic::getStartPosition(),
+					Servo::getMoveDirection()
+					);
+
+			if (positionTaskIsComplete==true){
+
+				Servo::brake();				
+				setSubmode(FTEST_DYNAMIC_Pause);
+				reportServoModeStop();
+
+			}else{
+				reportServoModeContinue();
+
+			}
 
 		}
 
 		processFieldbus();
 
-
-
-
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Pause:
 
-
 		if (true==RxMessageQueue::cancelMessageReceived()){
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
+
+			Servo::brake();	
 			setSubmode(WAITING_Waiting);
+
 		}else{
+
 			ForceTestDynamic::pauseBeforeTestMsec -= 100;
 			if (ForceTestDynamic::pauseBeforeTestMsec<=0){
 				setSubmode(FTEST_DYNAMIC_Testing_SettingPositiveSpeed);	
@@ -926,58 +935,50 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Testing_Preparing:
 
-		if (PositionTask::checkPositionStatically(ForceTestDynamic::getSecondPosition())==false){
+		if (PositionTask::getDirection(ForceTestDynamic::getStopPosition())==Servo::POSITIVE_DIRECTION){
 
-			if (PositionTask::getDirection(ForceTestDynamic::getSecondPosition())==Servo::POSITIVE_DIRECTION){
-
-				Servo::movePositive(true);
-				Servo::moveNegative(false);
-				Servo::brake(false);
-
-				setSubmode(FTEST_DYNAMIC_Testing_Moving);
-				reportServoModePositive();
-
-			}else{
-
-				Servo::movePositive(false);
-				Servo::moveNegative(true);
-				Servo::brake(false);
-
-				setSubmode(FTEST_DYNAMIC_Testing_Moving);
-				reportServoModeNegative();
-			}						
+			Servo::movePositive();
+			setSubmode(FTEST_DYNAMIC_Testing_Moving);
+			reportServoModePositive();
 
 		}else{
-			setSubmode(WAITING_Waiting);
-		}
 
+			Servo::moveNegative();
+			setSubmode(FTEST_DYNAMIC_Testing_Moving);
+			reportServoModeNegative();
+		}	
 
 		processFieldbus();
-
 
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Testing_Moving:
 
+		if (true==RxMessageQueue::cancelMessageReceived()){
 
-
-		if (
-			(true==RxMessageQueue::cancelMessageReceived())||
-			(PositionTask::checkPositionStatically(ForceTestDynamic::getSecondPosition())==true)
-		){
-
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
-
-			setSubmode(WAITING_Waiting);
-			reportServoModeStop();
-
+			Servo::brake();
+			setSubmode(WAITING_Waiting);	
+			reportServoModeStop();			
 		}else{
 
-			reportServoModeContinue();
-		}
+			bool positionTaskIsComplete = 
+				PositionTask::checkPositionDynamically(
+					ForceTestDynamic::getStopPosition(),
+					Servo::getMoveDirection()
+					);
 
+			if (positionTaskIsComplete==true){
+
+				Servo::brake();				
+				setSubmode(WAITING_Waiting);
+				reportServoModeStop();
+
+			}else{
+				reportServoModeContinue();
+
+			}
+
+		}
 
 		processFieldbus();
 
