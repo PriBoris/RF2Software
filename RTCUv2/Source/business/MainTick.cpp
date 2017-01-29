@@ -1025,30 +1025,36 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------FTEST--STATIC----------------------------------
 	case FTEST_STATIC_Homing_Preparing:
 
-		if (PositionTask::checkPositionStatically(ForceTestStatic::getTestPosition())==false){
+		{
 
-			if (PositionTask::getDirection(ForceTestStatic::getTestPosition())==Servo::POSITIVE_DIRECTION){
+			bool positionTaskIsNotNeeded = 
+				PositionTask::checkPositionStatically(
+					ForceTestStatic::getTestPosition()
+					);
 
-				Servo::movePositive(true);
-				Servo::moveNegative(false);
-				Servo::brake(false);
+			if (positionTaskIsNotNeeded==true){
 
-				setSubmode(FTEST_STATIC_Homing_Moving);
-				reportServoModePositive();
+				Servo::brake();				
+				setSubmode(FTEST_STATIC_Pause);
+				reportServoModeStop();
 
 			}else{
 
-				Servo::movePositive(false);
-				Servo::moveNegative(true);
-				Servo::brake(false);
+				if (PositionTask::getDirection(ForceTestStatic::getTestPosition())==Servo::POSITIVE_DIRECTION){
 
-				setSubmode(FTEST_STATIC_Homing_Moving);
-				reportServoModeNegative();
-			}						
+					Servo::movePositive();
+					setSubmode(FTEST_STATIC_Homing_Moving);
+					reportServoModePositive();
 
-		}else{
+				}else{
 
-			setSubmode(FTEST_STATIC_Pause);
+					Servo::moveNegative();
+					setSubmode(FTEST_STATIC_Homing_Moving);
+					reportServoModeNegative();
+				}	
+
+			}
+
 		}
 
 		processFieldbus();
@@ -1059,25 +1065,28 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
-
+			Servo::brake();
 			setSubmode(WAITING_Waiting);
-			reportServoModeStop();
-
-		}else if (PositionTask::checkPositionStatically(ForceTestStatic::getTestPosition())==true){
-
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
-
-			setSubmode(FTEST_STATIC_Pause);
 			reportServoModeStop();
 
 		}else{
 
-			reportServoModeContinue();
+			bool positionTaskIsComplete = 
+				PositionTask::checkPositionDynamically(
+					ForceTestStatic::getTestPosition(),
+					Servo::getMoveDirection()
+					);
+
+			if (positionTaskIsComplete==true){
+
+				Servo::brake();				
+				setSubmode(FTEST_STATIC_Pause);
+				reportServoModeStop();
+
+			}else{
+				reportServoModeContinue();
+			}
+
 		}
 
 		processFieldbus();
