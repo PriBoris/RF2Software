@@ -3,6 +3,7 @@
 #include <QDateTime>
 
 #include "RTCU.h"
+#include "Utils.h"
 
 
 //=================================================================================================
@@ -19,11 +20,10 @@ WidgetServoMode::WidgetServoMode(
 
     reportLogger = new ReportLogger("ReportServoMode.txt");
 
-
     {
-        rxMessageCounter = 0;
-        lblRxMessageCounter = new QLabel("lblRxMessageCounter");
+        lblRxMessageCounter = new QLabel;
         lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+        Utils::MessageCounterInitialize("Rx",rxMessageCounter,lblRxMessageCounter);
     }
 
     {
@@ -100,15 +100,7 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
 
     if (tag==TLV::TAG_ReportServoMode){
 
-        {
-            rxMessageCounter++;
-            lblRxMessageCounter->setText(
-                        "Сообщений: "+QString::number(rxMessageCounter)+" "
-                        +"(длина последнего="
-                        +QString::number(value.length())
-                        +")"
-                        );
-        }
+        Utils::MessageCounterIncrement("Rx",rxMessageCounter,lblRxMessageCounter,value);
 
         {
             quint32 mainTickID = TLV::getUint32(value,0);

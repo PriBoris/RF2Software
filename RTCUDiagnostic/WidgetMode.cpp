@@ -3,6 +3,7 @@
 #include <QDateTime>
 
 #include "RTCU.h"
+#include "Utils.h"
 
 //=================================================================================================
 WidgetMode::~WidgetMode(){
@@ -20,11 +21,12 @@ WidgetMode::WidgetMode(
 	reportLogger = new ReportLogger("ReportCurrentMode.txt");
 
 
-	{
-		rxMessageCounter = 0;
-		lblRxMessageCounter = new QLabel("lblRxMessageCounter");
-		lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
-	}
+    {
+        lblRxMessageCounter = new QLabel;
+        lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+        Utils::MessageCounterInitialize("Rx",rxMessageCounter,lblRxMessageCounter);
+    }
+
 
 	{
 		lblDateTime = new QLabel("lblDateTime");
@@ -345,13 +347,8 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 	if (tag==TLV::TAG_ReportCurrentMode){
 
 		{
-			rxMessageCounter++;
-			lblRxMessageCounter->setText(
-						"Сообщений: "+QString::number(rxMessageCounter)+" "
-						+"(длина последнего="
-						+QString::number(value.length())
-						+")"
-						);
+	        Utils::MessageCounterIncrement("Rx",rxMessageCounter,lblRxMessageCounter,value);
+	        
 			(reportLogger->stream) << "mdgID=" << QString::number(msgID) << ";";
 		}
 
@@ -405,7 +402,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 					QString::number(TLV::getInt32(value,1+6+8+2*4))/*+""+
 					QString::number(TLV::getInt32(value,1+6+8+3*4))*/
 					;
-					lblPosition->setText("Позиция:   "+posStr); 
+					lblPosition->setText("Position:   "+posStr); 
 					(reportLogger->stream) << "pos=" << posStr << ";";
 			}
 			break;
@@ -419,7 +416,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 		{
 			QString modeStr = RTCU::Mode::getTitle(mode);
 			(reportLogger->stream) << "mode=" << modeStr << ";";
-			lblMode->setText("Режим: "+modeStr);
+			lblMode->setText("Mode: "+modeStr);
 		}
 
 		switch(mode){
@@ -589,9 +586,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
 					break;
-				case Phase::HOMING:
+                case RTCU::Phase::HOMING:
 					{
-						QString phaseStr = "HOMING";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -600,9 +597,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 					lblForceValue->setVisible(false);
 
 					break;
-				case Phase::PAUSE:
+                case RTCU::Phase::PAUSE:
 					{
-						QString phaseStr = "PAUSE";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -616,9 +613,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 								);
 
 					break;
-				case Phase::TEST_CONCENTRIC:
+                case RTCU::Phase::TEST_CONCENTRIC:
 					{
-						QString phaseStr = "TEST_CONCENTRIC";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -704,9 +701,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
 					break;
-				case Phase::HOMING:
+                case RTCU::Phase::HOMING:
 					{
-						QString phaseStr = "HOMING";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -714,9 +711,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 					lblTimeToTest->setVisible(false);
 					lblForceValue->setVisible(false);
 					break;
-				case Phase::PAUSE:
+                case RTCU::Phase::PAUSE:
 					{
-						QString phaseStr = "PAUSE";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -729,9 +726,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 								QString::number(TLV::getInt32(value,27+8))+" мс"
 								);
 					break;
-				case Phase::TEST_ECCENTRIC:
+                case RTCU::Phase::TEST_ECCENTRIC:
 					{
-						QString phaseStr = "TEST_ECCENTRIC";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -802,9 +799,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
 					break;
-				case Phase::HOMING:
+                case RTCU::Phase::HOMING:
 					{
-						QString phaseStr = "HOMING";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -821,9 +818,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
 
 					break;
-				case Phase::PAUSE:
+                case RTCU::Phase::PAUSE:
 					{
-						QString phaseStr = "PAUSE";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -843,9 +840,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 								QString::number(TLV::getInt32(value,39))+" мс"
 								);
 					break;
-				case Phase::TEST_STATIC:
+                case RTCU::Phase::TEST_STATIC:
 					{
-						QString phaseStr = "TEST_STATIC";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -932,9 +929,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
 				   break;
-				case Phase::HOMING:
+                case RTCU::Phase::HOMING:
 					{
-						QString phaseStr = "HOMING";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -946,9 +943,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 					lblForceValue->setVisible(false);
 
 					break;
-				case Phase::PAUSE:
+                case RTCU::Phase::PAUSE:
 					{
-						QString phaseStr = "PAUSE";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -966,9 +963,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 					lblForceValue->setVisible(false);
 
 					break;
-				case Phase::ISOKINETIC_FIRSTMOVE:
+                case RTCU::Phase::ISOKINETIC_FIRSTMOVE:
 					{
-						QString phaseStr = "FIRSTMOVE";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -976,9 +973,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
  
 
 					break;
-				case Phase::ISOKINETIC_FIRSTINTERRUPTION:
+                case RTCU::Phase::ISOKINETIC_FIRSTINTERRUPTION:
 					{
-						QString phaseStr = "FIRSTINTERRUPTION";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -988,9 +985,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
 
 					break;
-				case Phase::ISOKINETIC_SECONDMOVE:
+                case RTCU::Phase::ISOKINETIC_SECONDMOVE:
 					{
-						QString phaseStr = "SECONDMOVE";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -998,9 +995,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
  
 
 					break;
-				case Phase::ISOKINETIC_SECONDINTERRUPTION:
+                case RTCU::Phase::ISOKINETIC_SECONDINTERRUPTION:
 					{
-						QString phaseStr = "SECONDINTERRUPTION";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -1011,7 +1008,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 					break;
 				}
 
-				if ((phase==Phase::ISOKINETIC_FIRSTMOVE)||(phase==Phase::ISOKINETIC_SECONDMOVE)){
+                if ((phase==RTCU::Phase::ISOKINETIC_FIRSTMOVE)||(phase==RTCU::Phase::ISOKINETIC_SECONDMOVE)){
 
 					lblTimeToSet->setVisible(false);
 					lblPositionRel->setVisible(true);
@@ -1065,7 +1062,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
 
 
-				}else if ((phase==Phase::ISOKINETIC_FIRSTINTERRUPTION)||(phase==Phase::ISOKINETIC_SECONDINTERRUPTION)){
+                }else if ((phase==RTCU::Phase::ISOKINETIC_FIRSTINTERRUPTION)||(phase==RTCU::Phase::ISOKINETIC_SECONDINTERRUPTION)){
 
 					lblTimeToSet->setVisible(true);
 					lblTimeToSet->setText("Осталось "+QString::number(TLV::getInt32(value,39)));
@@ -1130,9 +1127,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
 
 					break;
-				case Phase::PAUSE1:
+                case RTCU::Phase::PAUSE1:
 					{
-						QString phaseStr = "PAUSE1";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -1148,9 +1145,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 					}
 
 					break;
-				case Phase::HOMING:
+                case RTCU::Phase::HOMING:
 					{
-						QString phaseStr = "HOMING";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
@@ -1160,10 +1157,10 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 					lblForceValue->setVisible(false);
 
 					break;
-				case Phase::PAUSE2:
+                case RTCU::Phase::PAUSE2:
 					{
-						QString phaseStr = "PAUSE2";
-						lblPhase->setText("Фаза: "+phaseStr);
+                        QString phaseStr = RTCU::Phase::getTitle(phase);
+                        lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}
 					lblPositionRel->setVisible(false);
@@ -1179,9 +1176,9 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
 
 					break;
-				case Phase::GENERIC_MOVE:
+                case RTCU::Phase::GENERIC_MOVE:
 					{
-						QString phaseStr = "GENERIC_MOVE";
+						QString phaseStr = RTCU::Phase::getTitle(phase);
 						lblPhase->setText("Фаза: "+phaseStr);
 						(reportLogger->stream) << "phase=" << phaseStr << ";";
 					}

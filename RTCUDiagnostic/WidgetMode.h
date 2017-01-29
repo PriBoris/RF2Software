@@ -105,24 +105,6 @@ class WidgetMode : public QWidget{
     static const quint8 ERROR_Unknown=0xFF;
 
 
-    class Phase{
-    public:
-        static const qint32 HOMING=0;
-        static const qint32 PAUSE=1;
-        static const qint32 TEST_CONCENTRIC=2;
-        static const qint32 TEST_ECCENTRIC=3;
-        static const qint32 ISOKINETIC_FIRSTMOVE=4;
-        static const qint32 ISOKINETIC_FIRSTINTERRUPTION=5;
-        static const qint32 ISOKINETIC_SECONDMOVE=6;
-        static const qint32 ISOKINETIC_SECONDINTERRUPTION=7;
-        static const qint32 TEST_STATIC=8;
-        static const qint32 PAUSE1=9;
-        static const qint32 PAUSE2=10;
-        static const qint32 GENERIC_MOVE=11;
-    };
-
-
-
 
 
 

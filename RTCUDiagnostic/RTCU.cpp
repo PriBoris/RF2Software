@@ -2,6 +2,7 @@
 
 QMap<quint8,QString> RTCU::Mode::titles;
 QMap<quint8,QString> RTCU::Submode::titles;
+QMap<qint32,QString> RTCU::Phase::titles;
 
 
 
@@ -10,6 +11,7 @@ void RTCU::init(){
 
 	Mode::init();
 	Submode::init();
+	Phase::init();
 
 
 
@@ -109,10 +111,31 @@ void RTCU::Submode::init(){
 
 }
 //=================================================================================================
+void RTCU::Phase::init(){
+
+
+    titles[(qint32)HOMING] = "HOMING";
+    titles[(qint32)PAUSE] = "PAUSE";
+    titles[(qint32)TEST_CONCENTRIC] = "TEST_CONCENTRIC";
+    titles[(qint32)TEST_ECCENTRIC] = "TEST_ECCENTRIC";
+    titles[(qint32)ISOKINETIC_FIRSTMOVE] = "ISOKINETIC_FIRSTMOVE";
+    titles[(qint32)ISOKINETIC_FIRSTINTERRUPTION] = "ISOKINETIC_FIRSTINTERRUPTION";
+    titles[(qint32)ISOKINETIC_SECONDMOVE] = "ISOKINETIC_SECONDMOVE";
+    titles[(qint32)ISOKINETIC_SECONDINTERRUPTION] = "ISOKINETIC_SECONDINTERRUPTION";
+    titles[(qint32)TEST_STATIC] = "TEST_STATIC";
+    titles[(qint32)PAUSE1] = "PAUSE1";
+    titles[(qint32)PAUSE2] = "PAUSE2";
+    titles[(qint32)GENERIC_MOVE] = "GENERIC_MOVE";
+
+}
+//=================================================================================================
 QString RTCU::Mode::getTitle(quint8 index){
 	return titles[index];
 }
 QString RTCU::Submode::getTitle(quint8 index){
+	return titles[index];
+}
+QString RTCU::Phase::getTitle(qint32 index){
 	return titles[index];
 }
 //=================================================================================================
