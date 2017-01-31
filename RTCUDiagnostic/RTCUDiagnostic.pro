@@ -13,6 +13,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = RTCUDiagnostic
 TEMPLATE = app
 
+RC_ICONS = RTCUDiagnostic.ico
+
+
 
 SOURCES += main.cpp\
     serialporttransceiver.cpp \
