@@ -4,10 +4,12 @@
 #include <QWidget>
 #include <QLabel>
 #include <QBoxLayout>
+#include <QPair>
 
 #include "serialporttransceiver.h"
 #include "TLV.h"
 #include "ReportLogger.h"
+#include "RTCU.h"
 
 #include "qcustomplot.h"
 
@@ -29,10 +31,24 @@ class WidgetServoMode : public QWidget{
 
     QCustomPlot* plotPositionVsTime;
     QVector<double> plotPositionData,plotTimeData;
+    QVector<double> plotPersonalAData,plotPersonalBData;
     double plotTime;
-    double getMaxPosition(QVector<double> &positionData, double defaultPosition);
-    double getMinPosition(QVector<double> &positionData, double defaultPosition);
- 
+    static const int PLOT_MAX_DURATION_SECONDS = (3*60);
+
+    void updatePlotRange(
+        QVector<double> &plotData, 
+        QPair<double,double> &range
+        );
+
+    bool personalSettingsValid;
+    RTCU::TPersonalSettings personalSettings;
+
+    bool machineSettingsExtendedValid;
+    RTCU::TMachineSettingsExtended machineSettingsExtended;
+
+
+
+
 
     QVBoxLayout *loMain;
 

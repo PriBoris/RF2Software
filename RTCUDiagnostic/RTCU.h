@@ -11,6 +11,7 @@ public:
     static void init();
 
 
+	//----------------------------------------------------------------------------------
     class Mode{
     private:
         static QMap<quint8,QString> titles;
@@ -35,6 +36,7 @@ public:
         static QString getTitle(quint8 index);
     };
 
+	//----------------------------------------------------------------------------------
     class Submode{
     private:
         static QMap<quint8,QString> titles;
@@ -118,6 +120,7 @@ public:
 
 
 
+	//----------------------------------------------------------------------------------
     class Phase{
     private:
         static QMap<qint32,QString> titles;
@@ -141,6 +144,59 @@ public:
         static QString getTitle(qint32 index);
     };
 
+	//----------------------------------------------------------------------------------
+	struct TPersonalSettings{
+
+	    qint32 positionMainA;
+	    qint32	positionMainB;
+	    qint32	positionMainParking;
+	    qint32	positionAux1;
+	    qint32	positionAux2;
+	    qint32	positionAux3;
+	    qint32	speedAbsMainParking;
+	    qint32	speedRelMainTestEccentric;
+	    qint32	speedRelMainTestConcentric;
+	    qint32 forceCurveAB[21];
+	    qint32 forceCurveBA[21];
+
+	};
+
+	//----------------------------------------------------------------------------------
+	struct TMachineSettingsExtended{
+
+		qint32 positionMainMax;
+		qint32 positionMainMin;
+		qint32 positionAux1Max;
+		qint32 positionAux1Min;
+		qint32 positionAux2Max;
+		qint32 positionAux2Min;
+		qint32 positionAux3Max;
+		qint32 positionAux3Min;
+		qint32 speedAbsMainMax;
+		qint32 speedAbsMainPersonal;
+		qint32 encoderBitCount;
+		qint32 encoderDirection;
+		qint32 encoderOffset;
+		qint32 forceSensorOffset;
+		float forceSensorGain;
+
+	};
+	//----------------------------------------------------------------------------------
+	struct TMachineSettings{
+
+	    qint32	positionMainMax;
+	    qint32	positionMainMin;
+	    qint32	positionAux1Max;
+	    qint32	positionAux1Min;
+	    qint32	positionAux2Max;
+	    qint32	positionAux2Min;
+	    qint32	positionAux3Max;
+	    qint32	positionAux3Min;
+	    qint32 speedAbsMainMax;
+	    qint32 speedAbsMainPersonal;
+
+	};
+	//----------------------------------------------------------------------------------
     
 };
 

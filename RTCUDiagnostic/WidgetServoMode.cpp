@@ -2,7 +2,6 @@
 
 #include <QDateTime>
 
-#include "RTCU.h"
 #include "Utils.h"
 
 
@@ -68,9 +67,13 @@ WidgetServoMode::WidgetServoMode(
     {
         plotPositionVsTime = new QCustomPlot;
         plotPositionVsTime->addGraph();
+        plotPositionVsTime->addGraph();
+        plotPositionVsTime->addGraph();
         plotPositionVsTime->graph(0)->setPen(QPen(Qt::red));
+        plotPositionVsTime->graph(1)->setPen(QPen(Qt::blue));
+        plotPositionVsTime->graph(2)->setPen(QPen(Qt::blue));
         plotPositionVsTime->yAxis->setVisible(true);
-        plotPositionVsTime->setFixedSize(900,300);
+        plotPositionVsTime->setFixedSize(1000,500);
         plotPositionVsTime->xAxis->setRange(0, 1);
         plotPositionVsTime->yAxis->setLabel("position []");
         plotPositionVsTime->xAxis->setLabel("time [s]");
@@ -93,6 +96,8 @@ WidgetServoMode::WidgetServoMode(
 
     this->setLayout(loMain);
 
+    personalSettingsValid = false;
+    machineSettingsExtendedValid = false;
 
 }
 //=================================================================================================
@@ -182,18 +187,36 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
             plotTime += 0.1;
             plotTimeData.append(plotTime);
 
-            double maxPosition = getMaxPosition(plotPositionData,1000.0)+1.0;
-            double minPosition = getMinPosition(plotPositionData,0.0)-1.0;
-            double maxTime = getMaxPosition(plotTimeData,1.0);
-            double minTime = getMinPosition(plotTimeData,0.0);
+            if (personalSettingsValid==true){
+                plotPersonalAData.append(personalSettings.positionMainA);
+                plotPersonalBData.append(personalSettings.positionMainB);
+            }else{
+                plotPersonalAData.append(position);
+                plotPersonalBData.append(position);
+            }
 
-            plotPositionVsTime->xAxis->setRange(minTime, maxTime);
-            plotPositionVsTime->yAxis->setRange(minPosition, maxPosition);
+            QPair<double,double> plotPositionRange;
+            plotPositionRange.first = plotPositionRange.second = plotPositionData.at(0);
+            updatePlotRange(plotPositionData,plotPositionRange);
+            updatePlotRange(plotPersonalAData,plotPositionRange);
+            updatePlotRange(plotPersonalBData,plotPositionRange);
+
+            QPair<double,double> plotTimeRange;
+            plotTimeRange.first = plotTimeRange.second = plotTimeData.at(0);
+            updatePlotRange(plotTimeData,plotTimeRange);
+
+            plotPositionVsTime->xAxis->setRange(plotTimeRange.first , plotTimeRange.second);
+            plotPositionVsTime->yAxis->setRange(plotPositionRange.first-100, plotPositionRange.second+100);
             plotPositionVsTime->graph(0)->setData(plotTimeData, plotPositionData);
+            plotPositionVsTime->graph(1)->setData(plotTimeData, plotPersonalAData);
+            plotPositionVsTime->graph(2)->setData(plotTimeData, plotPersonalBData);
             plotPositionVsTime->replot();
 
-            if (plotPositionData.length()>(10*60*2)){
+
+            if (plotPositionData.length()>(10*PLOT_MAX_DURATION_SECONDS)){
                 plotPositionData.pop_front();
+                plotPersonalAData.pop_front();
+                plotPersonalBData.pop_front();
                 plotTimeData.pop_front();
             }
 
@@ -230,10 +253,26 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
         reportLogger->flush();
     }
 
+    //--------------------------------------------------------------------------
+    if (tag==TLV::TAG_ReportPersonalSettings){
+
+        if (value.length()==sizeof(RTCU::TPersonalSettings)){
+
+            memcpy(&personalSettings,value.data(),sizeof(RTCU::TPersonalSettings));
+            personalSettingsValid = true;
+
+        }else{
+
+           personalSettingsValid = false;
+
+        }
+
+    }
+
 
 }
 //=================================================================================================
-double WidgetServoMode::getMaxPosition(QVector<double> &positionData, double defaultPosition){
+/*double WidgetServoMode::getMaxPosition(QVector<double> &positionData, double defaultPosition){
     if (positionData.length()==0){
         return defaultPosition;
     }else{
@@ -246,9 +285,9 @@ double WidgetServoMode::getMaxPosition(QVector<double> &positionData, double def
         return result;
    }
 
-}
+}*/
 //=================================================================================================
-double WidgetServoMode::getMinPosition(QVector<double> &positionData, double defaultPosition){
+/*double WidgetServoMode::getMinPosition(QVector<double> &positionData, double defaultPosition){
     if (positionData.length()==0){
         return defaultPosition;
     }else{
@@ -261,7 +300,22 @@ double WidgetServoMode::getMinPosition(QVector<double> &positionData, double def
         return result;
     }
 
+}*/
+//=================================================================================================
+void WidgetServoMode::updatePlotRange(
+    QVector<double> &plotData, 
+    QPair<double,double> &range){
+
+    QVectorIterator<double> it(plotData);  
+    while(it.hasNext()){
+        double nextValue = it.next();
+        if (nextValue>range.second){
+            range.second = nextValue;
+        }
+        if (nextValue<range.first){
+            range.first = nextValue;
+        }
+    }
 }
 //=================================================================================================
- 
 

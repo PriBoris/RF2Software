@@ -97,7 +97,7 @@ void WidgetMachineSettings::slotWriteSettings(){
     if (serialPortTransceiver_->isPortOK()==true){
 
 
-        TMachineSettings newMachineSettings;
+        RTCU::TMachineSettings newMachineSettings;
 
         newMachineSettings.positionMainMax = wgtPositionMainMax->getWriteValue();
         newMachineSettings.positionMainMin = wgtPositionMainMin->getWriteValue();
@@ -134,10 +134,10 @@ void WidgetMachineSettings::newMessageReceived(quint8 tag,quint32 msgID,QByteArr
         }
 
 
-        if (value.length()==sizeof(TMachineSettings)){
+        if (value.length()==sizeof(RTCU::TMachineSettings)){
 
-            TMachineSettings machineSettings;
-            memcpy(&machineSettings,value.data(),sizeof(TMachineSettings));
+            RTCU::TMachineSettings machineSettings;
+            memcpy(&machineSettings,value.data(),sizeof(RTCU::TMachineSettings));
 
             wgtPositionMainMax->setReadValue(machineSettings.positionMainMax);
             wgtPositionMainMin->setReadValue(machineSettings.positionMainMin);

@@ -1,6 +1,7 @@
 #include "WidgetPersonalSettings.h"
 
 #include "Utils.h"
+#include "RTCU.h"
 
 //============================================================================================================
 WidgetPersonalSettings::WidgetPersonalSettings(
@@ -79,7 +80,7 @@ void WidgetPersonalSettings::slotWriteSettings(){
     //qDebug() << "WidgetSettingsPosition::slotWriteSettings";
     if (serialPortTransceiver_->isPortOK()==true)
     {
-        PersonalSettings personalSettings;
+        RTCU::PersonalSettings personalSettings;
 
         personalSettings.positionMainA = wgtPositionMainA->getWriteValue();
         personalSettings.positionMainB = wgtPositionMainB->getWriteValue();
@@ -117,10 +118,10 @@ void WidgetPersonalSettings::newMessageReceived(quint8 tag,quint32 msgID,QByteAr
         Utils::MessageCounterIncrement("Rx",rxMessageCounter,lblRxMessageCounter,value);
 
 
-        if (value.length()==sizeof(PersonalSettings)){
+        if (value.length()==sizeof(RTCU::PersonalSettings)){
 
-            PersonalSettings newPersonalSettings;
-            memcpy(&newPersonalSettings,value.data(),sizeof(PersonalSettings));
+            RTCU::PersonalSettings newPersonalSettings;
+            memcpy(&newPersonalSettings,value.data(),sizeof(RTCU::PersonalSettings));
 
             wgtPositionMainA->setReadValue(newPersonalSettings.positionMainA);
             wgtPositionMainB->setReadValue(newPersonalSettings.positionMainB);

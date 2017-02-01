@@ -16,21 +16,9 @@
 
 #include "WidgetSettingsInteger.h"
 #include "ReportLogger.h"
+#include "RTCU.h"
 
-struct TMachineSettings{
 
-    qint32	positionMainMax;
-    qint32	positionMainMin;
-    qint32	positionAux1Max;
-    qint32	positionAux1Min;
-    qint32	positionAux2Max;
-    qint32	positionAux2Min;
-    qint32	positionAux3Max;
-    qint32	positionAux3Min;
-    qint32 speedAbsMainMax;
-    qint32 speedAbsMainPersonal;
-
-};
 
 
 class WidgetMachineSettings : public QWidget{

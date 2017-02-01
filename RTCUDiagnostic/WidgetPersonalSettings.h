@@ -18,21 +18,7 @@
 #include "WidgetSettingsInteger.h"
 
 
-struct PersonalSettings{
 
-    qint32 positionMainA;
-    qint32	positionMainB;
-    qint32	positionMainParking;
-    qint32	positionAux1;
-    qint32	positionAux2;
-    qint32	positionAux3;
-    qint32	speedAbsMainParking;
-    qint32	speedRelMainTestEccentric;
-    qint32	speedRelMainTestConcentric;
-    qint32 forceCurveAB[21];
-    qint32 forceCurveBA[21];
-
-};
 
 
 class WidgetPersonalSettings : public QWidget{

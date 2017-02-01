@@ -14,27 +14,10 @@
 #include "WidgetSettingsInteger.h"
 #include "WidgetSettingsFloat.h"
 #include "ReportLogger.h"
+#include "RTCU.h"
 
 
-struct TMachineSettingsExtended{
 
-	qint32 positionMainMax;
-	qint32 positionMainMin;
-	qint32 positionAux1Max;
-	qint32 positionAux1Min;
-	qint32 positionAux2Max;
-	qint32 positionAux2Min;
-	qint32 positionAux3Max;
-	qint32 positionAux3Min;
-	qint32 speedAbsMainMax;
-	qint32 speedAbsMainPersonal;
-	qint32 encoderBitCount;
-	qint32 encoderDirection;
-	qint32 encoderOffset;
-	qint32 forceSensorOffset;
-	float forceSensorGain;
-
-};
 
 class WidgetMachineSettingsExtended : public QWidget
 {
