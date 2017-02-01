@@ -49,11 +49,6 @@ uint32_t MainTick::tickID;
 float MainTick::servoFrequencyPositive = 0.0f;
 float MainTick::servoFrequencyNegative = 0.0f;
 
-uint32_t MainTick::excerciseFirstMovementTickCounter;
-uint32_t MainTick::excerciseSecondMovementTickCounter;
-bool MainTick::excerciseFirstMovementDirection;
-bool MainTick::excerciseSecondMovementDirection;
-
 uint32_t MainTick::fieldbusErrorCounter;
 uint32_t MainTick::fieldbusErrorCounterMax;
 
@@ -1214,28 +1209,39 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------EXCERCISE----------------------------------
 	case EXERCISE_Homing_PreparingMain:
 
-		if (PositionTask::checkPositionStatically(Excercise::getPositionMainHoming())==false){
+		{
+			bool positionTaskIsNotNeeded = 
+				PositionTask::checkPositionStatically(
+					Excercise::getPositionMainHoming()
+					);
 
-			if (PositionTask::getDirection(Excercise::getPositionMainHoming())==Servo::POSITIVE_DIRECTION){
+			if (positionTaskIsNotNeeded==true){
 
-				Servo::moveNegative(false);
-				Servo::movePositive(true);
-				Servo::brake(false);
+				Servo::brake();				
+				setSubmode(EXERCISE_Pause);
+				reportServoModeStop();
 
-				setSubmode(EXERCISE_Homing_MovingMain);
-				reportServoModePositive();
+
 			}else{
 
-				Servo::movePositive(false);
-				Servo::moveNegative(true);
-				Servo::brake(false);
+				if (PositionTask::getDirection(Excercise::getPositionMainHoming())==Servo::POSITIVE_DIRECTION){
 
-				setSubmode(EXERCISE_Homing_MovingMain);
-				reportServoModeNegative();
-			}						
-		}else{
-			setSubmode(EXERCISE_Pause);
+					Servo::movePositive();
+					setSubmode(EXERCISE_Homing_MovingMain);
+					reportServoModePositive();
+					
+				}else{
+
+					Servo::moveNegative();
+					setSubmode(EXERCISE_Homing_MovingMain);
+					reportServoModeNegative();
+
+				}	
+
+			}
+
 		}
+
 		processFieldbus();
 
 		break;
@@ -1244,23 +1250,29 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
+			Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-		}else if (PositionTask::checkPositionStatically(Excercise::getPositionMainHoming())==true){
-
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
-			setSubmode(EXERCISE_Pause);
-			reportServoModeStop();
 		}else{
 
-			reportServoModeContinue();
-		}
+			bool positionTaskIsComplete = 
+				PositionTask::checkPositionDynamically(
+					Excercise::getPositionMainHoming(),
+					Servo::getMoveDirection()
+					);
+
+			if (positionTaskIsComplete==true){
+
+				Servo::brake();				
+				setSubmode(EXERCISE_Pause);
+				reportServoModeStop();
+
+			}else{
+				reportServoModeContinue();
+			}
+
+		} 
 
 		processFieldbus();
 
@@ -1303,11 +1315,25 @@ void MainTick::process(){ //called every 100ms
 		if (Fieldbus::responseIsValid()==false){
 			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
 		}else{
+
 			if (Fieldbus::checkSetFrequencyResponse(false,Excercise::servoFrequencyNegative)==true){
 
 				Excercise::repetitionStart();
-				setSubmode(EXERCISE_FirstMovement);
-				excerciseFirstMovementTickCounter = 0;
+
+				bool firstMovementDirection = 
+					PositionTask::getDirection(
+						Excercise::getPositionMainFirstMovement()
+						);
+
+				if (firstMovementDirection==Servo::POSITIVE_DIRECTION){
+					Servo::movePositive();
+					setSubmode(EXERCISE_FirstMovement);
+					reportServoModePositive();
+				}else{
+					Servo::moveNegative();
+					setSubmode(EXERCISE_FirstMovement);
+					reportServoModeNegative();
+				}
 
 			}else{
 
@@ -1321,102 +1347,95 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------EXCERCISE----------------------------------
 	case EXERCISE_FirstMovement:
 	/*
-		Steps here from EXERCISE_SettingNegativeSpeed, EXERCISE_SecondMovement, EXERCISE_SecondInterruption
+		Steps here from 
+			EXERCISE_SettingNegativeSpeed
+			EXERCISE_SecondMovement
+			EXERCISE_SecondInterruption
 	*/
-		excerciseFirstMovementTickCounter++;
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
-
+			Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
 		}else{
 
-			bool positionGoalAchieved = PositionTask::checkPositionStatically(Excercise::getPositionMainFirstMovement());
+			bool positionTaskIsComplete = 
+				PositionTask::checkPositionDynamically(
+					Excercise::getPositionMainFirstMovement(),
+					Servo::getMoveDirection()
+					);
 
-			if (positionGoalAchieved==false){
-
-				if (Servo::NEGATIVE_DIRECTION==PositionTask::getDirection(Excercise::getPositionMainFirstMovement())){
-
-					if (excerciseFirstMovementTickCounter==2){
-
-						excerciseFirstMovementDirection = false;
-						Servo::moveNegative(true);
-						Servo::movePositive(false);
-						Servo::brake(false);
-						reportServoModeNegative();
-
-					}else if ((excerciseFirstMovementTickCounter>2)&&(excerciseFirstMovementDirection!=false)){
-
-						positionGoalAchieved = true;//direction change
-
-					}else{
-
-						Servo::moveNegative(true);
-						Servo::movePositive(false);
-						Servo::brake(false);
-						reportServoModeNegative();
-
-					}
-
-
-				}else{
-
-					if (excerciseFirstMovementTickCounter==2){
-
-						excerciseFirstMovementDirection = true;
-						Servo::movePositive(true);
-						Servo::moveNegative(false);
-						Servo::brake(false);
-						reportServoModePositive();
-
-					}else if ((excerciseFirstMovementTickCounter>2)&&(excerciseFirstMovementDirection==false)){
-
-						positionGoalAchieved = true;//direction change
-
-					}else{
-
-						Servo::movePositive(true);
-						Servo::moveNegative(false);
-						Servo::brake(false);
-						reportServoModePositive();
-
-					}
-
-				}
-
-			}
-
-			if (positionGoalAchieved==true){
+			if (positionTaskIsComplete==true){
 
 				if (Excercise::firstInterruptionEnabled()){
 
-					Servo::brake(true);
-					Servo::movePositive(false);
-					Servo::moveNegative(false);
-
+					Servo::brake();
 					setSubmode(EXERCISE_FirstInterruption);
 					reportServoModeStop();
-					Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
+
 
 				}else{
+					//interruption disabled
+					bool secondMovementDirection = 
+						PositionTask::getDirection(
+							Excercise::getPositionMainSecondMovement()
+							);
 
-					//test
-					Servo::brake(true);
-					Servo::movePositive(false);
-					Servo::moveNegative(false);
-
-					setSubmode(EXERCISE_SecondMovement);
-					excerciseSecondMovementTickCounter = 0;
-					reportServoModeStop();
-					Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
+					if (secondMovementDirection==Servo::POSITIVE_DIRECTION){
+						Servo::movePositive();
+						setSubmode(EXERCISE_SecondMovement);
+						reportServoModePositive();
+					}else{
+						Servo::moveNegative();
+						setSubmode(EXERCISE_SecondMovement);
+						reportServoModeNegative();
+					}
 
 				}
+
+				Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
+
+			}else{
+				//positionTaskIsComplete==false
+				reportServoModeContinue();
 			}
+
+		}
+
+		processFieldbus();
+
+		break;
+	//------------------------------------------------EXCERCISE----------------------------------
+	case EXERCISE_FirstInterruption:
+	/*
+		Steps here from 
+			EXERCISE_FirstMovement
+	*/
+
+		if (true==RxMessageQueue::cancelMessageReceived()){
+			Servo::brake();
+			setSubmode(WAITING_Waiting);
+			reportServoModeStop();
+
+		}else if (Excercise::isFirstInterruptionDone()==true){
+
+			bool secondMovementDirection = 
+				PositionTask::getDirection(
+					Excercise::getPositionMainSecondMovement()
+					);
+
+			if (secondMovementDirection==Servo::POSITIVE_DIRECTION){
+				Servo::movePositive();
+				setSubmode(EXERCISE_SecondMovement);
+				reportServoModePositive();
+			}else{
+				Servo::moveNegative();
+				setSubmode(EXERCISE_SecondMovement);
+				reportServoModeNegative();
+			}
+
 		}
 
 		processFieldbus();
@@ -1425,146 +1444,78 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------EXCERCISE----------------------------------
 	case EXERCISE_SecondMovement:
 	/*
-	Steps here from EXERCISE_FirstMovement, EXERCISE_FirstInterruption
+		Steps here from 
+			EXERCISE_FirstMovement
+			EXERCISE_FirstInterruption
 	*/
-		excerciseSecondMovementTickCounter++;
-
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
-
+			Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-
 		}else{
 
-			bool positionGoalAchieved = PositionTask::checkPositionStatically(Excercise::getPositionMainSecondMovement());
+			bool positionTaskIsComplete = 
+				PositionTask::checkPositionDynamically(
+					Excercise::getPositionMainSecondMovement(),
+					Servo::getMoveDirection()
+					);
 
-			if (positionGoalAchieved==false){
-
-				if (Servo::NEGATIVE_DIRECTION==PositionTask::getDirection(Excercise::getPositionMainSecondMovement())){
-
-					if (excerciseSecondMovementTickCounter==2){
-						excerciseSecondMovementDirection = false;
-
-						Servo::moveNegative(true);
-						Servo::movePositive(false);
-						Servo::brake(false);
-
-						reportServoModeNegative();
-
-					}else if ((excerciseSecondMovementTickCounter>2)&&(excerciseSecondMovementDirection==true)){
-
-						positionGoalAchieved = true;
-
-					}else{
-
-						Servo::moveNegative(true);
-						Servo::movePositive(false);
-						Servo::brake(false);
-
-						reportServoModeNegative();
-					}
-
-
-				}else{
-
-					if (excerciseSecondMovementTickCounter==3){
-						excerciseSecondMovementDirection = true;
-
-						Servo::movePositive(true);
-						Servo::moveNegative(false);
-						Servo::brake(false);
-
-						reportServoModePositive();
-
-					}else if ((excerciseSecondMovementTickCounter>2)&&(excerciseSecondMovementTickCounter==false)){
-
-						positionGoalAchieved = true;
-
-					}else{
-
-						Servo::movePositive(true);
-						Servo::moveNegative(false);
-						Servo::brake(false);
-
-						reportServoModePositive();
-					}
-
-				}	
-
-			}
-
-			if (positionGoalAchieved==true){
+			if (positionTaskIsComplete==true){
 
 				if (Excercise::secondInterruptionEnabled()){
 
-					Servo::brake(true);
-					Servo::movePositive(false);
-					Servo::moveNegative(false);
-
+					Servo::brake();
 					setSubmode(EXERCISE_SecondInterruption);
 					reportServoModeStop();
-					Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
 
 				}else{
+					//interruption disabled
 
 					Excercise::repetitionDone();
 					if (Excercise::isSetDone()==true){
 
-						Servo::brake(true);
-						Servo::movePositive(false);
-						Servo::moveNegative(false);
-
+						Servo::brake();
 						if (Excercise::isExcerciseDone()==true){
+
 							setSubmode(WAITING_Waiting);
 						}else{
+
 							setSubmode(EXERCISE_StartingSet);
 						}
 						reportServoModeStop();
 
-					}else{
-
-						//debug
-						Servo::brake(true);
-						Servo::movePositive(false);
-						Servo::moveNegative(false);
+					}else{			
 
 						Excercise::repetitionStart();
-						setSubmode(EXERCISE_FirstMovement);
-						excerciseFirstMovementTickCounter = 0;
 
+						bool firstMovementDirection = 
+							PositionTask::getDirection(
+								Excercise::getPositionMainFirstMovement()
+								);
+
+						if (firstMovementDirection==Servo::POSITIVE_DIRECTION){
+							Servo::movePositive();
+							setSubmode(EXERCISE_FirstMovement);
+							reportServoModePositive();
+						}else{
+							Servo::moveNegative();
+							setSubmode(EXERCISE_FirstMovement);
+							reportServoModeNegative();
+						}
 					}
-					Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
 
 				}
 
+				Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
+
+			}else{
+				//positionTaskIsComplete==false
+
+				reportServoModeContinue();
 			}
-				
-		}
-
-		processFieldbus();
-
-		break;
-	//------------------------------------------------EXCERCISE----------------------------------
-	case EXERCISE_FirstInterruption:
-
-		if (true==RxMessageQueue::cancelMessageReceived()){
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
-
-			setSubmode(WAITING_Waiting);
-			reportServoModeStop();
-
-		}else if (Excercise::isFirstInterruptionDone()==true){
-
-			setSubmode(EXERCISE_SecondMovement);
-			excerciseSecondMovementTickCounter=0;
 
 		}
 
@@ -1573,36 +1524,50 @@ void MainTick::process(){ //called every 100ms
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
 	case EXERCISE_SecondInterruption:
+	/*
+		Steps here from 
+			EXERCISE_SecondMovement
+	*/
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
-
+			Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
 		}else if (Excercise::isSecondInterruptionDone()==true){
+
 			Excercise::repetitionDone();
 			if (Excercise::isSetDone()==true){
 
-				Servo::brake(true);
-				Servo::movePositive(false);
-				Servo::moveNegative(false);
-
+				Servo::brake();
 				if (Excercise::isExcerciseDone()==true){
+
 					setSubmode(WAITING_Waiting);
 				}else{
+
 					setSubmode(EXERCISE_StartingSet);
 				}
 				reportServoModeStop();
 
 			}else{			
-				Excercise::repetitionStart();
-				setSubmode(EXERCISE_FirstMovement);	
-				excerciseFirstMovementTickCounter = 0;
 
+				Excercise::repetitionStart();
+
+				bool firstMovementDirection = 
+					PositionTask::getDirection(
+						Excercise::getPositionMainFirstMovement()
+						);
+
+				if (firstMovementDirection==Servo::POSITIVE_DIRECTION){
+					Servo::movePositive();
+					setSubmode(EXERCISE_FirstMovement);
+					reportServoModePositive();
+				}else{
+					Servo::moveNegative();
+					setSubmode(EXERCISE_FirstMovement);
+					reportServoModeNegative();
+				}
 			}
 		}
 

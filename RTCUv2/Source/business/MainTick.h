@@ -140,13 +140,6 @@ private:
 	static float servoFrequencyNegative;
 	//-----------------------------------------------------------
 
-	static uint32_t excerciseFirstMovementTickCounter;
-	static uint32_t excerciseSecondMovementTickCounter;
-	static bool excerciseFirstMovementDirection;
-	static bool excerciseSecondMovementDirection;
-
-
-	//-----------------------------------------------------------
 
 	static const uint16_t MSGLEN_Mode = sizeof(uint8_t);
 	static const uint16_t MSGLEN_CurrentDateTime = sizeof(NV::RealTimeClock::TCurrentDateTime);
