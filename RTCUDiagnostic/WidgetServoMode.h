@@ -32,6 +32,7 @@ class WidgetServoMode : public QWidget{
     QCustomPlot* plotPositionVsTime;
     QVector<double> plotPositionData,plotTimeData;
     QVector<double> plotPersonalAData,plotPersonalBData;
+    QVector<double> plotPositionMaxData,plotPositionMinData;
     double plotTime;
     static const int PLOT_MAX_DURATION_SECONDS = (3*60);
 
