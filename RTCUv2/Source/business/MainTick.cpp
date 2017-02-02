@@ -20,7 +20,7 @@
 
 #include "hmi/diagnostics.h"
 #include "hmi/hmi.h"
-//#include "hmi/debugConsole.h"
+#include "hmi/debugConsole.h"
 #include "servo/servo.h"
 #include "servo/Fieldbus.h"
 #include "hmi/hmi.h"
@@ -83,7 +83,7 @@ void MainTick::process(){ //called every 100ms
 		
 		Errors::setFlag(Errors::FLAG_EMERGENCY_STOP);
 		Servo::parkingBrake(true);
-		//DebugConsole::pushMessage(" #EmergencyStop\0");
+		DebugConsole::pushMessage(" #EmergencyStop\0");
 		
 	}
 
@@ -123,7 +123,7 @@ void MainTick::process(){ //called every 100ms
 	//--------------------------------------------------------INITIALIZING---------------------------
 	case INITIALIZING_JustStarted:
 
-		//DebugConsole::pushMessage(" #MainTick started\0");
+		DebugConsole::pushMessage(" #Started ===========================\0");
 
 		RxMessageQueue::flush();
 
@@ -222,7 +222,9 @@ void MainTick::process(){ //called every 100ms
 					){
 					setSubmode(WAITING_Waiting);
 					Servo::parkingBrake(false);
-					Servo::brake(true);
+					Servo::brake();
+					DebugConsole::pushMessage(" #Servo enabled\0");
+
 
 				}else{
 					__asm("	nop");
@@ -278,7 +280,7 @@ void MainTick::process(){ //called every 100ms
 				case Protocol::TAG_Personal:
 					if (MachineSettings::protocolStructExtendedValid==true){
 						setSubmode(PERSONAL_Starting);//TODO:check message length
-						//DebugConsole::pushMessage(" #Personal\0");
+						DebugConsole::pushMessage(" #Personal\0");
 					}
 					break;
 				case Protocol::TAG_Parking: 
@@ -287,7 +289,7 @@ void MainTick::process(){ //called every 100ms
 						(PersonalSettings::protocolStructValid==true)
 					){
 						setSubmode(PARKING_Starting);//TODO:check message length
-						//DebugConsole::pushMessage(" #Parking\0");
+						DebugConsole::pushMessage(" #Parking\0");
 					}
 					break;
 				case Protocol::TAG_TestConcentric:
@@ -299,7 +301,7 @@ void MainTick::process(){ //called every 100ms
 						(true==ForceTestDynamic::load(message))
 					){
 						setSubmode(FTEST_DYNAMIC_Starting);
-						//DebugConsole::pushMessage(" #ForceTestDynamic\0");
+						DebugConsole::pushMessage(" #ForceTestDynamic\0");
 					}
 					break;
 
@@ -312,7 +314,7 @@ void MainTick::process(){ //called every 100ms
 						(true==ForceTestStatic::load(message))
 					){
 						setSubmode(FTEST_STATIC_Starting);
-						//DebugConsole::pushMessage(" #ForceTestStatic\0");
+						DebugConsole::pushMessage(" #ForceTestStatic\0");
 					}
 					break;
 				
@@ -324,7 +326,7 @@ void MainTick::process(){ //called every 100ms
 						(ExcerciseSettings::valid==true)
 					){
 						setSubmode(EXERCISE_Starting);
-						//DebugConsole::pushMessage(" #ExcerciseIsokinetic\0");
+						DebugConsole::pushMessage(" #ExcerciseIsokinetic\0");
 					}
 					break;
 				case Protocol::TAG_GenericSet:
@@ -334,7 +336,7 @@ void MainTick::process(){ //called every 100ms
 						(GenericSetSettings::valid==true)
 					){
 						setSubmode(GENERIC_SET_Starting);
-						//DebugConsole::pushMessage(" #GenericSet\0");
+						DebugConsole::pushMessage(" #GenericSet\0");
 					}
 					break;
 				}
@@ -424,8 +426,6 @@ void MainTick::process(){ //called every 100ms
 
 							rangeAdjustmentTimeoutCounter = TIMEOUT_RangeAdjusmentMessage;
 						}else{
-							//DebugConsole::pushMessage(" #unable to move further+\0");
-
 						}
 						break;
 					case RangeAdjustment::BUTTONID_MAIN_PLUS:
@@ -440,8 +440,6 @@ void MainTick::process(){ //called every 100ms
 
 							rangeAdjustmentTimeoutCounter = TIMEOUT_RangeAdjusmentMessage;
 						}else{
-							//DebugConsole::pushMessage(" #unable to move further-\0");
-
 						}
 						break;
 					case RangeAdjustment::BUTTONID_AUX1_MINUS:
@@ -1855,7 +1853,7 @@ void MainTick::process(){ //called every 100ms
 
 	reportServoModeDefault();
 
-	//DebugConsole::process();
+	DebugConsole::process();
 
 	profilerStop();
 	tickID++;
@@ -1885,7 +1883,7 @@ void MainTick::processFieldbus(){
 			fieldbusErrorCounterMax = fieldbusErrorCounter;
 		}
 
-		//DebugConsole::pushMessage(" #FieldbusResponseLost\0");
+		DebugConsole::pushMessage(" #FieldbusResponseLost\0");
 		if (fieldbusErrorCounter>=FIELDBUS_FAULT_TRESHOLD){
 			Errors::setFlag(Errors::FLAG_USS_RESPONSE);	
 			fieldbusErrorCounterMax = 0;

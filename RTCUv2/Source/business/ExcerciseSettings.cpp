@@ -6,7 +6,7 @@
 
 #include "hmi/hmi.h"
 #include "hmi/diagnostics.h"
-//#include "hmi/debugConsole.h"
+#include "hmi/debugConsole.h"
 #include "business/MachineSettings.h"
 #include "business/PersonalSettings.h"
 
@@ -89,7 +89,7 @@ void ExcerciseSettings::load(RxMessage *message){
 				}
 				valid = true;
 
-				//DebugConsole::pushMessage(" #ExcerciseSettings were loaded");
+				DebugConsole::pushMessage(" #ExcerciseSettings load OK");
 
 			}
 

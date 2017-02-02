@@ -36,8 +36,7 @@ typedef enum
 
 
 
-class Protocol
-{
+class Protocol{
 
 private:
 
@@ -72,6 +71,8 @@ private:
 		static const uint8_t SLIP_ESC_ESC = 0xDD;	
 	
 		uint32_t rxByteCounter;
+		
+		static uint32_t rxErrorCounter;
 		
 	public:
 	

@@ -16,7 +16,7 @@ public:
     ~ReportLogger();
 
     QTextStream stream;
-    void flush();
+    void flush(bool force);
 
 };
 

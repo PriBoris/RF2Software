@@ -6,7 +6,7 @@
 
 #include "hmi/hmi.h"
 #include "hmi/diagnostics.h"
-//#include "hmi/debugConsole.h"
+#include "hmi/debugConsole.h"
 #include "business/MachineSettings.h"
 
 
@@ -62,10 +62,10 @@ void PersonalSettings::load(RxMessage *message){
 			memcpy(&protocolStruct,&newProtocolStruct,sizeof(ProtocolStruct));
 			protocolStructValid = true;
 
-			//DebugConsole::pushMessage(" #PersonalSettings were loaded");
+			DebugConsole::pushMessage(" #PersonalSettings load OK");
 
-
-
+		}else{
+			DebugConsole::pushMessage(" #PersonalSettings load FAIL");
 
 		}
 

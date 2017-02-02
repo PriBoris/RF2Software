@@ -268,7 +268,7 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
 
 
 		(reportLogger->stream) << "\n";
-		reportLogger->flush();
+        reportLogger->flush(false);
 	}
 
 	//--------------------------------------------------------------------------

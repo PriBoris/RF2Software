@@ -18,7 +18,7 @@
 #include "hmi/hmi.h"
 #include "hmi/diagnostics.h"
 #include "hmi/RxMessageQueue.h"
-//#include "hmi/debugConsole.h"
+#include "hmi/debugConsole.h"
 
 
 #include "nfc/nfc.h"
@@ -49,7 +49,7 @@ int main(void){
 	ports::led1on();
 	
 
-	//DebugConsole::init(true);
+	DebugConsole::init(true);
 
 
 	NV::RealTimeClock::init();

@@ -224,7 +224,7 @@ void WidgetMachineSettingsExtended::newMessageReceived(quint8 tag,quint32 msgID,
 		}
 
 		(reportLogger->stream) << "\n";
-		reportLogger->flush();
+        reportLogger->flush(true);
 
 
 	}

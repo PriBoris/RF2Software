@@ -1306,7 +1306,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 		}
 
 		(reportLogger->stream) << "\n";
-		reportLogger->flush();
+        reportLogger->flush(false);
 	}
 
 }

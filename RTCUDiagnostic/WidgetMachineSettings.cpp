@@ -179,7 +179,7 @@ void WidgetMachineSettings::newMessageReceived(quint8 tag,quint32 msgID,QByteArr
         }
 
         (reportLogger->stream) << "\n";
-        reportLogger->flush();
+        reportLogger->flush(true);
 
     }
 

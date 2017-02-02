@@ -5,15 +5,14 @@
 #include <QLabel>
 #include <QBoxLayout>
 #include <QTextEdit>
-#include <QTimer>
-#include <QFile>
 
 
 #include "serialporttransceiver.h"
+#include "ReportLogger.h"
 
 
-class WidgetConsole : public QWidget
-{
+class WidgetConsole : public QWidget{
+
     Q_OBJECT
     QLabel *lblRxMessageCounter;
 
@@ -21,12 +20,12 @@ class WidgetConsole : public QWidget
 
     QVBoxLayout *loMain;
 
-
     SerialPortTransceiver *serialPortTransceiver_;
     quint32 rxMessageCounter;
 
-    QString getRandomString() const;
-    QFile *logFile;
+
+    ReportLogger *reportLogger;
+
 
 public:
     explicit WidgetConsole(
@@ -37,10 +36,6 @@ public:
 
 public slots:
     void newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value);
-    void debugTimerTimeout(void);
-
-
-
 
 };
 

@@ -5,6 +5,7 @@
 
 #include "hmi/hmi.h"
 #include "hmi/diagnostics.h"
+#include "hmi/debugConsole.h"
 
 #include "business/MachineSettings.h"
 #include "business/PersonalSettings.h"
@@ -51,12 +52,12 @@ void GenericSetSettings::load(RxMessage *message){
 		memset(&newSet,0,sizeof(newSet));
 		memcpy(&newSet,&message->value,message->valueLen);
 
-		//uint32_t newMoveCount =  (message->valueLen - sizeof(int32_t)*4) / sizeof(Move);
-
 		if(checkSet(newSet)==true){
 			memcpy(&set,&newSet,message->valueLen);
 			valid = true;
-			//DebugConsole::pushMessage(" #GenericSetSettings is loaded");
+			DebugConsole::pushMessage(" #GenericSetSettings load OK");
+		}else{
+			DebugConsole::pushMessage(" #GenericSetSettings load FAIL");
 		}
 
 

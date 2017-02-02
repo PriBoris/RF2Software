@@ -7,6 +7,8 @@
 
 #include "TLV.h"
 
+#include "Utils.h"
+
 //==============================================================================================================
 WidgetConsole::WidgetConsole(
         SerialPortTransceiver *serialPortTransceiver,
@@ -15,23 +17,15 @@ WidgetConsole::WidgetConsole(
 {
 
     serialPortTransceiver_ = serialPortTransceiver;
-    rxMessageCounter = 0;
+
+    reportLogger = new ReportLogger("RtcuDebugMessage.txt");
 
     {
-        logFile = new QFile("RtcuDebugMessagesLog.txt");
-        logFile->open(QIODevice::Append);
-
-        QString separator = "\n\n";
-        logFile->write(separator.toLocal8Bit());
-
-    }
-
-
-
-    {
-        lblRxMessageCounter = new QLabel("lblRxMessageCounter");
+        lblRxMessageCounter = new QLabel;
         lblRxMessageCounter->setFont(QFont("Verdana",10,QFont::Normal,true));
+        Utils::MessageCounterInitialize("Rx",rxMessageCounter,lblRxMessageCounter);
     }
+
 
     edtReceived = new QTextEdit;
     edtReceived->setReadOnly(true);
@@ -47,48 +41,14 @@ WidgetConsole::WidgetConsole(
 
     this->setLayout(loMain);
 
-    //debugTimer = new QTimer(this);
-    //connect(debugTimer, SIGNAL(timeout()), this, SLOT(debugTimerTimeout()));
-    //debugTimer->start(300);
 
-}
-//==============================================================================================================
-void WidgetConsole::debugTimerTimeout(void){
-
-    //qDebug() << "WidgetConsole::debugTimerTimeout";
-
-    QByteArray messageData = getRandomString().toLocal8Bit();
-    newMessageReceived((quint8)TLV::TAG_RtcuDebugMessage,0,messageData);
-
-}
-//==============================================================================================================
-QString WidgetConsole::getRandomString() const
-{
-   const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
-   const int randomStringLength = 12; // assuming you want random strings of 12 characters
-
-   QString randomString;
-   for(int i=0; i<randomStringLength; ++i)
-   {
-       int index = qrand() % possibleCharacters.length();
-       QChar nextChar = possibleCharacters.at(index);
-       randomString.append(nextChar);
-   }
-   //randomString.append('\n');
-   return randomString;
 }
 //==============================================================================================================
 void WidgetConsole::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 
     if (tag==TLV::TAG_RtcuDebugMessage){
 
-        rxMessageCounter++;
-        lblRxMessageCounter->setText(
-                    "Сообщений: "+QString::number(rxMessageCounter)+" "
-                    +"(длина последнего="
-                    +QString::number(value.length())
-                    +")"
-                    );
+        Utils::MessageCounterIncrement("Rx",rxMessageCounter,lblRxMessageCounter,value);
 
         QDateTime now = QDateTime::currentDateTime();
         QString nowStr = now.toString("yyyy/MM/dd hh:mm:ss.zzz");
@@ -98,19 +58,9 @@ void WidgetConsole::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &valu
         edtReceived->insertPlainText (consoleStr);
         edtReceived->moveCursor (QTextCursor::End);
 
-        if (logFile->isOpen()){
+        (reportLogger->stream) << consoleStr;
 
-            logFile->write(consoleStr.toLocal8Bit());
-
-
-
-        }
-
-
-
-
-        //qDebug() << "WidgetConsole::newMessageReceived";
-
+        reportLogger->flush(true);
 
     }
 
@@ -120,8 +70,7 @@ void WidgetConsole::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &valu
 //==============================================================================================================
 WidgetConsole::~WidgetConsole(){
 
-    qDebug() << "WidgetConsole::~WidgetConsole";
-    logFile->close();
+    delete reportLogger;
 }
 //==============================================================================================================
 

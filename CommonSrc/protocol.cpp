@@ -6,6 +6,7 @@
 #include "crc32.h"
 
 
+uint32_t Protocol::rxErrorCounter = 0;;
 	
 
 //===============================================================================================
@@ -209,6 +210,7 @@ bool Protocol::processRx(void){
 								return true;
 							}else{
 									protocolState = PROTOCOL_Error;
+									rxErrorCounter++;
 							}	
 						
 							break;
