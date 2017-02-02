@@ -3,6 +3,7 @@
 #include <QScrollArea>
 
 #include "RTCU.h"
+#include "TLV.h"
 
 
 //===============================================================================================================
@@ -20,6 +21,7 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent){
 	connect(serialPortTransceiver,SIGNAL(newReadData(QByteArray&)),tlvReader,SLOT(processReadData(QByteArray&)));
 
 	RTCU::init();
+	TLV::init();
 
 
 	fontRegular = new QFont("Verdana", 10, QFont::Normal);

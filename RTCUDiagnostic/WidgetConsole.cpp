@@ -18,7 +18,10 @@ WidgetConsole::WidgetConsole(
 
     serialPortTransceiver_ = serialPortTransceiver;
 
-    reportLogger = new ReportLogger("RtcuDebugMessage.txt");
+    {
+        reportLogger = new ReportLogger("RtcuDebugMessage.txt");
+        (reportLogger->stream) << "\n";    
+    }
 
     {
         lblRxMessageCounter = new QLabel;

@@ -4,7 +4,6 @@ ReportLogger::ReportLogger(QString fileName){
     file = new QFile(fileName);
     file->open(QIODevice::WriteOnly | QIODevice::Append);
     stream.setDevice(file);
-    stream << "\n\n\n";
 }
 
 ReportLogger::~ReportLogger(){

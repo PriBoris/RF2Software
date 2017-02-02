@@ -13,6 +13,9 @@ protected:
     static void createCrcTable(void);
     static void crc32(quint32 *pdwCrc32,quint8 bNewByte);
 
+private:
+    static QMap<quint8,QString> titles;
+
 
 
 public:
@@ -50,7 +53,8 @@ public:
     static const quint8 TAG_GenericSet = 0x51;
     static const quint8 TAG_LoadMachineSettingsExtended = 0x52;
 
-
+    static void init();
+    static QString getTitle(quint8 tag);
 
 
     static const quint8 SLIP_END = 0xC0;

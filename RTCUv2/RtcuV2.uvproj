@@ -570,6 +570,16 @@
               <FileType>5</FileType>
               <FilePath>.\Source\hmi\RxMessageQueue.h</FilePath>
             </File>
+            <File>
+              <FileName>debugConsole.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Source\hmi\debugConsole.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>debugConsole.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\hmi\debugConsole.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

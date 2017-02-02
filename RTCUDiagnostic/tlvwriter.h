@@ -5,21 +5,25 @@
 
 #include "TLV.h"
 
+#include "ReportLogger.h"
+
 
 class TLVWriter : public QObject,TLV
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    QByteArray tagLenValueCrc_;
-    QByteArray tagLenValueCrcStuffed_;
+	QByteArray tagLenValueCrc_;
+	QByteArray tagLenValueCrcStuffed_;
 
-    static quint32 txID;
+	static quint32 txID;
+
+	ReportLogger *reportLogger;
 
 
 public:
-    explicit TLVWriter(const quint8 tag,QByteArray &value,QObject *parent = 0);
+	explicit TLVWriter(const quint8 tag,QByteArray &value,QObject *parent = 0);
 
-    QByteArray* getStuffedArray();
+	QByteArray* getStuffedArray();
 
 
 signals:
