@@ -52,8 +52,8 @@ TLVWriter::TLVWriter(
             << " "
             << QString::number((int)value.length()) 
             << "\n"
-            << "raw:     " << tagLenValueCrc_.toHex() << "\n"
-            << "stuffed: " << tagLenValueCrcStuffed_.toHex() << "\n"
+            << "raw:     " << QString::number(tagLenValueCrc_.length()) << "bytes " << tagLenValueCrc_.toHex() << "\n"
+            << "stuffed: " << QString::number(tagLenValueCrcStuffed_.length()) << "bytes " << tagLenValueCrcStuffed_.toHex() << "\n"
             ;
 
         reportLogger->flush(true);

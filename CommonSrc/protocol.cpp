@@ -7,6 +7,7 @@
 
 
 uint32_t Protocol::rxErrorCounter = 0;;
+uint32_t Protocol::rxStuffErrorCounter = 0;
 	
 
 //===============================================================================================
@@ -48,190 +49,182 @@ void Protocol::receiveByte(uint8_t byte){
 	rxPtrReceived = (rxPtrReceived+1) & rxBufferLenMinus1;		
 }
 //===============================================================================================
+uint8_t Protocol::getByteToProcess(){
+
+	uint8_t newByte = rxBuffer[rxPtrProcessed];
+	rxPtrProcessed = (rxPtrProcessed+1) & (rxBufferLenMinus1);
+	rxByteCounter++;
+	return newByte;
+}
+//=================================================================================================
+/*
+returns true if a packet is correctly received
+
+
+*/
 bool Protocol::processRx(void){
 
-	if (rxPtrReceived!=rxPtrProcessed)
-	{
-			uint8_t newByte = rxBuffer[rxPtrProcessed];
-			rxPtrProcessed = (rxPtrProcessed+1) & (rxBufferLenMinus1);
-			rxByteCounter++;
+	if (rxPtrReceived!=rxPtrProcessed){
+
+		uint8_t newByte = getByteToProcess();
 	
-			if (newByte==SLIP_END)
-			{
+		if (newByte==SLIP_END){
+
+			stuffState = STUFF_Waiting;
+			protocolState = PROTOCOL_TagExpected;
+
+		}else{
+
+			switch(stuffState){
+			//------------------------------------------------
+			default:
 				stuffState = STUFF_Waiting;
-				protocolState = PROTOCOL_TagExpected;
-			}
-			else
-			{
-				switch(stuffState)
-				{
-					//------------------------------------------------
-					default:
-						stuffState = STUFF_Waiting;
-					//------------------------------------------------
-					case STUFF_Waiting:
-						if (newByte==SLIP_ESC)
-						{
-							stuffState = STUFF_EscByte;
-						}
-						else
-						{
-							stuffState = STUFF_NewByte;
-						}
-						break;
-					//------------------------------------------------
-					case STUFF_EscByte:
-						if (newByte==SLIP_ESC_END)
-						{
-							stuffState = STUFF_NewByte;
-							newByte = SLIP_END;
-						}
-						else if (newByte==SLIP_ESC_ESC)
-						{
-							stuffState = STUFF_NewByte;
-							newByte = SLIP_ESC;
-						}
-						else
-						{
-							stuffState = STUFF_Waiting;
-							protocolState = PROTOCOL_Error; //stuff error
-						}
-						break;
-					//------------------------------------------------
+			//------------------------------------------------
+			case STUFF_Waiting:
+				if (newByte==SLIP_ESC){
+					stuffState = STUFF_EscByte;
+				}else{
+					stuffState = STUFF_NewByte;
 				}
+				break;
+			//------------------------------------------------
+			case STUFF_EscByte:
+				if (newByte==SLIP_ESC_END){
+					stuffState = STUFF_NewByte;
+					newByte = SLIP_END;
+				}else if (newByte==SLIP_ESC_ESC){
+					stuffState = STUFF_NewByte;
+					newByte = SLIP_ESC;
+				}else{
+					stuffState = STUFF_Waiting;
+					protocolState = PROTOCOL_Error; //stuff error
+					rxStuffErrorCounter++;
+				}
+				break;
+			//------------------------------------------------
+			}
+		}
+			
+		if (stuffState==STUFF_NewByte){
+
+			stuffState = STUFF_Waiting;
+		
+		
+		
+		
+			switch(protocolState){
+			//---protocolState---------------------------------------------------------------
+			default:
+				protocolState = PROTOCOL_Error;
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_TagExpected:
+				Crc32::appendByte(newByte,calculatedRxCrc = Crc32::getInitValue());
+				rxTag = newByte;
+				protocolState = PROTOCOL_IDByte1Expected;
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_IDByte1Expected:
+				Crc32::appendByte(newByte,calculatedRxCrc);
+				rxID = (uint32_t)newByte;
+				protocolState = PROTOCOL_IDByte2Expected;
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_IDByte2Expected:
+				Crc32::appendByte(newByte,calculatedRxCrc);
+				rxID |= ((uint32_t)newByte)<<8;
+				protocolState = PROTOCOL_IDByte3Expected;
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_IDByte3Expected:
+				Crc32::appendByte(newByte,calculatedRxCrc);
+				rxID |= ((uint32_t)newByte)<<16;
+				protocolState = PROTOCOL_IDByte4Expected;
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_IDByte4Expected:
+				Crc32::appendByte(newByte,calculatedRxCrc);
+				rxID |= ((uint32_t)newByte)<<24;
+				protocolState = PROTOCOL_LenByte1Expected;
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_LenByte1Expected:
+				Crc32::appendByte(newByte,calculatedRxCrc);
+				rxDataLen = (uint16_t)newByte;
+				protocolState = PROTOCOL_LenByte2Expected;
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_LenByte2Expected:
+				Crc32::appendByte(newByte,calculatedRxCrc);
+				rxDataLen |= ((uint16_t)newByte)<<8;
+			
+				if (rxDataLen>(this->rxValueLen)){
+					protocolState = PROTOCOL_Error;
+				}else if (rxDataLen==0){
+					protocolState = PROTOCOL_CrcByte1Expected;
+				}else{
+					actualRxDataLen=0;
+					protocolState = PROTOCOL_ValueByteExpected;
+				}
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_ValueByteExpected:
+					
+				Crc32::appendByte(newByte,calculatedRxCrc);
+				rxValue[actualRxDataLen++] = newByte;
+				if (actualRxDataLen==rxDataLen){
+					protocolState = PROTOCOL_CrcByte1Expected;
+				}
+				
+			
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_CrcByte1Expected:
+				
+				rxCrc = (uint32_t)newByte;
+				protocolState = PROTOCOL_CrcByte2Expected;
+		
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_CrcByte2Expected:
+				rxCrc |= ((uint32_t)newByte)<<8;
+				protocolState = PROTOCOL_CrcByte3Expected;
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_CrcByte3Expected:
+				rxCrc |= ((uint32_t)newByte)<<16;
+				protocolState = PROTOCOL_CrcByte4Expected;
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_CrcByte4Expected:						
+				rxCrc |= ((uint32_t)newByte)<<24;
+		
+				if (rxCrc==calculatedRxCrc){
+					stuffState = STUFF_Waiting;
+					protocolState = PROTOCOL_Success;
+					return true;
+				}else{
+					protocolState = PROTOCOL_Error;
+					rxErrorCounter++;
+				}	
+			
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_Success:
+				//TODO: add counters for diagnostics (no bytes are normally expected here)
+				break;
+			//---protocolState---------------------------------------------------------------
+			case PROTOCOL_Error:
+				//TODO: add counters for diagnostics (no bytes are normally expected here)
+				break;
+			//---protocolState---------------------------------------------------------------
 			}
 			
-			if (stuffState==STUFF_NewByte)
-			{
-					stuffState = STUFF_Waiting;
-				
-					static uint32_t lengthReceived;
-					static uint32_t crcReceived;
-					static uint32_t crcCalculated;
-				
-				
-				
-					switch(protocolState)
-					{
-						//---protocolState---------------------------------------------------------------
-						default:
-							protocolState = PROTOCOL_Error;
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_TagExpected:
-							crcCalculated = Crc32::getInitValue();
-							Crc32::appendByte(newByte,crcCalculated);
-							rxTag = newByte;
-							protocolState = PROTOCOL_IDByte1Expected;
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_IDByte1Expected:
-							Crc32::appendByte(newByte,crcCalculated);
-							rxID = (uint32_t)newByte;
-							protocolState = PROTOCOL_IDByte2Expected;
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_IDByte2Expected:
-							Crc32::appendByte(newByte,crcCalculated);
-							rxID |= ((uint32_t)newByte)<<8;
-							protocolState = PROTOCOL_IDByte3Expected;
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_IDByte3Expected:
-							Crc32::appendByte(newByte,crcCalculated);
-							rxID |= ((uint32_t)newByte)<<16;
-							protocolState = PROTOCOL_IDByte4Expected;
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_IDByte4Expected:
-							Crc32::appendByte(newByte,crcCalculated);
-							rxID |= ((uint32_t)newByte)<<24;
-							protocolState = PROTOCOL_LenByte1Expected;
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_LenByte1Expected:
-							Crc32::appendByte(newByte,crcCalculated);
-							rxDataLen = (uint16_t)newByte;
-							protocolState = PROTOCOL_LenByte2Expected;
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_LenByte2Expected:
-							Crc32::appendByte(newByte,crcCalculated);
-							rxDataLen |= ((uint16_t)newByte)<<8;
-						
-						
-							if (rxDataLen>(this->rxValueLen)){
-								protocolState = PROTOCOL_Error;
-							}else if (rxDataLen==0){
-								protocolState = PROTOCOL_CrcByte1Expected;
-							}else{
-								lengthReceived=0;
-								protocolState = PROTOCOL_ValueByteExpected;
-							}
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_ValueByteExpected:
-								
-							Crc32::appendByte(newByte,crcCalculated);
-							rxValue[lengthReceived++] = newByte;
-							if (lengthReceived==rxDataLen)
-							{
-								protocolState = PROTOCOL_CrcByte1Expected;
-							}
-							
-						
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_CrcByte1Expected:
-							
-							crcReceived = (uint32_t)newByte;
-							protocolState = PROTOCOL_CrcByte2Expected;
-					
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_CrcByte2Expected:
-							crcReceived |= ((uint32_t)newByte)<<8;
-							protocolState = PROTOCOL_CrcByte3Expected;
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_CrcByte3Expected:
-							crcReceived |= ((uint32_t)newByte)<<16;
-							protocolState = PROTOCOL_CrcByte4Expected;
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_CrcByte4Expected:						
-							crcReceived |= ((uint32_t)newByte)<<24;
-							//protocolState = PROTOCOL_TagExpected;
-					
-							if (crcReceived==crcCalculated)
-							{
-								stuffState = STUFF_Waiting;
-								protocolState = PROTOCOL_Success;
-								return true;
-							}else{
-									protocolState = PROTOCOL_Error;
-									rxErrorCounter++;
-							}	
-						
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_Success:
-							//TODO: add counters for diagnostics (no bytes are normally expected here)
-							break;
-						//---protocolState---------------------------------------------------------------
-						case PROTOCOL_Error:
-							//TODO: add counters for diagnostics (no bytes are normally expected here)
-							break;
-						//---protocolState---------------------------------------------------------------
-					}
-				
-				
-			}
-			return false;
-	}	
-	else
-	{
-			return false;		
+			
+		}
+		return false;
+	}else{
+		return false;		
 	}
 
 	

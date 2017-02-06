@@ -17,11 +17,9 @@ private:
 public:
 	static void init();
 	static void appendByte(uint8_t newByte,uint32_t &crcValue);
+	static void appendWord(uint16_t newWord,uint32_t &crcValue);
 	static void appendDword(uint32_t newDword,uint32_t &crcValue);
 	static uint32_t getInitValue();
-	static uint32_t getTableValue(uint8_t index);
-	
-
 
 };
 
