@@ -4,11 +4,16 @@
 #include "GenericSetSettings.h"
 #include "PositionTask.h"
 
+#include "servo/servo.h"
+
+
 int32_t GenericSet::pauseCounterMsec;
 
 int32_t GenericSet::moveIndex;
 
 
+float GenericSet::servoFrequencyPositive_ = 0.0f;
+float GenericSet::servoFrequencyNegative_ = 0.0f;
 
 //=================================================================================================
 void GenericSet::start(){
@@ -68,8 +73,51 @@ int32_t GenericSet::getMoveDestinationPosition(){
 	
 }
 //=================================================================================================
+int32_t GenericSet::getMoveStartPosition(){
+	if (moveIndex==0){
+		return getPositionMainStart();
+	}else{
+		return 
+			PositionTask::relPositionToAbsPosition(
+				GenericSetSettings::set.moves[moveIndex-1].destinationPositionRel
+				);
+	}
+}
+//=================================================================================================
 int32_t GenericSet::getMoveIndex(){
 	return moveIndex;
+}
+//=================================================================================================
+int32_t GenericSet::getMoveDuration(){
+	return GenericSetSettings::set.moves[moveIndex].speed;
+}
+//=================================================================================================
+void GenericSet::recalculateServoFrequency(bool direction){
+
+	if (direction==Servo::POSITIVE_DIRECTION){
+
+		servoFrequencyPositive_ = Servo::moveDurationToFrequency(
+			getMoveStartPosition(),
+			getMoveDestinationPosition(),
+			getMoveDuration()
+			);
+
+		servoFrequencyNegative_ = 0.0f;
+
+	}else{
+
+		servoFrequencyPositive_ = 0.0f;
+
+		servoFrequencyNegative_ = -Servo::moveDurationToFrequency(
+			getMoveStartPosition(),
+			getMoveDestinationPosition(),
+			getMoveDuration()
+			);		
+	}
+
+
+
+
 }
 //=================================================================================================
 

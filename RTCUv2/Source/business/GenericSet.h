@@ -12,6 +12,9 @@ private:
 
 	static int32_t moveIndex;
 
+	static int32_t getMoveDuration();
+
+
 public:
 
 	static const int32_t PHASE_PAUSE1 = 9;
@@ -35,7 +38,14 @@ public:
 	static bool isSetComplete();
 
 	static int32_t getMoveDestinationPosition();
+	static int32_t getMoveStartPosition();
 	static int32_t getMoveIndex();
+
+
+	static void recalculateServoFrequency(bool direction);
+	static float servoFrequencyPositive_;
+	static float servoFrequencyNegative_;
+
 
 };
 

@@ -50,6 +50,12 @@ public:
 		int32_t relSpeedMsec
 		);
 
+	static float moveDurationToFrequency(
+		int32_t startPosition,
+		int32_t destinationPosition,
+		int32_t durationMsec
+		);
+
 
 };
 

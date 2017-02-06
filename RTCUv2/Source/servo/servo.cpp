@@ -152,3 +152,16 @@ float Servo::relSpeedToFrequency(
 
 }
 //==================================================================================================================
+float Servo::moveDurationToFrequency(
+	int32_t startPosition,
+	int32_t destinationPosition,
+	int32_t durationMsec
+	){
+
+
+
+	return 3.0f;
+}
+//==================================================================================================================
+
+

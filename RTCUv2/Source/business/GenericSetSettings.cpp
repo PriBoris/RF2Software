@@ -105,7 +105,7 @@ bool GenericSetSettings::checkSet(Set &setToCheck){
 				if (
 					(setToCheck.moves[moveIndex].destinationPositionRel<0)||
 					(setToCheck.moves[moveIndex].destinationPositionRel>10000)||
-					(setToCheck.moves[moveIndex].speed<0)||
+					(setToCheck.moves[moveIndex].speed<100)||
 					false
 					){
 						return false;

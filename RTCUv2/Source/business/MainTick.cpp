@@ -1760,16 +1760,36 @@ void MainTick::process(){ //called every 100ms
 
 		if (PositionTask::getDirection(GenericSet::getMoveDestinationPosition())==Servo::POSITIVE_DIRECTION){
 
+			GenericSet::recalculateServoFrequency(Servo::POSITIVE_DIRECTION);
+
 			Servo::movePositive();
 
 			setSubmode(GENERIC_SET_Move_Moving);
 			reportServoModePositive();
+
+/*			Fieldbus::pushUSSRequest(
+				USS::makeSetFrequencyRequest(
+					Servo::POSITIVE_DIRECTION,
+					servoFrequencyPositive=GenericSet::servoFrequencyPositive
+					)
+				);
+*/
 		}else{
+
+			GenericSet::recalculateServoFrequency(Servo::NEGATIVE_DIRECTION);
 
 			Servo::moveNegative();
 
 			setSubmode(GENERIC_SET_Move_Moving);
 			reportServoModeNegative();
+
+/*			Fieldbus::pushUSSRequest(
+				USS::makeSetFrequencyRequest(
+					Servo::NEGATIVE_DIRECTION,
+					servoFrequencyNegative=GenericSet::servoFrequencyNegative
+					)
+				);
+*/
 		}	
 
 		processFieldbus();
