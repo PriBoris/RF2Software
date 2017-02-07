@@ -17,7 +17,7 @@ public:
 	static const uint16_t LEFT_FREQUENCY_INDEX = 0; // 0 means Fixed Frequency 1
 	static const uint16_t RIGHT_FREQUENCY_INDEX = 1; // 1 means Fixed Frequency 2
 
-	static const float SECONDS_PER_ROTATION_AT_1HZ;
+	static const float MILLISECONDS_PER_ROTATION_AT_1HZ;
 	static const float MIN_FREQUENCY;
 	static const float MAX_FREQUENCY;
 

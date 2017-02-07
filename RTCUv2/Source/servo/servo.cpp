@@ -7,10 +7,6 @@
 #include "business/MachineSettings.h"
 
 
-const float Servo::SECONDS_PER_ROTATION_AT_1HZ = 249.4623656f;
-const float Servo::MIN_FREQUENCY = 2.0f;
-const float Servo::MAX_FREQUENCY = 30.0f;//50.0f;
-
 bool Servo::actualMoveDirection = POSITIVE_DIRECTION;
 
 
@@ -113,6 +109,22 @@ bool Servo::validateActualPosition(bool direction){
 
 }
 //==================================================================================================================
+/*
+1395 motor rotations per minute @ 50Hz
+1395/60=23.25 motor rotations per second @ 50Hz
+1395/60/158.75=0.14645669 output shaft rotations per second @ 50Hz
+158.75*60/1395=6.82796 seconds per output shaft rotation @ 50Hz
+158.75*60/1395*50=341.398 seconds per output shaft rotation @ 1Hz
+158.75*60/1395*50*1000=341398 milliseconds per output shaft rotation @ 1Hz
+*/
+
+const float Servo::MILLISECONDS_PER_ROTATION_AT_1HZ = 341398.0f;
+
+const float Servo::MIN_FREQUENCY = 2.0f;
+const float Servo::MAX_FREQUENCY = 30.0f;//50.0f;
+
+
+//==================================================================================================================
 float Servo::absSpeedToFrequency(
 	int32_t fullRange,
 	int32_t absSpeedMsec
@@ -121,18 +133,16 @@ float Servo::absSpeedToFrequency(
 	if (fullRange==0){
 
 		return 0.0f;
-
+		
 	}else{
 
-		float absSpeedSec = (float)absSpeedMsec/1000.0f;
+		float millisecondsPerRange = Servo::MILLISECONDS_PER_ROTATION_AT_1HZ*(float)fullRange/(float)Encoder::FULL_ROTATION_TICKS;
 
-		float secondsPerRange = Servo::SECONDS_PER_ROTATION_AT_1HZ*(float)fullRange/(float)Encoder::FULL_ROTATION_TICKS;
+		float frequency = millisecondsPerRange/(float)absSpeedMsec;
 
-		float frequency = secondsPerRange/(float)absSpeedSec;
 		if (frequency<Servo::MIN_FREQUENCY){
 			frequency=Servo::MIN_FREQUENCY;
-		}
-		if (frequency>Servo::MAX_FREQUENCY){
+		} else if (frequency>Servo::MAX_FREQUENCY){
 			frequency=Servo::MAX_FREQUENCY;
 		}
 
