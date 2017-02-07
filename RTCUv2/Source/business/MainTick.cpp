@@ -1767,13 +1767,13 @@ void MainTick::process(){ //called every 100ms
 			setSubmode(GENERIC_SET_Move_Moving);
 			reportServoModePositive();
 
-/*			Fieldbus::pushUSSRequest(
+			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
 					Servo::POSITIVE_DIRECTION,
-					servoFrequencyPositive=GenericSet::servoFrequencyPositive
+					servoFrequencyPositive=GenericSet::servoFrequencyPositive_
 					)
 				);
-*/
+
 		}else{
 
 			GenericSet::recalculateServoFrequency(Servo::NEGATIVE_DIRECTION);
@@ -1783,16 +1783,16 @@ void MainTick::process(){ //called every 100ms
 			setSubmode(GENERIC_SET_Move_Moving);
 			reportServoModeNegative();
 
-/*			Fieldbus::pushUSSRequest(
+			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
 					Servo::NEGATIVE_DIRECTION,
-					servoFrequencyNegative=GenericSet::servoFrequencyNegative
+					servoFrequencyNegative=GenericSet::servoFrequencyNegative_
 					)
 				);
-*/
+
 		}	
 
-		processFieldbus();
+		//processFieldbus();
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
