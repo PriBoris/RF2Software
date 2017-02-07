@@ -361,7 +361,7 @@ void MainTick::process(){ //called every 100ms
 	//--------------------------------------------------PERSONAL----------------------------------
 	case PERSONAL_SettingPositiveSpeed:
 
-		RangeAdjustment::servoFrequency = Servo::absSpeedToFrequency(
+		RangeAdjustment::servoFrequency = Servo::rangeToFrequency(
 			MachineSettings::getMainRange(),
 			MachineSettings::protocolStructExtended.speedAbsMainPersonal
 			);

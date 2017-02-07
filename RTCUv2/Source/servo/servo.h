@@ -40,14 +40,9 @@ public:
 	static bool validateActualPosition();
 	static bool validateActualPosition(bool direction);
 
-	static float absSpeedToFrequency(
+	static float rangeToFrequency(
 		int32_t absRange,
 		int32_t absSpeedMsec
-		);
-
-	static float relSpeedToFrequency(
-		int32_t relRange,
-		int32_t relSpeedMsec
 		);
 
 	static float moveDurationToFrequency(

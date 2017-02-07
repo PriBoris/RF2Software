@@ -73,12 +73,12 @@ int32_t ForceTestDynamic::getStopPosition(){
 void ForceTestDynamic::recalculateServoFrequency(){
 
 	if (testType==CONCENTRIC){
-		servoFrequencyPositive = Servo::relSpeedToFrequency(
+		servoFrequencyPositive = Servo::rangeToFrequency(
 			PersonalSettings::getMainRange(),
 			PersonalSettings::protocolStruct.speedRelMainTestConcentric
 			);
 	}else{
-		servoFrequencyPositive = Servo::relSpeedToFrequency(
+		servoFrequencyPositive = Servo::rangeToFrequency(
 			PersonalSettings::getMainRange(),
 			PersonalSettings::protocolStruct.speedRelMainTestEccentric
 			);

@@ -16,7 +16,7 @@ float Parking::servoFrequencyNegative = 0.0f;
 //=================================================================================================
 void Parking::recalculateServoFrequency(){
 
-	servoFrequencyPositive = Servo::absSpeedToFrequency(
+	servoFrequencyPositive = Servo::rangeToFrequency(
 		MachineSettings::getMainRange(),
 		PersonalSettings::protocolStruct.speedAbsMainParking
 		);

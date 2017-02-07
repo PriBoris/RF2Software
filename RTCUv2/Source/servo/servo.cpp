@@ -125,15 +125,15 @@ const float Servo::MAX_FREQUENCY = 30.0f;//50.0f;
 
 
 //==================================================================================================================
-float Servo::absSpeedToFrequency(
+float Servo::rangeToFrequency(
 	int32_t fullRange,
 	int32_t absSpeedMsec
 ){
 
-	if (fullRange==0){
+	if (fullRange<=0){
 
 		return 0.0f;
-		
+
 	}else{
 
 		float millisecondsPerRange = Servo::MILLISECONDS_PER_ROTATION_AT_1HZ*(float)fullRange/(float)Encoder::FULL_ROTATION_TICKS;
@@ -150,15 +150,6 @@ float Servo::absSpeedToFrequency(
 		
 	}
 
-
-}
-//==================================================================================================================
-float Servo::relSpeedToFrequency(
-	int32_t relRange,
-	int32_t relSpeedMsec
-){
-
-	return absSpeedToFrequency(relRange,relSpeedMsec);
 
 }
 //==================================================================================================================

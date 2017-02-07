@@ -59,24 +59,24 @@ void Excercise::recalculateServoFrequency(){
 
 	if (ExcerciseSettings::sets[actualSet].startPoint==ExcerciseSettings::START_POSITION_A){
 
-		servoFrequencyPositive = Servo::relSpeedToFrequency(
+		servoFrequencyPositive = Servo::rangeToFrequency(
 			PersonalSettings::getMainRange(),
 			ExcerciseSettings::sets[actualSet].speedBA
 			);
 
-		servoFrequencyNegative = -Servo::relSpeedToFrequency(
+		servoFrequencyNegative = -Servo::rangeToFrequency(
 			PersonalSettings::getMainRange(),
 			ExcerciseSettings::sets[actualSet].speedAB
 			);
 
 	}else{
 
-		servoFrequencyPositive = Servo::relSpeedToFrequency(
+		servoFrequencyPositive = Servo::rangeToFrequency(
 			PersonalSettings::getMainRange(),
 			ExcerciseSettings::sets[actualSet].speedAB
 			);
 
-		servoFrequencyNegative = -Servo::relSpeedToFrequency(
+		servoFrequencyNegative = -Servo::rangeToFrequency(
 			PersonalSettings::getMainRange(),
 			ExcerciseSettings::sets[actualSet].speedBA
 			);
