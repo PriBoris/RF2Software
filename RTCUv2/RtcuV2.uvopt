@@ -171,47 +171,12 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>rxErrorCounter,0x0A</ItemText>
+          <ItemText>servoFrequencyNegative_</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>rxStuffErrorCounter,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>2</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>protocolState</ItemText>
-        </Ww>
-        <Ww>
-          <count>3</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>rxDataLen</ItemText>
-        </Ww>
-        <Ww>
-          <count>4</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>crcReceived,0x10</ItemText>
-        </Ww>
-        <Ww>
-          <count>5</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>crcCalculated</ItemText>
-        </Ww>
-        <Ww>
-          <count>6</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>&amp;rxBuffer[0]</ItemText>
-        </Ww>
-        <Ww>
-          <count>7</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>&amp;rxValue[0]</ItemText>
-        </Ww>
-        <Ww>
-          <count>8</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>yaCrc</ItemText>
+          <ItemText>servoFrequencyPositive_</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -274,10 +239,10 @@
       <FileType>2</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>33</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>179</TopLine>
-      <CurrentLine>188</CurrentLine>
+      <TopLine>182</TopLine>
+      <CurrentLine>197</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\startup_stm32f427x.s</PathWithFileName>
       <FilenameWithoutPath>startup_stm32f427x.s</FilenameWithoutPath>
@@ -290,10 +255,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>36</TopLine>
-      <CurrentLine>47</CurrentLine>
+      <CurrentLine>43</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\main.cpp</PathWithFileName>
       <FilenameWithoutPath>main.cpp</FilenameWithoutPath>
@@ -986,10 +951,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>8</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>1</CurrentLine>
+      <TopLine>1772</TopLine>
+      <CurrentLine>1786</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\business\MainTick.cpp</PathWithFileName>
       <FilenameWithoutPath>MainTick.cpp</FilenameWithoutPath>
@@ -1274,10 +1239,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2496764</ColumnNumber>
+      <ColumnNumber>16</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>3</TopLine>
+      <CurrentLine>19</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\business\Parking.cpp</PathWithFileName>
       <FilenameWithoutPath>Parking.cpp</FilenameWithoutPath>
@@ -1306,10 +1271,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2496764</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\business\ForceTestDynamic.cpp</PathWithFileName>
       <FilenameWithoutPath>ForceTestDynamic.cpp</FilenameWithoutPath>
@@ -1402,10 +1367,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2496764</ColumnNumber>
+      <ColumnNumber>34</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>59</TopLine>
+      <CurrentLine>79</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\business\Excercise.cpp</PathWithFileName>
       <FilenameWithoutPath>Excercise.cpp</FilenameWithoutPath>
@@ -1724,8 +1689,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>1</CurrentLine>
+      <TopLine>220</TopLine>
+      <CurrentLine>227</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\CommonSrc\protocol.cpp</PathWithFileName>
       <FilenameWithoutPath>protocol.cpp</FilenameWithoutPath>

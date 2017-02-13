@@ -16,6 +16,7 @@
 
 
 #include "WidgetSettingsInteger.h"
+#include "ReportLogger.h"
 
 
 
@@ -47,12 +48,14 @@ class WidgetPersonalSettings : public QWidget{
     quint32 txMessageCounter;
 
 
+    ReportLogger *reportLogger;
 
 public:
     explicit WidgetPersonalSettings(
             SerialPortTransceiver *serialPortTransceiver,
             QWidget *parent = 0);
 
+    ~WidgetPersonalSettings();
 
 signals:
 
