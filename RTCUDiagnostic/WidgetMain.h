@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QDebug>
 #include <QBoxLayout>
+#include <QGridLayout>
 #include <QVector>
 #include <QGroupBox>
 #include <QPushButton>
@@ -39,12 +40,15 @@ class WidgetMain : public QWidget{
 	WidgetConsole *widgetConsole;
 
 	QPushButton *btnTabMode;
+	QPushButton *btnTabServoMode;
 	QPushButton *btnTabPersonalSettings;
 	QPushButton *btnTabMachineSettings;
 	QPushButton *btnTabExcerciseSettings;
 	QPushButton *btnTabGenericSetSettings;
 	QPushButton *btnTabNFC;
 	QPushButton *btnTabConsole;
+	QGridLayout *loTabs;
+
 
 	QLabel *lblPortStatus;
 	QLabel *lblPortRxStats;
@@ -56,7 +60,7 @@ class WidgetMain : public QWidget{
 	quint32 rxErrorCounter;
 
 
-	QHBoxLayout *loTabs;
+	QHBoxLayout *loHeader;
 
 
 
@@ -74,12 +78,13 @@ class WidgetMain : public QWidget{
 
 
 	static const int TAB_Mode=0;
-	static const int TAB_MachineSettings=1;
-	static const int TAB_PersonalSettings=2;
-	static const int TAB_ExcerciseSettings=3;
-	static const int TAB_GenericSetSettings=4;
-	static const int TAB_NFC=5;
-	static const int TAB_CONSOLE=6;
+	static const int TAB_ServoMode=1;
+	static const int TAB_MachineSettings=2;
+	static const int TAB_PersonalSettings=3;
+	static const int TAB_ExcerciseSettings=4;
+	static const int TAB_GenericSetSettings=5;
+	static const int TAB_NFC=6;
+	static const int TAB_CONSOLE=7;
 
 	void saveGeometry();
 	void restoreGeometry();

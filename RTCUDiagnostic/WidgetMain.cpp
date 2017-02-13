@@ -36,6 +36,7 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent){
 
 	{
 		btnTabMode = new QPushButton("Mode");
+		btnTabServoMode = new QPushButton("ServoMode");
 		btnTabPersonalSettings = new QPushButton("PersonalSettings");
 		btnTabMachineSettings = new QPushButton("MachineSettings");
 		btnTabExcerciseSettings = new QPushButton("ExcerciseSettings");
@@ -44,6 +45,7 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent){
 		btnTabConsole = new QPushButton("Console");
 
 		btnTabMode->setFixedWidth(150);
+		btnTabServoMode->setFixedWidth(150);
 		btnTabPersonalSettings->setFixedWidth(150);
 		btnTabMachineSettings->setFixedWidth(150);
 		btnTabExcerciseSettings->setFixedWidth(150);
@@ -51,27 +53,37 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent){
 		btnTabNFC->setFixedWidth(150);
 		btnTabConsole->setFixedWidth(150);
 
+		loTabs = new QGridLayout;
+
+		loTabs->addWidget(btnTabMode,0,0);
+		loTabs->addWidget(btnTabServoMode,1,0);
+		loTabs->addWidget(btnTabMachineSettings,0,1);
+		loTabs->addWidget(btnTabPersonalSettings,1,1);
+		loTabs->addWidget(btnTabExcerciseSettings,0,2);
+		loTabs->addWidget(btnTabGenericSetSettings,1,2);
+		loTabs->addWidget(btnTabNFC,0,3);
+		loTabs->addWidget(btnTabConsole,0,4);
+
 	}
 
 
-	loTabs = new QHBoxLayout;
 
 	{
 		lblPortStatus = new QLabel("");
 		lblPortStatus->setFixedWidth(150);
-		lblPortStatus->setFont(QFont("Verdana",10,QFont::Normal,false));
+        lblPortStatus->setFont(QFont("Verdana",8,QFont::Normal,false));
 
 		lblPortRxStats = new QLabel("0 rx msgs");
 		lblPortRxStats->setFixedWidth(150);
-		lblPortRxStats->setFont(QFont("Verdana",10,QFont::Normal,false));
+        lblPortRxStats->setFont(QFont("Verdana",8,QFont::Normal,false));
 
 		lblPortRxErrors = new QLabel("0 rx errors");
 		lblPortRxErrors->setFixedWidth(150);
-		lblPortRxErrors->setFont(QFont("Verdana",10,QFont::Normal,false));
+        lblPortRxErrors->setFont(QFont("Verdana",8,QFont::Normal,false));
 
 		lblMode = new QLabel("???");
 		lblMode->setFixedWidth(150);
-		lblMode->setFont(QFont("Verdana",10,QFont::Normal,false));
+        lblMode->setFont(QFont("Verdana",8,QFont::Normal,false));
 
 
 		loPort = new QVBoxLayout;
@@ -86,19 +98,13 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent){
 	}
 
 
+	{
+		loHeader = new QHBoxLayout;
 
-
-
-	loTabs->addWidget(btnTabMode);
-	loTabs->addWidget(btnTabMachineSettings);
-	loTabs->addWidget(btnTabPersonalSettings);
-	loTabs->addWidget(btnTabExcerciseSettings);
-	loTabs->addWidget(btnTabGenericSetSettings);
-	loTabs->addWidget(btnTabNFC);
-	loTabs->addWidget(btnTabConsole);
-	//loTabs->addStretch(1);
-	loTabs->addLayout(loPort);
-	loTabs->addStretch(1);
+		loHeader->addLayout(loTabs);
+		loHeader->addLayout(loPort);
+		loHeader->addStretch(1);
+	}
 
 	if (serialPortOpened==true){
 		lblPortStatus->setText(serialPort->portName()+" OK");
@@ -111,6 +117,7 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent){
 	{
 		QSignalMapper* signalMapper = new QSignalMapper (this) ;
 		connect (btnTabMode, SIGNAL(clicked(bool)), signalMapper, SLOT(map())) ;
+		connect (btnTabServoMode, SIGNAL(clicked(bool)), signalMapper, SLOT(map())) ;
 		connect (btnTabPersonalSettings, SIGNAL(clicked(bool)), signalMapper, SLOT(map())) ;
 		connect (btnTabMachineSettings, SIGNAL(clicked(bool)), signalMapper, SLOT(map())) ;
 		connect (btnTabExcerciseSettings, SIGNAL(clicked(bool)), signalMapper, SLOT(map())) ;
@@ -119,6 +126,7 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent){
 		connect (btnTabConsole, SIGNAL(clicked(bool)), signalMapper, SLOT(map())) ;
 
 		signalMapper -> setMapping (btnTabMode, TAB_Mode) ;
+		signalMapper -> setMapping (btnTabServoMode, TAB_ServoMode) ;
 		signalMapper -> setMapping (btnTabMachineSettings, TAB_MachineSettings) ;
 		signalMapper -> setMapping (btnTabPersonalSettings, TAB_PersonalSettings) ;
 		signalMapper -> setMapping (btnTabExcerciseSettings, TAB_ExcerciseSettings) ;
@@ -132,7 +140,7 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent){
 	}
 
 
-	lo->addLayout(loTabs);
+	lo->addLayout(loHeader);
 
 
 	loContainer = new QVBoxLayout;
@@ -219,6 +227,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
 	case TAB_Mode:
 
 		btnTabMode->setFont(*fontSelect);
+		btnTabServoMode->setFont(*fontRegular);
 		btnTabPersonalSettings->setFont(*fontRegular);
 		btnTabMachineSettings->setFont(*fontRegular);
 		btnTabExcerciseSettings->setFont(*fontRegular);
@@ -228,6 +237,30 @@ void WidgetMain::slotTabClicked(int tabIndex){
 
 
 		widgetMode->setVisible(true);
+		widgetServoMode->setVisible(false);
+		widgetSettingsPosition->setVisible(false);
+		widgetMachineSettings->setVisible(false);
+		widgetMachineSettingsExtended->setVisible(false);
+		widgetExcerciseSettings->setVisible(false);
+		widgetGenericSetSettings->setVisible(false);
+		widgetNFC->setVisible(false);
+		widgetConsole->setVisible(false);
+
+		break;
+
+	case TAB_ServoMode:
+
+		btnTabMode->setFont(*fontRegular);
+		btnTabServoMode->setFont(*fontSelect);
+		btnTabPersonalSettings->setFont(*fontRegular);
+		btnTabMachineSettings->setFont(*fontRegular);
+		btnTabExcerciseSettings->setFont(*fontRegular);
+		btnTabGenericSetSettings->setFont(*fontRegular);
+		btnTabNFC->setFont(*fontRegular);
+		btnTabConsole->setFont(*fontRegular);
+
+
+		widgetMode->setVisible(false);
 		widgetServoMode->setVisible(true);
 		widgetSettingsPosition->setVisible(false);
 		widgetMachineSettings->setVisible(false);
@@ -241,6 +274,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
 	case TAB_PersonalSettings:
 
 		btnTabMode->setFont(*fontRegular);
+		btnTabServoMode->setFont(*fontRegular);
 		btnTabPersonalSettings->setFont(*fontSelect);
 		btnTabMachineSettings->setFont(*fontRegular);
 		btnTabExcerciseSettings->setFont(*fontRegular);
@@ -262,6 +296,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
 	case TAB_MachineSettings:
 
 		btnTabMode->setFont(*fontRegular);
+		btnTabServoMode->setFont(*fontRegular);
 		btnTabPersonalSettings->setFont(*fontRegular);
 		btnTabMachineSettings->setFont(*fontSelect);
 		btnTabExcerciseSettings->setFont(*fontRegular);
@@ -283,6 +318,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
 	case TAB_ExcerciseSettings:
 
 		btnTabMode->setFont(*fontRegular);
+		btnTabServoMode->setFont(*fontRegular);
 		btnTabPersonalSettings->setFont(*fontRegular);
 		btnTabMachineSettings->setFont(*fontRegular);
 		btnTabExcerciseSettings->setFont(*fontSelect);
@@ -304,6 +340,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
    case TAB_GenericSetSettings:
 
 		btnTabMode->setFont(*fontRegular);
+		btnTabServoMode->setFont(*fontRegular);
 		btnTabPersonalSettings->setFont(*fontRegular);
 		btnTabMachineSettings->setFont(*fontRegular);
 		btnTabExcerciseSettings->setFont(*fontRegular);
@@ -326,6 +363,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
 	case TAB_NFC:
 
 		btnTabMode->setFont(*fontRegular);
+		btnTabServoMode->setFont(*fontRegular);
 		btnTabPersonalSettings->setFont(*fontRegular);
 		btnTabMachineSettings->setFont(*fontRegular);
 		btnTabExcerciseSettings->setFont(*fontRegular);
@@ -347,6 +385,7 @@ void WidgetMain::slotTabClicked(int tabIndex){
 	case TAB_CONSOLE:
 
 		btnTabMode->setFont(*fontRegular);
+		btnTabServoMode->setFont(*fontRegular);
 		btnTabPersonalSettings->setFont(*fontRegular);
 		btnTabMachineSettings->setFont(*fontRegular);
 		widgetMachineSettingsExtended->setVisible(false);
