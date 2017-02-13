@@ -665,6 +665,7 @@ void MainTick::reportCurrentMode(){
 		//----------------------------------------------------------------GENERIC_SET---submode------------------------------
 		case GENERIC_SET_Move_Preparing:
 		case GENERIC_SET_Move_Moving:
+		case GENERIC_SET_Move_Static:
 		
 			{
 

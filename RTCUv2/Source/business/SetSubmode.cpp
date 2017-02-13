@@ -109,6 +109,7 @@ void MainTick::setSubmode(MainTick::Submode newSubmode){
 	case GENERIC_SET_Pause2:
 	case GENERIC_SET_Move_Preparing:
 	case GENERIC_SET_Move_Moving:
+	case GENERIC_SET_Move_Static:
 
 
 

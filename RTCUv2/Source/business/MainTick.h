@@ -84,10 +84,11 @@ private:
 		GENERIC_SET_Pause2 = 60,
 		GENERIC_SET_Move_Preparing = 61,
 		GENERIC_SET_Move_Moving = 62,
+		GENERIC_SET_Move_Static = 63,
 
 
 
-		FAULT_Fault = 63,
+		FAULT_Fault = 64,
 	};
 	static Submode submode;
 	static Submode submodePrev;

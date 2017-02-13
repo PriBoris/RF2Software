@@ -104,6 +104,7 @@ void RTCU::Submode::init(){
 	titles[(quint8)GENERIC_SET_Pause2] = "GENERIC_SET_Pause2";
 	titles[(quint8)GENERIC_SET_Move_Preparing] = "GENERIC_SET_Move_Preparing";
 	titles[(quint8)GENERIC_SET_Move_Moving] = "GENERIC_SET_Move_Moving";
+	titles[(quint8)GENERIC_SET_Move_Static] = "GENERIC_SET_Move_Static";
 
 	
 	titles[(quint8)ERROR_Error] = "ERROR_Error";

@@ -1741,11 +1741,13 @@ void MainTick::process(){ //called every 100ms
 
 		}else if (GenericSet::isPauseDone()==true){
 
-			setSubmode(WAITING_Waiting);
+			if (GenericSet::isMoveStatic()){
 
-			setSubmode(GENERIC_SET_Move_Preparing);
-
-			__asm("	nop");
+				GenericSet::staticMoveStart();
+				setSubmode(GENERIC_SET_Move_Static);
+			}else{
+				setSubmode(GENERIC_SET_Move_Preparing);
+			}
 
 		}else{
 			__asm("	nop");
@@ -1819,12 +1821,18 @@ void MainTick::process(){ //called every 100ms
 				GenericSet::moveComplete();
 				if (GenericSet::isSetComplete()==false){
 
-					setSubmode(GENERIC_SET_Move_Preparing);
+					if (GenericSet::isMoveStatic()){
+
+						GenericSet::staticMoveStart();
+						setSubmode(GENERIC_SET_Move_Static);
+					}else{
+						setSubmode(GENERIC_SET_Move_Preparing);
+					}
+
 
 				}else{
 
 					setSubmode(WAITING_Waiting);
-
 				}
 
 				reportServoModeStop();
@@ -1841,9 +1849,44 @@ void MainTick::process(){ //called every 100ms
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
+	case GENERIC_SET_Move_Static:
+
+		if (true==RxMessageQueue::cancelMessageReceived()){
+
+			Servo::brake();
+			setSubmode(WAITING_Waiting);
+			reportServoModeStop();
+
+		}else if (GenericSet::isStaticMoveDone()){
+
+			GenericSet::moveComplete();
+
+			if (GenericSet::isSetComplete()==false){
+
+				if (GenericSet::isMoveStatic()){
+
+					GenericSet::staticMoveStart();
+					setSubmode(GENERIC_SET_Move_Static);
+				}else{
+					setSubmode(GENERIC_SET_Move_Preparing);
+				}
 
 
+			}else{
 
+				setSubmode(WAITING_Waiting);
+			}
+
+		}else{
+
+			__asm("	nop");
+		}
+		reportServoModeStop();
+
+		processFieldbus();
+
+		break;
+	//------------------------------------------------GENERIC-SET---------------------------------
 
 
 	//------------------------------------------------------------------------------------

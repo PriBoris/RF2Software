@@ -120,6 +120,26 @@ void GenericSet::recalculateServoFrequency(bool direction){
 
 }
 //=================================================================================================
+bool GenericSet::isMoveStatic(){
 
+	return getMoveDestinationPosition()==getMoveStartPosition();
+}
+//=================================================================================================
+void GenericSet::staticMoveStart(){
+
+	pauseCounterMsec = getMoveDuration();
+}
+//=================================================================================================
+bool GenericSet::isStaticMoveDone(){
+
+	if (pauseCounterMsec<=0){
+		pauseCounterMsec = 0;
+		return true;
+	}else{
+		pauseCounterMsec-=100;
+		return false;
+	}
+}
+//=================================================================================================
 
 

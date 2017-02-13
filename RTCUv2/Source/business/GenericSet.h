@@ -37,6 +37,10 @@ public:
 	static void moveComplete();
 	static bool isSetComplete();
 
+	static bool isMoveStatic();
+	static void staticMoveStart();
+	static bool isStaticMoveDone();
+
 	static int32_t getMoveDestinationPosition();
 	static int32_t getMoveStartPosition();
 	static int32_t getMoveIndex();
@@ -45,6 +49,8 @@ public:
 	static void recalculateServoFrequency(bool direction);
 	static float servoFrequencyPositive_;
 	static float servoFrequencyNegative_;
+
+
 
 
 };

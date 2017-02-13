@@ -110,10 +110,11 @@ public:
 		static const quint8 GENERIC_SET_Pause2 = 60;
 		static const quint8 GENERIC_SET_Move_Preparing = 61;
 		static const quint8 GENERIC_SET_Move_Moving = 62;
+		static const quint8 GENERIC_SET_Move_Static = 63;
 
 
 
-        static const quint8 ERROR_Error = 63;
+        static const quint8 ERROR_Error = 64;
 
 
     };
