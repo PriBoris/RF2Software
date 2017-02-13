@@ -21,7 +21,7 @@ void USS::init(){
 		inverterReadyRequestBytes[i++] = (inverterReadyRequestByteCount-2);
 		inverterReadyRequestBytes[i++] = ADR;
 		
-		uint16_t PKE = PARAMETER_InverterType + AK_Order_ReadParameterValue;
+		uint16_t PKE = PARAMETER_HeatsinkTemperature + AK_Order_ReadParameterValue;
 		inverterReadyRequestBytes[i++] = (PKE>>8);
 		inverterReadyRequestBytes[i++] = (PKE>>0);
 

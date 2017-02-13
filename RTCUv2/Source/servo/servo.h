@@ -51,6 +51,9 @@ public:
 		int32_t durationMsec
 		);
 
+	static int32_t heatsinkTemperature;
+	static int32_t internalTemperature;
+	static int32_t motorTemperature;
 
 };
 

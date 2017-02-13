@@ -71,18 +71,20 @@ public:
 	static Request* makeSetFrequencyRequest(bool direction,float frequencyValueHertz);
 
 
-static const uint16_t PARAMETER_InverterType = 743;
+	static const uint16_t PARAMETER_InverterType = 743;//0x2E7
+	static const uint16_t PARAMETER_HeatsinkTemperature = 739;//0x2E3
+
 	static const uint16_t PARAMETER_FixedFrequency1 = 429;
 	static const uint16_t PARAMETER_FixedFrequency2 = 430;
 
 	static const uint16_t AK_Order_ReadParameterValue = (1<<12);
-  static const uint16_t AK_Order_ChangeParameterValueWithoutEeprom16 = (14<<12);
+	static const uint16_t AK_Order_ChangeParameterValueWithoutEeprom16 = (14<<12);
 
-    static const uint16_t AK_Response_TransferParameterValue16 = (1<<12);
-    static const uint16_t AK_Response_OrderCannotBeExecuted = (7<<12);
+	static const uint16_t AK_Response_TransferParameterValue16 = (1<<12);
+	static const uint16_t AK_Response_OrderCannotBeExecuted = (7<<12);
 
-    static const uint16_t AK_MASK = (0x000F<<12);
-    static const uint16_t PARAMETER_MASK = 0x07FF;
+	static const uint16_t AK_MASK = (0x000F<<12);
+	static const uint16_t PARAMETER_MASK = 0x07FF;
 
 
 };

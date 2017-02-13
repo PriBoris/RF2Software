@@ -8,6 +8,8 @@
 #include "system/ports.h"
 #include "servo/uss.h"
 #include "stm32f4xx_conf.h"
+#include "servo/servo.h"
+
 
 uint8_t Fieldbus::rxBuffer[RX_BUFFER_LENGTH];
 uint8_t Fieldbus::txBuffer[TX_BUFFER_LENGTH];
@@ -247,6 +249,19 @@ void Fieldbus::processRx(){
 			if (rxBCCCalculated==byte){
 				rxGoodPacketCounter++;
 				responseReceived = true;
+
+				{
+					if (rxPKEValue==(USS::PARAMETER_HeatsinkTemperature + USS::AK_Order_ReadParameterValue)){
+
+						Servo::heatsinkTemperature = (int32_t)rxPWEValue;
+
+					}
+
+
+
+				}
+
+
 			}else{
 				rxBadPacketCounter++;
 			}

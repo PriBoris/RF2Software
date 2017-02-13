@@ -9,6 +9,9 @@
 
 bool Servo::actualMoveDirection = POSITIVE_DIRECTION;
 
+int32_t Servo::heatsinkTemperature = 0;
+int32_t Servo::internalTemperature = 0;
+int32_t Servo::motorTemperature = 0;
 
 //==================================================================================================================
 void Servo::parkingBrake(bool brake){

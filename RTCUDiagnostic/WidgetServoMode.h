@@ -26,6 +26,7 @@ class WidgetServoMode : public QWidget{
     QLabel *lblServoFrequencyPositive;
     QLabel *lblServoFrequencyNegative;
     QLabel *lblPosition;
+    QLabel *lblTemperature;
 
     QLabel *lblServoCommand;
 

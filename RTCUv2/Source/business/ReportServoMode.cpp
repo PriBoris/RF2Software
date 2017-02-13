@@ -5,6 +5,7 @@
 
 #include "hmi/diagnostics.h"
 #include "servo/encoder.h"
+#include "servo/servo.h"
 
 
 bool MainTick::reportServoModeIssued = false;
@@ -54,6 +55,10 @@ void MainTick::reportServoModeHeader(uint8_t *message){
 			);
 	}
 
+	memcpy(&message[MSGPOS_ReportServoMode_heatsinkTemperature],&Servo::heatsinkTemperature,sizeof(Servo::heatsinkTemperature));
+	memcpy(&message[MSGPOS_ReportServoMode_internalTemperature],&Servo::internalTemperature,sizeof(Servo::internalTemperature));
+	memcpy(&message[MSGPOS_ReportServoMode_motorTemperature],&Servo::motorTemperature,sizeof(Servo::motorTemperature));
+
 }
 //==================================================================================================================
 void MainTick::reportServoMode(int32_t servoCommand){
@@ -62,7 +67,7 @@ void MainTick::reportServoMode(int32_t servoCommand){
 	memset(message,0,sizeof(message));
 	reportServoModeHeader(message);
 
-	memcpy(&message[26],&servoCommand,sizeof(servoCommand));
+	memcpy(&message[MSGPOS_ReportServoMode_servoCommand],&servoCommand,sizeof(servoCommand));
 	actualServoCommand = servoCommand;
 
 	

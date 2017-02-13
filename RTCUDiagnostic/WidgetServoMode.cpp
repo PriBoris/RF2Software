@@ -60,6 +60,12 @@ WidgetServoMode::WidgetServoMode(
 	}
 
 	{
+		lblTemperature = new QLabel("lblTemperature");
+		lblTemperature->setFont(QFont("Verdana",10,QFont::Normal,false));
+	}
+
+
+	{
 		lblServoCommand = new QLabel("");
 		lblServoCommand->setFont(QFont("Verdana",10,QFont::Bold,false));
 	}
@@ -94,6 +100,8 @@ WidgetServoMode::WidgetServoMode(
 	loMain->addWidget(lblServoFrequencyPositive);
 	loMain->addWidget(lblServoFrequencyNegative);
 	loMain->addWidget(lblPosition);
+	loMain->addWidget(lblTemperature);
+
 	loMain->addWidget(lblServoCommand);
 	loMain->addWidget(plotPositionVsTime);
 	loMain->addStretch(1);
@@ -240,11 +248,29 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
 
 		}
 
+		{
+			qint32 heatsinkTemperature = (double)TLV::getInt32(value,26);
+			qint32 internalTemperature = (double)TLV::getInt32(value,30);
+			qint32 motorTemperature = (double)TLV::getInt32(value,34);
 
-		if (value.length()==26){
+			QString temperatureStr = 
+				QString::number(heatsinkTemperature)+
+				" / "+
+				QString::number(internalTemperature)+
+				" / "+
+				QString::number(motorTemperature)+
+                " oC"
+				;
+			lblTemperature->setText("Temperature: "+temperatureStr);
+			(reportLogger->stream) << temperatureStr << ";";
+
+		}
+
+
+		if (value.length()==38){
 			lblServoCommand->setText("");
-		}else if (value.length()==30){
-			qint32 servoCommand = TLV::getInt32(value,26);
+		}else if (value.length()==42){
+			qint32 servoCommand = TLV::getInt32(value,38);
 			QString servoCommandStr;
 			switch(servoCommand){
 			default:
