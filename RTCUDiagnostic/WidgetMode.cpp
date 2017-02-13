@@ -1190,7 +1190,7 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                         QString moveIndexStr = QString::number(TLV::getInt32(value,35));
                         lblRepIndex->setText("Движение: "+moveIndexStr);
                         (reportLogger->stream) << "moveIndex=" << moveIndexStr << ";";
-                    }\
+                    }
                     {
                         lblPositionRel->setVisible(true);
                         double relPos = (double)TLV::getInt32(value,39)/100.0;
@@ -1207,7 +1207,21 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
                         (reportLogger->stream) << "force=" << forceStr << ";";
                     }
 
-
+					{
+						qint32 positionRel = TLV::getInt32(value,39);
+						qint32 force = TLV::getInt32(value,43);
+						plotX.append((double)positionRel/100.0);
+						plotY.append((double)force/1000.0);
+						plotTime += 1.0;
+						plotT.append(plotTime);
+						plotForceVsPosition->yAxis->setRange(getMin(plotY), getMax(plotY));
+						plotForceVsPosition->graph(0)->setData(plotX, plotY);
+						plotForceVsPosition->replot();
+						plotForceVsTime->xAxis->setRange(getMin(plotT), getMax(plotT));
+						plotForceVsTime->yAxis->setRange(getMin(plotY), getMax(plotY));
+						plotForceVsTime->graph(0)->setData(plotT, plotY);
+						plotForceVsTime->replot();
+					}
 
 					break;
 
