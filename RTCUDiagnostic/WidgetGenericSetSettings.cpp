@@ -2,14 +2,22 @@
 
 #include "Utils.h"
 
-#include <QDebug>
+#include <QDateTime>
 
+
+//=================================================================================================
+WidgetGenericSetSettings::~WidgetGenericSetSettings(){
+    delete reportLogger;
+}
+//=================================================================================================
 WidgetGenericSetSettings::WidgetGenericSetSettings(
 	SerialPortTransceiver *serialPortTransceiver,
 	QWidget *parent
 	) : QWidget(parent){
 
 	serialPortTransceiver_ = serialPortTransceiver;
+
+    reportLogger = new ReportLogger("ReportGenericSetSettings.txt");
 
     {
         lblRxMessageCounter = new QLabel;
@@ -29,7 +37,7 @@ WidgetGenericSetSettings::WidgetGenericSetSettings(
 	{
 		wgtPause1 = new WidgetSettingsInteger("Pause1","GenericSet_Pause1",1000);
 		wgtPause2 = new WidgetSettingsInteger("Pause2","GenericSet_Pause2",1000);
-		wgtStartPositionRel = new WidgetSettingsInteger("StartPosition","GenericSet_StartPosition",5000);
+		wgtStartPositionRel = new WidgetSettingsInteger("StartPositionRel","GenericSet_StartPositionRel",5000);
 		wgtMoveCount = new WidgetSettingsInteger("MoveCount","GenericSet_MoveCount",10);
 
 		wgtPause1->setValidator(new QIntValidator(0,60000));
@@ -129,6 +137,12 @@ void WidgetGenericSetSettings::newMessageReceived(quint8 tag,quint32 msgID,QByte
 		
         Utils::MessageCounterIncrement("Rx",rxMessageCounter,lblRxMessageCounter,value);
 
+        {
+            QDateTime dateTime(QDateTime::currentDateTime());
+            QString pcTimeStr = dateTime.toString("yyyy-MM-dd HH:mm:ss");
+            (reportLogger->stream) << pcTimeStr << "\n";
+        }
+
 
 		if (checkMessageLength(value.length())==true){
 
@@ -140,21 +154,37 @@ void WidgetGenericSetSettings::newMessageReceived(quint8 tag,quint32 msgID,QByte
 
 				wgtPause1->setReadValue(newSet.pause1);
 				wgtPause2->setReadValue(newSet.pause2);
-				wgtStartPositionRel->setReadValue(newSet.startPosition);
+                wgtStartPositionRel->setReadValue(newSet.startPositionRel);
 				wgtMoveCount->setReadValue(newSet.moveCount);
+
+				(reportLogger->stream) << "pause1=" << QString::number(newSet.pause1) << "\n";
+				(reportLogger->stream) << "pause2=" << QString::number(newSet.pause2) << "\n";
+                (reportLogger->stream) << "startPositionRel=" << QString::number(newSet.startPositionRel) << "\n";
+				(reportLogger->stream) << "moveCount=" << QString::number(newSet.moveCount) << "\n";
 
 				for(int move=0;move<MOVE_COUNT_MAX;move++){
 
 					if (move<newSet.moveCount){
 						wgtsMove.at(move)->setReadValue(
-							newSet.moves[move].destinationPosition,
-							newSet.moves[move].speed
+                            newSet.moves[move].destinationPositionRel,
+                            newSet.moves[move].duration
 							);
+
+						(reportLogger->stream) << "moveIndex=" << QString::number(move) << "\n";
+                        (reportLogger->stream) << "\t" << "destinationPositionRel=" << QString::number(newSet.moves[move].destinationPositionRel) << "\n";
+                        (reportLogger->stream) << "\t" << "duration=" << QString::number(newSet.moves[move].duration) << "\n";
+
 					}else{
+
 						wgtsMove.at(move)->setUnknownReadValues();
+						
 					}
 				}
 			}else{
+
+				(reportLogger->stream) << "bad message\n";
+
+
 				//bad message
 				wgtPause1->setUnknownReadValue();
 				wgtPause2->setUnknownReadValue();
@@ -178,6 +208,8 @@ void WidgetGenericSetSettings::newMessageReceived(quint8 tag,quint32 msgID,QByte
 
 		}
 
+        (reportLogger->stream) << "\n";
+        reportLogger->flush(true);
 
 
 
@@ -307,7 +339,6 @@ void WidgetGenericSetSettings::slotEditingFinished(){
 	plotPositionVsTime->graph(0)->setData(plotTime, plotPosition);
 	plotPositionVsTime->replot();
 
-    qDebug() << plotTime << plotPosition;
 
 }
 //=================================================================================================

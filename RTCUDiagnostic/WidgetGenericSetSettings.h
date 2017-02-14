@@ -13,6 +13,8 @@
 #include "WidgetSettingsInteger.h"
 #include "WidgetGenericMoveSettings.h"
 
+#include "ReportLogger.h"
+
 #include "qcustomplot.h"
 
 
@@ -55,18 +57,19 @@ class WidgetGenericSetSettings : public QWidget{
 	qint32 getMoveCountFromLength(int messageLength);
 
 	struct Move{
-		qint32 destinationPosition;
-		qint32 speed;
+		qint32 destinationPositionRel;
+		qint32 duration;
 	};
 
 	struct Set{
 		qint32 pause1;
 		qint32 pause2;
-		qint32 startPosition;
+		qint32 startPositionRel;
 		qint32 moveCount;
 		Move moves[MOVE_COUNT_MAX];
 	};
 
+    ReportLogger *reportLogger;
 
 
 public:
@@ -74,6 +77,7 @@ public:
 		SerialPortTransceiver *serialPortTransceiver,
 		QWidget *parent = 0
 		);
+    ~WidgetGenericSetSettings();
 
 signals:
 

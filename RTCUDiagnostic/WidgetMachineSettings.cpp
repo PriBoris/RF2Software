@@ -17,7 +17,6 @@ WidgetMachineSettings::WidgetMachineSettings(
         ) : QWidget(parent){
     
     serialPortTransceiver_ = serialPortTransceiver;
-    rxMessageCounter = 0;
 
     reportLogger = new ReportLogger("ReportMachineSettings.txt");
 

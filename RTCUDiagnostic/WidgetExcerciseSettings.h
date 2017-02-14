@@ -2,7 +2,6 @@
 #define WIDGETEXCERCISESETTINGS_H
 
 #include <QWidget>
-#include <QDebug>
 #include <QLabel>
 
 #include <QPushButton>
@@ -16,6 +15,8 @@
 #include "tlvwriter.h"
 
 #include "WidgetSettingsInteger.h"
+#include "ReportLogger.h"
+
 
 #define MAX_SET_COUNT   (10)
 
@@ -78,11 +79,14 @@ class WidgetExcerciseSettings : public QWidget{
     quint32 txMessageCounter;
     QSettings *settings;
 
+    ReportLogger *reportLogger;
+
 public:
     explicit WidgetExcerciseSettings(
             SerialPortTransceiver *serialPortTransceiver,
             QWidget *parent = 0
             );
+    ~WidgetExcerciseSettings();
 
 signals:
 
