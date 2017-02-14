@@ -32,7 +32,8 @@ bool PositionTask::checkPositionDynamically(int32_t taskPosition, bool servoMove
 
 	int32_t actualPosition = Encoder::getValue();
 
-	int32_t permissibleError = MachineSettings::getMainRange()/100; //1%
+//	int32_t permissibleError = MachineSettings::getMainRange()/100; //1%
+	int32_t permissibleError = 0;
 
 	if (servoMoveDirection==Servo::POSITIVE_DIRECTION){
 
@@ -53,44 +54,6 @@ bool PositionTask::checkPositionDynamically(int32_t taskPosition, bool servoMove
 
 
 }
-
-
-//=================================================================================================
-/*bool PositionTask::checkPosition(int32_t taskPosition,int32_t taskSpeed){
-
-	return checkPosition(taskPosition);
-
-
-	int32_t actualPosition = Encoder::getValue();
-	
-	int32_t permissibleError;
-	
-	if (taskSpeed<=1000){
-		permissibleError = MachineSettings::getMainRange()/7; //15%		
-	}else if (taskSpeed<=1500){
-		permissibleError = MachineSettings::getMainRange()/10; //10%		
-	}else if (taskSpeed<=2000){
-		permissibleError = MachineSettings::getMainRange()/12; //7%		
-	}else if (taskSpeed<=2500){
-		permissibleError = MachineSettings::getMainRange()/15; //7%		
-	}else if (taskSpeed<=3000){
-		permissibleError = MachineSettings::getMainRange()/20; //5%		
-	}else{
-		permissibleError = MachineSettings::getMainRange()/100; //1%
-	}
-	
-
-	if (actualPosition>(taskPosition+permissibleError)){
-		return false;
-	}else if (actualPosition<(taskPosition-permissibleError)){
-		return false;
-	}else{
-		return true;// [actualPosition] is close to [parkingPosition]
-	}
-
-
-
-}*/
 //=================================================================================================
 bool PositionTask::getDirection(int32_t taskPosition){
 

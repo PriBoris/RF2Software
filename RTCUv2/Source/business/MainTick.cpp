@@ -887,7 +887,7 @@ void MainTick::process(){ //called every 100ms
 
 			ForceTestDynamic::pauseBeforeTestMsec -= 100;
 			if (ForceTestDynamic::pauseBeforeTestMsec<=0){
-				setSubmode(FTEST_DYNAMIC_Testing_SettingPositiveSpeed);	
+				setSubmode(FTEST_DYNAMIC_Testing_Preparing);	
 			}			
 		}
 
@@ -896,46 +896,28 @@ void MainTick::process(){ //called every 100ms
 
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
-	case FTEST_DYNAMIC_Testing_SettingPositiveSpeed:
-
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-			if (Fieldbus::checkSetFrequencyResponse(true,ForceTestDynamic::servoFrequencyPositive)==true){
-				setSubmode(FTEST_DYNAMIC_Testing_SettingNegativeSpeed);
-			}else{
-				//TODO: countdown is necessary here
-			}
-		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=ForceTestDynamic::servoFrequencyPositive));
-
-		break;
-	//------------------------------------------------FTEST--DYNAMIC----------------------------------
-	case FTEST_DYNAMIC_Testing_SettingNegativeSpeed:
-
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-			if (Fieldbus::checkSetFrequencyResponse(false,ForceTestDynamic::servoFrequencyNegative)==true){
-				setSubmode(FTEST_DYNAMIC_Testing_Preparing);
-			}else{
-				//TODO: countdown is necessary here
-			}
-		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=ForceTestDynamic::servoFrequencyNegative));
-
-		break;
-	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Testing_Preparing:
 
 		if (PositionTask::getDirection(ForceTestDynamic::getStopPosition())==Servo::POSITIVE_DIRECTION){
 
+			Fieldbus::pushUSSRequest(
+				USS::makeSetFrequencyRequest(
+					Servo::POSITIVE_DIRECTION,
+					servoFrequencyPositive=ForceTestDynamic::servoFrequencyPositive
+					)
+				);
 			Servo::movePositive();
 			setSubmode(FTEST_DYNAMIC_Testing_Moving);
 			reportServoModePositive();
 
 		}else{
 
+			Fieldbus::pushUSSRequest(
+				USS::makeSetFrequencyRequest(
+					Servo::NEGATIVE_DIRECTION,
+					servoFrequencyNegative=ForceTestDynamic::servoFrequencyNegative
+					)
+				);
 			Servo::moveNegative();
 			setSubmode(FTEST_DYNAMIC_Testing_Moving);
 			reportServoModeNegative();
@@ -1763,38 +1745,32 @@ void MainTick::process(){ //called every 100ms
 		if (PositionTask::getDirection(GenericSet::getMoveDestinationPosition())==Servo::POSITIVE_DIRECTION){
 
 			GenericSet::recalculateServoFrequency(Servo::POSITIVE_DIRECTION);
-
-			Servo::movePositive();
-
-			setSubmode(GENERIC_SET_Move_Moving);
-			reportServoModePositive();
-
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
 					Servo::POSITIVE_DIRECTION,
 					servoFrequencyPositive=GenericSet::servoFrequencyPositive_
 					)
 				);
+			Servo::movePositive();
+			setSubmode(GENERIC_SET_Move_Moving);
+			reportServoModePositive();
 
 		}else{
 
 			GenericSet::recalculateServoFrequency(Servo::NEGATIVE_DIRECTION);
-
-			Servo::moveNegative();
-
-			setSubmode(GENERIC_SET_Move_Moving);
-			reportServoModeNegative();
-
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
 					Servo::NEGATIVE_DIRECTION,
 					servoFrequencyNegative=GenericSet::servoFrequencyNegative_
 					)
 				);
+			Servo::moveNegative();
+			setSubmode(GENERIC_SET_Move_Moving);
+			reportServoModeNegative();
 
 		}	
 
-		//processFieldbus();
+
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
@@ -1805,6 +1781,8 @@ void MainTick::process(){ //called every 100ms
 			Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
+
+			processFieldbus();
 
 		}else{
 
@@ -1825,27 +1803,63 @@ void MainTick::process(){ //called every 100ms
 
 						GenericSet::staticMoveStart();
 						setSubmode(GENERIC_SET_Move_Static);
+						reportServoModeStop();
+						processFieldbus();
+
 					}else{
-						setSubmode(GENERIC_SET_Move_Preparing);
+
+						//setSubmode(GENERIC_SET_Move_Preparing);
+						if (PositionTask::getDirection(GenericSet::getMoveDestinationPosition())==Servo::POSITIVE_DIRECTION){
+
+							GenericSet::recalculateServoFrequency(Servo::POSITIVE_DIRECTION);
+							Fieldbus::pushUSSRequest(
+								USS::makeSetFrequencyRequest(
+									Servo::POSITIVE_DIRECTION,
+									servoFrequencyPositive=GenericSet::servoFrequencyPositive_
+									)
+								);
+							Servo::movePositive();
+							setSubmode(GENERIC_SET_Move_Moving);
+							reportServoModePositive();
+
+						}else{
+
+							GenericSet::recalculateServoFrequency(Servo::NEGATIVE_DIRECTION);
+							Fieldbus::pushUSSRequest(
+								USS::makeSetFrequencyRequest(
+									Servo::NEGATIVE_DIRECTION,
+									servoFrequencyNegative=GenericSet::servoFrequencyNegative_
+									)
+								);
+							Servo::moveNegative();
+							setSubmode(GENERIC_SET_Move_Moving);
+							reportServoModeNegative();
+
+						}	
+
+
 					}
 
 
 				}else{
 
 					setSubmode(WAITING_Waiting);
+					reportServoModeStop();
+					processFieldbus();
 				}
 
-				reportServoModeStop();
+				
 
 			}else{
 
 				reportServoModeContinue();
+				processFieldbus();
 
 			}
 
 		}
 
-		processFieldbus();
+		//processFieldbus();
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------

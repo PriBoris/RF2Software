@@ -92,8 +92,6 @@ void MainTick::reportCurrentMode(){
 
 			break;
 		case FTEST_DYNAMIC_Pause:
-		case FTEST_DYNAMIC_Testing_SettingPositiveSpeed:
-		case FTEST_DYNAMIC_Testing_SettingNegativeSpeed:
 			{
 				uint8_t message[MSGLEN_ReportCurrentMode_FTEST_DYNAMIC_Pause];
 				memset(message,0,sizeof(message));

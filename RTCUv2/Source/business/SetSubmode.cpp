@@ -57,8 +57,6 @@ void MainTick::setSubmode(MainTick::Submode newSubmode){
 	case FTEST_DYNAMIC_Homing_Preparing:
 	case FTEST_DYNAMIC_Homing_Moving:
 	case FTEST_DYNAMIC_Pause:
-	case FTEST_DYNAMIC_Testing_SettingPositiveSpeed:
-	case FTEST_DYNAMIC_Testing_SettingNegativeSpeed:
 	case FTEST_DYNAMIC_Testing_Preparing:
 	case FTEST_DYNAMIC_Testing_Moving:
 

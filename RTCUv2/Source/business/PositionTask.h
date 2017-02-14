@@ -12,10 +12,6 @@ public:
 	
 	static bool checkPositionDynamically(int32_t taskPosition, bool servoMoveDirection);
 
-
-	//static bool checkPosition(int32_t taskPosition,int32_t taskSpeed);
-
-
 	static bool getDirection(int32_t taskPosition);
 
 	static int32_t getRelativePosition(bool saturate = true);
