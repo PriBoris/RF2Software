@@ -182,7 +182,7 @@ void MainTick::process(){ //called every 100ms
 				pauseCounter=0;
 				setSubmode(INITIALIZING_WaitingStableServoConnection);
 				HMI::powerKeyDeassert();
-				Fieldbus::pushUSSRequest(USS::makeInverterReadyRequest());
+				Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 			}
 		}
 
@@ -207,7 +207,7 @@ void MainTick::process(){ //called every 100ms
 			}else{
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeInverterReadyRequest());
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		break;
 	//------------------------------------------------------------IDLE------------------------
@@ -1957,7 +1957,7 @@ void MainTick::processFieldbus(){
 		fieldbusErrorCounter = 0;
 
 	}
-	Fieldbus::pushUSSRequest(USS::makeInverterReadyRequest());
+	Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 }
 //==================================================================================================================

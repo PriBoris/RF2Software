@@ -2,45 +2,48 @@
 #include "USS.h"
 
 
-uint8_t USS::inverterReadyRequestBytes[USS::inverterReadyRequestByteCount];
-USS::Request USS::inverterReadyRequest;
+uint8_t USS::heatsinkTemperatureRequestBytes[USS::heatsinkTemperatureRequestByteCount];
+USS::Request USS::heatsinkTemperatureRequest;
+
 
 uint8_t USS::setFrequencyRequestBytes[USS::setFrequencyRequestByteCount];
 USS::Request USS::setFrequencyRequest;
+
+
 
 
 //===========================================================================================================
 void USS::init(){
 	
 	{
-		inverterReadyRequest.byteCount = inverterReadyRequestByteCount;
+		heatsinkTemperatureRequest.byteCount = heatsinkTemperatureRequestByteCount;
 		
 		uint8_t i=0;
 		
-		inverterReadyRequestBytes[i++] = STX;
-		inverterReadyRequestBytes[i++] = (inverterReadyRequestByteCount-2);
-		inverterReadyRequestBytes[i++] = ADR;
+		heatsinkTemperatureRequestBytes[i++] = STX;
+		heatsinkTemperatureRequestBytes[i++] = (heatsinkTemperatureRequestByteCount-2);
+		heatsinkTemperatureRequestBytes[i++] = ADR;
 		
-		uint16_t PKE = PARAMETER_HeatsinkTemperature + AK_Order_ReadParameterValue;
-		inverterReadyRequestBytes[i++] = (PKE>>8);
-		inverterReadyRequestBytes[i++] = (PKE>>0);
+		uint16_t PKE = PARAMETER_HeatsinkTemperature + AK_Order_ReadParameterValueInArray;
+		heatsinkTemperatureRequestBytes[i++] = (PKE>>8);
+		heatsinkTemperatureRequestBytes[i++] = (PKE>>0);
 
 		uint16_t IND = 0;
-		inverterReadyRequestBytes[i++] = (IND>>8);
-		inverterReadyRequestBytes[i++] = (IND>>0);
+		heatsinkTemperatureRequestBytes[i++] = (IND>>8);
+		heatsinkTemperatureRequestBytes[i++] = (IND>>0);
 
 		for(uint8_t j=0;j<6;j++){
-			inverterReadyRequestBytes[i++] = 0x00;//PWE STW SW1
+			heatsinkTemperatureRequestBytes[i++] = 0x00;//PWE STW SW1
 		}
 
 		uint16_t BCC = 0;
-		for(uint8_t j=0;j<(inverterReadyRequestByteCount-1);j++){
-			BCC ^= inverterReadyRequestBytes[j];
+		for(uint8_t j=0;j<(heatsinkTemperatureRequestByteCount-1);j++){
+			BCC ^= heatsinkTemperatureRequestBytes[j];
 		}
-		inverterReadyRequestBytes[i++] = BCC;
+		heatsinkTemperatureRequestBytes[i++] = BCC;
 		
 		
-		inverterReadyRequest.bytes = USS::inverterReadyRequestBytes;
+		heatsinkTemperatureRequest.bytes = USS::heatsinkTemperatureRequestBytes;
 	}
 
 
@@ -50,7 +53,7 @@ void USS::init(){
 		uint8_t i=0;
 		
 		setFrequencyRequestBytes[i++] = STX;
-		setFrequencyRequestBytes[i++] = (inverterReadyRequestByteCount-2);
+		setFrequencyRequestBytes[i++] = (setFrequencyRequestByteCount-2);
 		setFrequencyRequestBytes[i++] = ADR;
 		
 		uint16_t PKE = 0;
@@ -73,9 +76,9 @@ void USS::init(){
 	
 }
 //===========================================================================================================
-USS::Request* USS::makeInverterReadyRequest(){
+USS::Request* USS::makeHeatsinkTemperatureRequest(){
 	
-	return &inverterReadyRequest;
+	return &heatsinkTemperatureRequest;
 }
 //===========================================================================================================
 USS::Request* USS::makeSetFrequencyRequest(bool direction,float frequencyValueHertz){

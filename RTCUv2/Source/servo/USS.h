@@ -53,21 +53,22 @@ private:
 
 
 
-	static const uint32_t inverterReadyRequestByteCount=14;
-	static uint8_t inverterReadyRequestBytes[inverterReadyRequestByteCount];
-	static Request inverterReadyRequest;
 
 	static const uint32_t setFrequencyRequestByteCount=14;
 	static uint8_t setFrequencyRequestBytes[setFrequencyRequestByteCount];
 	static Request setFrequencyRequest;
 
+	static const uint32_t heatsinkTemperatureRequestByteCount=14;
+	static uint8_t heatsinkTemperatureRequestBytes[heatsinkTemperatureRequestByteCount];
+	static Request heatsinkTemperatureRequest;
 
 
 public:
 
 	static void init();
 	
-	static Request* makeInverterReadyRequest();
+/*	static Request* makeInverterReadyRequest();
+*/	static Request* makeHeatsinkTemperatureRequest();
 	static Request* makeSetFrequencyRequest(bool direction,float frequencyValueHertz);
 
 
@@ -78,6 +79,8 @@ public:
 	static const uint16_t PARAMETER_FixedFrequency2 = 430;
 
 	static const uint16_t AK_Order_ReadParameterValue = (1<<12);
+	static const uint16_t AK_Order_ReadParameterValueInArray = (6<<12);
+	static const uint16_t AK_Order_ReadParameterArrayDepth = (9<<12);
 	static const uint16_t AK_Order_ChangeParameterValueWithoutEeprom16 = (14<<12);
 
 	static const uint16_t AK_Response_TransferParameterValue16 = (1<<12);

@@ -27,6 +27,7 @@ Fieldbus::RxState Fieldbus::rxState;
 uint8_t Fieldbus::rxBCCCalculated;
 uint16_t Fieldbus::rxPKEValue;
 uint16_t Fieldbus::rxPWEValue;
+uint16_t Fieldbus::rxINDValue;
 
 uint32_t Fieldbus::rxGoodPacketCounter;
 uint32_t Fieldbus::rxBadPacketCounter;
@@ -213,10 +214,12 @@ void Fieldbus::processRx(){
 
 		case IND_HI_EXPECTED:
 			rxBCCCalculated ^= byte;
+			rxINDValue = ((uint16_t)byte)<<8;
 			rxState = IND_LO_EXPECTED;
 			break;
 		case IND_LO_EXPECTED:
 			rxBCCCalculated ^= byte;
+			rxINDValue |= (uint16_t)byte;
 			rxState = PWE_HI_EXPECTED;
 			break;
 		case PWE_HI_EXPECTED:
@@ -251,7 +254,7 @@ void Fieldbus::processRx(){
 				responseReceived = true;
 
 				{
-					if (rxPKEValue==(USS::PARAMETER_HeatsinkTemperature + USS::AK_Order_ReadParameterValue)){
+					if ((rxPKEValue & USS::PARAMETER_MASK)==USS::PARAMETER_HeatsinkTemperature){
 
 						Servo::heatsinkTemperature = (int32_t)rxPWEValue;
 

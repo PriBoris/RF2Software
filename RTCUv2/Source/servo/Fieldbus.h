@@ -59,6 +59,7 @@ private:
 	static uint8_t rxBCCCalculated;
 	static uint16_t rxPKEValue;
 	static uint16_t rxPWEValue;
+	static uint16_t rxINDValue;
 
 	static uint32_t rxGoodPacketCounter;
 	static uint32_t rxBadPacketCounter;
