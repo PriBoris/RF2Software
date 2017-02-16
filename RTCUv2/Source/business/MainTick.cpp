@@ -965,7 +965,6 @@ void MainTick::process(){ //called every 100ms
 
 				fmTestDynamic.getFrequency();
 
-
 				reportServoModeContinue();
 
 			}

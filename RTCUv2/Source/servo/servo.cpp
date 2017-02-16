@@ -126,6 +126,8 @@ const float Servo::MILLISECONDS_PER_ROTATION_AT_1HZ = 341398.0f;
 const float Servo::MIN_FREQUENCY = 2.0f;
 const float Servo::MAX_FREQUENCY = 30.0f;//50.0f;
 
+const float Servo::MIN_NEGATIVE_FREQUENCY = -MIN_FREQUENCY;
+const float Servo::MAX_NEGATIVE_FREQUENCY = -MAX_FREQUENCY;
 
 //==================================================================================================================
 float Servo::rangeToFrequency(
@@ -172,6 +174,39 @@ float Servo::moveDurationToFrequency(
 	}
 
 	return rangeToFrequency(moveRange,durationMsec);
+}
+//==================================================================================================================
+float Servo::limitFrequency(float frequency, bool direction){
+
+/*	if (frequency<Servo::MIN_FREQUENCY){
+		return Servo::MIN_FREQUENCY;
+	} else if (frequency>Servo::MAX_FREQUENCY){
+		frequency=Servo::MAX_FREQUENCY;
+	}
+*/
+
+	if (POSITIVE_DIRECTION==direction){	
+
+		if (frequency<Servo::MIN_FREQUENCY){
+			return Servo::MIN_FREQUENCY;
+		}else if (frequency>Servo::MAX_FREQUENCY){
+			return Servo::MAX_FREQUENCY;
+		}else {
+			return frequency;
+		}
+
+	}else{
+
+		if (frequency>Servo::MIN_NEGATIVE_FREQUENCY){
+			return Servo::MIN_NEGATIVE_FREQUENCY;
+		}else if (frequency<Servo::MAX_NEGATIVE_FREQUENCY){
+			return Servo::MAX_NEGATIVE_FREQUENCY;
+		}else {
+			return frequency;
+		}
+
+	}
+
 }
 //==================================================================================================================
 

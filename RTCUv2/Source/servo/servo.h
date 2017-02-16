@@ -20,6 +20,8 @@ public:
 	static const float MILLISECONDS_PER_ROTATION_AT_1HZ;
 	static const float MIN_FREQUENCY;
 	static const float MAX_FREQUENCY;
+	static const float MIN_NEGATIVE_FREQUENCY;
+	static const float MAX_NEGATIVE_FREQUENCY;
 
 	static const bool POSITIVE_DIRECTION = true;
 	static const bool NEGATIVE_DIRECTION = false;
@@ -54,6 +56,8 @@ public:
 	static int32_t heatsinkTemperature;
 	static int32_t internalTemperature;
 	static int32_t motorTemperature;
+
+	static float limitFrequency(float frequency, bool direction);
 
 };
 
