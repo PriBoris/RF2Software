@@ -52,6 +52,7 @@ float MainTick::servoFrequencyNegative = 0.0f;
 uint32_t MainTick::fieldbusErrorCounter;
 uint32_t MainTick::fieldbusErrorCounterMax;
 
+FrequencyModulation MainTick::fmTestDynamic;
 
 
 //==================================================================================================================
@@ -900,10 +901,16 @@ void MainTick::process(){ //called every 100ms
 
 		if (PositionTask::getDirection(ForceTestDynamic::getStopPosition())==Servo::POSITIVE_DIRECTION){
 
+			fmTestDynamic.prepare(
+				ForceTestDynamic::servoFrequencyPositive,
+				ForceTestDynamic::getStopPosition(),
+				Servo::POSITIVE_DIRECTION
+				);
+
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
-					Servo::POSITIVE_DIRECTION,
-					servoFrequencyPositive=ForceTestDynamic::servoFrequencyPositive
+					fmTestDynamic.getDirection(),
+					servoFrequencyPositive=fmTestDynamic.getFrequency()
 					)
 				);
 			Servo::movePositive();
@@ -912,10 +919,16 @@ void MainTick::process(){ //called every 100ms
 
 		}else{
 
+			fmTestDynamic.prepare(
+				ForceTestDynamic::servoFrequencyNegative,
+				ForceTestDynamic::getStopPosition(),
+				Servo::NEGATIVE_DIRECTION
+				);
+
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
-					Servo::NEGATIVE_DIRECTION,
-					servoFrequencyNegative=ForceTestDynamic::servoFrequencyNegative
+					fmTestDynamic.getDirection(),
+					servoFrequencyNegative=fmTestDynamic.getFrequency()
 					)
 				);
 			Servo::moveNegative();
@@ -949,6 +962,10 @@ void MainTick::process(){ //called every 100ms
 				reportServoModeStop();
 
 			}else{
+
+				fmTestDynamic.getFrequency();
+
+
 				reportServoModeContinue();
 
 			}

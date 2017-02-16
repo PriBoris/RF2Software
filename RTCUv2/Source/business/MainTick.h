@@ -6,6 +6,8 @@
 #include <stdint.h>
 
 #include "../nv/rtc.h"
+#include "FrequencyModulation.h"
+
 
 
 class MainTick{
@@ -370,6 +372,9 @@ private:
 
 
 	static uint32_t tickID;
+
+	static FrequencyModulation fmTestDynamic;
+
 
 public:
 

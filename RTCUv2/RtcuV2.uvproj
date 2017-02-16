@@ -810,6 +810,16 @@
               <FileType>5</FileType>
               <FilePath>.\Source\business\GenericSet.h</FilePath>
             </File>
+            <File>
+              <FileName>FrequencyModulation.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Source\business\FrequencyModulation.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>FrequencyModulation.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\business\FrequencyModulation.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
