@@ -42,8 +42,8 @@ private:
 		PARKING_PreparingAux = 18,
 		PARKING_MovingAux = 19,
 		FTEST_DYNAMIC_Starting = 20,
-		FTEST_DYNAMIC_Homing_SettingPositiveSpeed = 21,
-		FTEST_DYNAMIC_Homing_SettingNegativeSpeed = 22,
+//		FTEST_DYNAMIC_Homing_SettingPositiveSpeed = 21,
+//		FTEST_DYNAMIC_Homing_SettingNegativeSpeed = 22,
 		FTEST_DYNAMIC_Homing_Preparing = 23,
 		FTEST_DYNAMIC_Homing_Moving = 24,
 		FTEST_DYNAMIC_Pause = 25,
@@ -52,8 +52,8 @@ private:
 		FTEST_DYNAMIC_Testing_Preparing = 28,
 		FTEST_DYNAMIC_Testing_Moving = 29,
 		FTEST_STATIC_Starting = 30,
-		FTEST_STATIC_Homing_SettingPositiveSpeed = 31,
-		FTEST_STATIC_Homing_SettingNegativeSpeed = 32,
+//		FTEST_STATIC_Homing_SettingPositiveSpeed = 31,
+//		FTEST_STATIC_Homing_SettingNegativeSpeed = 32,
 		FTEST_STATIC_Homing_Preparing = 33,
 		FTEST_STATIC_Homing_Moving = 34,
 		FTEST_STATIC_Pause = 35,
@@ -374,6 +374,7 @@ private:
 	static uint32_t tickID;
 
 	static FrequencyModulation fmTestDynamic;
+	static FrequencyModulation fmTestHoming;
 
 
 public:

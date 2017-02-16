@@ -53,6 +53,7 @@ uint32_t MainTick::fieldbusErrorCounter;
 uint32_t MainTick::fieldbusErrorCounterMax;
 
 FrequencyModulation MainTick::fmTestDynamic;
+FrequencyModulation MainTick::fmTestHoming;
 
 
 //==================================================================================================================
@@ -769,16 +770,16 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Starting:
 
-		Parking::recalculateServoFrequency();
-		ForceTestDynamic::recalculateServoFrequency();
+		Parking::recalculateServoFrequency();// for homing
+		ForceTestDynamic::recalculateServoFrequency();// for actual testing
 
-		setSubmode(FTEST_DYNAMIC_Homing_SettingPositiveSpeed);
+		setSubmode(FTEST_DYNAMIC_Homing_Preparing);
 
 		processFieldbus();
 
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
-	case FTEST_DYNAMIC_Homing_SettingPositiveSpeed:
+/*	case FTEST_DYNAMIC_Homing_SettingPositiveSpeed:
 
 		if (Fieldbus::responseIsValid()==false){
 			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
@@ -792,8 +793,8 @@ void MainTick::process(){ //called every 100ms
 		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=Parking::servoFrequencyPositive));
 
 		break;
-	//------------------------------------------------FTEST--DYNAMIC----------------------------------
-	case FTEST_DYNAMIC_Homing_SettingNegativeSpeed:
+*/	//------------------------------------------------FTEST--DYNAMIC----------------------------------
+/*	case FTEST_DYNAMIC_Homing_SettingNegativeSpeed:
 
 		if (Fieldbus::responseIsValid()==false){
 			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
@@ -807,7 +808,7 @@ void MainTick::process(){ //called every 100ms
 		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Parking::servoFrequencyNegative));
 
 		break;
-	//------------------------------------------------FTEST--DYNAMIC----------------------------------
+*/	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Homing_Preparing:
 
 		{
@@ -817,8 +818,7 @@ void MainTick::process(){ //called every 100ms
 					);
 
 			if (positionTaskIsNotNeeded==true){
-
-				//skip
+				//skip homing
 				Servo::brake();				
 				setSubmode(FTEST_DYNAMIC_Pause);
 				reportServoModeStop();
@@ -827,14 +827,42 @@ void MainTick::process(){ //called every 100ms
 
 				if (PositionTask::getDirection(ForceTestDynamic::getStartPosition())==Servo::POSITIVE_DIRECTION){
 
+					fmTestHoming.prepare(
+						Parking::servoFrequencyPositive,
+						ForceTestDynamic::getStartPosition(),
+						Servo::POSITIVE_DIRECTION
+						);
+
+					Fieldbus::pushUSSRequest(
+						USS::makeSetFrequencyRequest(
+							fmTestHoming.getDirection(),
+							servoFrequencyPositive=fmTestHoming.getFrequency()
+							)
+						);
+
 					Servo::movePositive();
 					setSubmode(FTEST_DYNAMIC_Homing_Moving);
 					reportServoModePositive();
+
 				}else{
+
+					fmTestHoming.prepare(
+						Parking::servoFrequencyNegative,
+						ForceTestDynamic::getStartPosition(),
+						Servo::NEGATIVE_DIRECTION
+						);
+
+					Fieldbus::pushUSSRequest(
+						USS::makeSetFrequencyRequest(
+							fmTestHoming.getDirection(),
+							servoFrequencyNegative=fmTestHoming.getFrequency()
+							)
+						);
 
 					Servo::moveNegative();
 					setSubmode(FTEST_DYNAMIC_Homing_Moving);
 					reportServoModeNegative();
+
 				}	
 
 			}
@@ -852,6 +880,8 @@ void MainTick::process(){ //called every 100ms
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
+			processFieldbus();			
+
 		}else{
 
 			bool positionTaskIsComplete = 
@@ -866,14 +896,35 @@ void MainTick::process(){ //called every 100ms
 				setSubmode(FTEST_DYNAMIC_Pause);
 				reportServoModeStop();
 
+				processFieldbus();			
+
 			}else{
+
+				float frequency;
+
+				Fieldbus::pushUSSRequest(
+					USS::makeSetFrequencyRequest(
+						fmTestHoming.getDirection(),
+						frequency=Servo::limitFrequency(
+							fmTestHoming.getFrequency(),
+							fmTestHoming.getDirection()
+							)
+						)
+					);
+
+				if (fmTestHoming.getDirection()==Servo::POSITIVE_DIRECTION){
+					servoFrequencyPositive = frequency;
+				}else{
+					servoFrequencyNegative = frequency;
+				}
+
 				reportServoModeContinue();
 
 			}
 
 		}
 
-		processFieldbus();
+		
 
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
@@ -970,12 +1021,22 @@ void MainTick::process(){ //called every 100ms
 
 			}else{
 
+				float frequency;
 				Fieldbus::pushUSSRequest(
 					USS::makeSetFrequencyRequest(
 						fmTestDynamic.getDirection(),
-						servoFrequencyNegative=Servo::limitFrequency(fmTestDynamic.getFrequency(),fmTestDynamic.getDirection())
+						frequency = Servo::limitFrequency(
+							fmTestDynamic.getFrequency(),
+							fmTestDynamic.getDirection()
+							)
 						)
 					);
+
+				if (fmTestDynamic.getDirection()==Servo::POSITIVE_DIRECTION){
+					servoFrequencyPositive = frequency;
+				}else{
+					servoFrequencyNegative = frequency;
+				}
 
 				reportServoModeContinue();
 
@@ -988,15 +1049,15 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------FTEST--STATIC----------------------------------
 	case FTEST_STATIC_Starting:
 
-		Parking::recalculateServoFrequency();
+		Parking::recalculateServoFrequency();// for homing
 
-		setSubmode(FTEST_STATIC_Homing_SettingPositiveSpeed);
+		setSubmode(FTEST_STATIC_Homing_Preparing);
 
 
 		processFieldbus();
 		break;
 	//------------------------------------------------FTEST--STATIC----------------------------------
-	case FTEST_STATIC_Homing_SettingPositiveSpeed:
+/*	case FTEST_STATIC_Homing_SettingPositiveSpeed:
 
 		if (Fieldbus::responseIsValid()==false){
 			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
@@ -1008,9 +1069,9 @@ void MainTick::process(){ //called every 100ms
 			}
 		}
 		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=Parking::servoFrequencyPositive));
-		break;
+		break;*/
 	//------------------------------------------------FTEST--STATIC----------------------------------
-	case FTEST_STATIC_Homing_SettingNegativeSpeed:
+/*	case FTEST_STATIC_Homing_SettingNegativeSpeed:
 
 		if (Fieldbus::responseIsValid()==false){
 			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
@@ -1022,7 +1083,7 @@ void MainTick::process(){ //called every 100ms
 			}
 		}
 		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Parking::servoFrequencyNegative));
-		break;
+		break;*/
 	//------------------------------------------------FTEST--STATIC----------------------------------
 	case FTEST_STATIC_Homing_Preparing:
 
@@ -1034,7 +1095,7 @@ void MainTick::process(){ //called every 100ms
 					);
 
 			if (positionTaskIsNotNeeded==true){
-
+				//skip homing
 				Servo::brake();				
 				setSubmode(FTEST_STATIC_Pause);
 				reportServoModeStop();
@@ -1043,11 +1104,37 @@ void MainTick::process(){ //called every 100ms
 
 				if (PositionTask::getDirection(ForceTestStatic::getTestPosition())==Servo::POSITIVE_DIRECTION){
 
+					fmTestHoming.prepare(
+						Parking::servoFrequencyPositive,
+						ForceTestStatic::getTestPosition(),
+						Servo::POSITIVE_DIRECTION
+						);
+
+					Fieldbus::pushUSSRequest(
+						USS::makeSetFrequencyRequest(
+							fmTestHoming.getDirection(),
+							servoFrequencyPositive=fmTestHoming.getFrequency()
+							)
+						);
+
 					Servo::movePositive();
 					setSubmode(FTEST_STATIC_Homing_Moving);
 					reportServoModePositive();
 
 				}else{
+
+					fmTestHoming.prepare(
+						Parking::servoFrequencyNegative,
+						ForceTestStatic::getTestPosition(),
+						Servo::NEGATIVE_DIRECTION
+						);
+
+					Fieldbus::pushUSSRequest(
+						USS::makeSetFrequencyRequest(
+							fmTestHoming.getDirection(),
+							servoFrequencyNegative=fmTestHoming.getFrequency()
+							)
+						);
 
 					Servo::moveNegative();
 					setSubmode(FTEST_STATIC_Homing_Moving);
@@ -1070,6 +1157,8 @@ void MainTick::process(){ //called every 100ms
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
+			processFieldbus();	
+
 		}else{
 
 			bool positionTaskIsComplete = 
@@ -1084,13 +1173,34 @@ void MainTick::process(){ //called every 100ms
 				setSubmode(FTEST_STATIC_Pause);
 				reportServoModeStop();
 
+				processFieldbus();
+
 			}else{
+
+				float frequency;
+
+				Fieldbus::pushUSSRequest(
+					USS::makeSetFrequencyRequest(
+						fmTestHoming.getDirection(),
+						frequency=Servo::limitFrequency(
+							fmTestHoming.getFrequency(),
+							fmTestHoming.getDirection()
+							)
+						)
+					);
+
+				if (fmTestHoming.getDirection()==Servo::POSITIVE_DIRECTION){
+					servoFrequencyPositive = frequency;
+				}else{
+					servoFrequencyNegative = frequency;
+				}
+
 				reportServoModeContinue();
 			}
 
 		}
 
-		processFieldbus();
+		
 		break;
 	//------------------------------------------------FTEST--STATIC----------------------------------
 	case FTEST_STATIC_Pause:

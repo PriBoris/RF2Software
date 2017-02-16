@@ -52,8 +52,8 @@ void MainTick::setSubmode(MainTick::Submode newSubmode){
 		break;
 
 	case FTEST_DYNAMIC_Starting:
-	case FTEST_DYNAMIC_Homing_SettingPositiveSpeed:
-	case FTEST_DYNAMIC_Homing_SettingNegativeSpeed:
+//	case FTEST_DYNAMIC_Homing_SettingPositiveSpeed:
+//	case FTEST_DYNAMIC_Homing_SettingNegativeSpeed:
 	case FTEST_DYNAMIC_Homing_Preparing:
 	case FTEST_DYNAMIC_Homing_Moving:
 	case FTEST_DYNAMIC_Pause:
@@ -68,8 +68,8 @@ void MainTick::setSubmode(MainTick::Submode newSubmode){
 		break;
 
 	case FTEST_STATIC_Starting:
-	case FTEST_STATIC_Homing_SettingPositiveSpeed:
-	case FTEST_STATIC_Homing_SettingNegativeSpeed:
+//	case FTEST_STATIC_Homing_SettingPositiveSpeed:
+//	case FTEST_STATIC_Homing_SettingNegativeSpeed:
 	case FTEST_STATIC_Homing_Preparing:
 	case FTEST_STATIC_Homing_Moving:
 	case FTEST_STATIC_Pause:
