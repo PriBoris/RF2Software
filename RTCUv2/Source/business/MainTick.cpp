@@ -54,6 +54,7 @@ uint32_t MainTick::fieldbusErrorCounterMax;
 
 FrequencyModulation MainTick::fmTestDynamic;
 FrequencyModulation MainTick::fmTestHoming;
+FrequencyModulation MainTick::fmParking;
 
 
 //==================================================================================================================
@@ -627,13 +628,13 @@ void MainTick::process(){ //called every 100ms
 		Parking::recalculateServoFrequency();
 
 		//MessageQueue::flush();
-		setSubmode(PARKING_SettingPositiveSpeed);
+		setSubmode(PARKING_Preparing);
 
 		processFieldbus();
 
 		break;
 	//-------------------------------------------------PARKING-----------------------------------
-	case PARKING_SettingPositiveSpeed:
+/*	case PARKING_SettingPositiveSpeed:
 
 		//MessageQueue::flush();
 		if (Fieldbus::responseIsValid()==false){
@@ -649,15 +650,15 @@ void MainTick::process(){ //called every 100ms
 
 
 		break;
-	//-------------------------------------------------PARKING-----------------------------------
-	case PARKING_SettingNegativeSpeed:
+*/	//-------------------------------------------------PARKING-----------------------------------
+/*	case PARKING_SettingNegativeSpeed:
 
 		//MessageQueue::flush();
 		if (Fieldbus::responseIsValid()==false){
 			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
 		}else{
 			if (Fieldbus::checkSetFrequencyResponse(false,Parking::servoFrequencyNegative)==true){
-				setSubmode(PARKING_PreparingMain);
+				setSubmode(PARKING_Preparing);
 			}else{
 				//TODO: countdown is necessary here
 			}
@@ -666,10 +667,11 @@ void MainTick::process(){ //called every 100ms
 
 
 		break;
-	//-------------------------------------------------PARKING-----------------------------------
-	case PARKING_PreparingMain:
+*/	//-------------------------------------------------PARKING-----------------------------------
+	case PARKING_Preparing:
 
 		//MessageQueue::flush();
+
 		{
 			bool positionTaskIsNotNeeded = 
 				PositionTask::checkPositionStatically(
@@ -677,7 +679,7 @@ void MainTick::process(){ //called every 100ms
 					);
 
 			if (positionTaskIsNotNeeded==true){
-
+				//skip moving
 				Servo::brake();				
 				setSubmode(PARKING_PreparingAux);
 				reportServoModeStop();
@@ -686,13 +688,42 @@ void MainTick::process(){ //called every 100ms
 
 				if (PositionTask::getDirection(PersonalSettings::protocolStruct.positionMainParking)==Servo::POSITIVE_DIRECTION){
 
+					fmParking.prepare(
+						Parking::servoFrequencyPositive,
+						PersonalSettings::protocolStruct.positionMainParking,
+						Servo::POSITIVE_DIRECTION
+						);
+
+					Fieldbus::pushUSSRequest(
+						USS::makeSetFrequencyRequest(
+							fmParking.getDirection(),
+							servoFrequencyPositive=fmParking.getFrequency()
+							)
+						);
+
 					Servo::movePositive();
-					setSubmode(PARKING_MovingMain);
+					setSubmode(PARKING_Moving);
 					reportServoModePositive();
+
 				}else{
+
+					fmParking.prepare(
+						Parking::servoFrequencyNegative,
+						PersonalSettings::protocolStruct.positionMainParking,
+						Servo::NEGATIVE_DIRECTION
+						);
+
+					Fieldbus::pushUSSRequest(
+						USS::makeSetFrequencyRequest(
+							fmParking.getDirection(),
+							servoFrequencyNegative=fmParking.getFrequency()
+							)
+						);
+
 					Servo::moveNegative();
-					setSubmode(PARKING_MovingMain);
+					setSubmode(PARKING_Moving);
 					reportServoModeNegative();
+
 				}
 			}	
 		}
@@ -701,13 +732,15 @@ void MainTick::process(){ //called every 100ms
 
 		break;
 	//-------------------------------------------------PARKING-----------------------------------
-	case PARKING_MovingMain:
+	case PARKING_Moving:
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
 			Servo::brake();
 			setSubmode(WAITING_Waiting);	
 			reportServoModeStop();
+
+			processFieldbus();
 
 		}else{
 
@@ -723,13 +756,30 @@ void MainTick::process(){ //called every 100ms
 				setSubmode(PARKING_PreparingAux);
 				reportServoModeStop();
 
-			}else{
-				reportServoModeContinue();
+				processFieldbus();
 
+			}else{
+
+				float frequency;
+
+				Fieldbus::pushUSSRequest(
+					USS::makeSetFrequencyRequest(
+						fmParking.getDirection(),
+						frequency=Servo::limitFrequency(
+							fmParking.getFrequency(),
+							fmParking.getDirection()
+							)
+						)
+					);			
+				if (fmParking.getDirection()==Servo::POSITIVE_DIRECTION){
+					servoFrequencyPositive = frequency;
+				}else{
+					servoFrequencyNegative = frequency;
+				}				
+
+				reportServoModeContinue();
 			}
 		}
-
-		processFieldbus();
 
 		break;
 	//-------------------------------------------------PARKING-----------------------------------

@@ -28,19 +28,22 @@ private:
 		//TODO: write 0Hz to servo before any use
 		IDLE_Idle = 5,
 		WAITING_Waiting =6,
+
 		PERSONAL_Starting = 7,
 		PERSONAL_SettingPositiveSpeed = 8,
 		PERSONAL_SettingNegativeSpeed = 9,
 		PERSONAL_Waiting = 10,
 		PERSONAL_MovingMain = 11,
 		PERSONAL_MovingAux =12,
+
 		PARKING_Starting = 13,
-		PARKING_SettingPositiveSpeed = 14,
-		PARKING_SettingNegativeSpeed = 15,
-		PARKING_PreparingMain = 16,
-		PARKING_MovingMain = 17,
+//		PARKING_SettingPositiveSpeed = 14,
+//		PARKING_SettingNegativeSpeed = 15,
+		PARKING_Preparing = 16,
+		PARKING_Moving = 17,
 		PARKING_PreparingAux = 18,
 		PARKING_MovingAux = 19,
+
 		FTEST_DYNAMIC_Starting = 20,
 //		FTEST_DYNAMIC_Homing_SettingPositiveSpeed = 21,
 //		FTEST_DYNAMIC_Homing_SettingNegativeSpeed = 22,
@@ -51,6 +54,7 @@ private:
 //		FTEST_DYNAMIC_Testing_SettingNegativeSpeed = 27,
 		FTEST_DYNAMIC_Testing_Preparing = 28,
 		FTEST_DYNAMIC_Testing_Moving = 29,
+
 		FTEST_STATIC_Starting = 30,
 //		FTEST_STATIC_Homing_SettingPositiveSpeed = 31,
 //		FTEST_STATIC_Homing_SettingNegativeSpeed = 32,
@@ -375,6 +379,7 @@ private:
 
 	static FrequencyModulation fmTestDynamic;
 	static FrequencyModulation fmTestHoming;
+	static FrequencyModulation fmParking;
 
 
 public:

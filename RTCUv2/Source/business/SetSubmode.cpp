@@ -42,10 +42,10 @@ void MainTick::setSubmode(MainTick::Submode newSubmode){
 		break;
 
 	case PARKING_Starting:
-	case PARKING_SettingPositiveSpeed:
-	case PARKING_SettingNegativeSpeed:
-	case PARKING_PreparingMain:
-	case PARKING_MovingMain:
+//	case PARKING_SettingPositiveSpeed:
+//	case PARKING_SettingNegativeSpeed:
+	case PARKING_Preparing:
+	case PARKING_Moving:
 	case PARKING_PreparingAux:
 	case PARKING_MovingAux:
 		mode = PARKING;
