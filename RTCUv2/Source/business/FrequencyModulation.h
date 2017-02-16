@@ -12,8 +12,11 @@ private:
 	float frequency;
 	int32_t startPosition;
 	int32_t stopPosition;
+	int32_t actualPosition;
 	bool direction;
 
+	float x;
+	float y;
 
 public:
 
