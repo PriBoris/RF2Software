@@ -178,13 +178,6 @@ float Servo::moveDurationToFrequency(
 //==================================================================================================================
 float Servo::limitFrequency(float frequency, bool direction){
 
-/*	if (frequency<Servo::MIN_FREQUENCY){
-		return Servo::MIN_FREQUENCY;
-	} else if (frequency>Servo::MAX_FREQUENCY){
-		frequency=Servo::MAX_FREQUENCY;
-	}
-*/
-
 	if (POSITIVE_DIRECTION==direction){	
 
 		if (frequency<Servo::MIN_FREQUENCY){

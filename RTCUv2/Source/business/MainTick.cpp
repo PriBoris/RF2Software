@@ -947,6 +947,9 @@ void MainTick::process(){ //called every 100ms
 			Servo::brake();
 			setSubmode(WAITING_Waiting);	
 			reportServoModeStop();			
+
+			processFieldbus();
+
 		}else{
 
 			bool positionTaskIsComplete = 
@@ -957,21 +960,28 @@ void MainTick::process(){ //called every 100ms
 
 			if (positionTaskIsComplete==true){
 
+				fmTestDynamic.getFrequency();//for debug
+
 				Servo::brake();				
 				setSubmode(WAITING_Waiting);
 				reportServoModeStop();
 
+				processFieldbus();
+
 			}else{
 
-				fmTestDynamic.getFrequency();
+				Fieldbus::pushUSSRequest(
+					USS::makeSetFrequencyRequest(
+						fmTestDynamic.getDirection(),
+						servoFrequencyNegative=Servo::limitFrequency(fmTestDynamic.getFrequency(),fmTestDynamic.getDirection())
+						)
+					);
 
 				reportServoModeContinue();
 
 			}
 
 		}
-
-		processFieldbus();
 
 		break;
 	//------------------------------------------------FTEST--STATIC----------------------------------

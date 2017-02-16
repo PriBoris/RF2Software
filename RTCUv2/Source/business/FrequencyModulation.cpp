@@ -51,8 +51,8 @@ float FrequencyModulation::getFrequency(
 
 	this->frequency = this->mainFrequency * this->y;
 
-
-	return mainFrequency;
+	//return this->mainFrequency;
+	return this->frequency;
 }
 //================================================================================================
 
