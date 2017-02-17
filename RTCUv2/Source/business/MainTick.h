@@ -67,10 +67,10 @@ private:
 		EXERCISE_Homing_PreparingAux = 38,
 		EXERCISE_Homing_MovingAux = 39,
 		EXERCISE_StartingSet = 40,
-		EXERCISE_Homing_SettingPositiveSpeed = 41,
-		EXERCISE_Homing_SettingNegativeSpeed = 42,
-		EXERCISE_Homing_PreparingMain = 43,
-		EXERCISE_Homing_MovingMain = 44,
+		//EXERCISE_Homing_SettingPositiveSpeed = 41,
+		//EXERCISE_Homing_SettingNegativeSpeed = 42,
+		EXERCISE_Homing_Preparing = 43,
+		EXERCISE_Homing_Moving = 44,
 		EXERCISE_Pause = 45,
 		EXERCISE_SettingPositiveSpeed = 46,
 		EXERCISE_SettingNegativeSpeed = 47,
@@ -378,7 +378,7 @@ private:
 	static uint32_t tickID;
 
 	static FrequencyModulation fmTestDynamic;
-	static FrequencyModulation fmTestHoming;
+	static FrequencyModulation fmHoming;
 	static FrequencyModulation fmParking;
 
 

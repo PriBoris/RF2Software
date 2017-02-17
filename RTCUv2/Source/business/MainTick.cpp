@@ -53,7 +53,7 @@ uint32_t MainTick::fieldbusErrorCounter;
 uint32_t MainTick::fieldbusErrorCounterMax;
 
 FrequencyModulation MainTick::fmTestDynamic;
-FrequencyModulation MainTick::fmTestHoming;
+FrequencyModulation MainTick::fmHoming;
 FrequencyModulation MainTick::fmParking;
 
 
@@ -877,7 +877,7 @@ void MainTick::process(){ //called every 100ms
 
 				if (PositionTask::getDirection(ForceTestDynamic::getStartPosition())==Servo::POSITIVE_DIRECTION){
 
-					fmTestHoming.prepare(
+					fmHoming.prepare(
 						Parking::servoFrequencyPositive,
 						ForceTestDynamic::getStartPosition(),
 						Servo::POSITIVE_DIRECTION
@@ -885,8 +885,8 @@ void MainTick::process(){ //called every 100ms
 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
-							fmTestHoming.getDirection(),
-							servoFrequencyPositive=fmTestHoming.getFrequency()
+							fmHoming.getDirection(),
+							servoFrequencyPositive=fmHoming.getFrequency()
 							)
 						);
 
@@ -896,7 +896,7 @@ void MainTick::process(){ //called every 100ms
 
 				}else{
 
-					fmTestHoming.prepare(
+					fmHoming.prepare(
 						Parking::servoFrequencyNegative,
 						ForceTestDynamic::getStartPosition(),
 						Servo::NEGATIVE_DIRECTION
@@ -904,8 +904,8 @@ void MainTick::process(){ //called every 100ms
 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
-							fmTestHoming.getDirection(),
-							servoFrequencyNegative=fmTestHoming.getFrequency()
+							fmHoming.getDirection(),
+							servoFrequencyNegative=fmHoming.getFrequency()
 							)
 						);
 
@@ -954,15 +954,15 @@ void MainTick::process(){ //called every 100ms
 
 				Fieldbus::pushUSSRequest(
 					USS::makeSetFrequencyRequest(
-						fmTestHoming.getDirection(),
+						fmHoming.getDirection(),
 						frequency=Servo::limitFrequency(
-							fmTestHoming.getFrequency(),
-							fmTestHoming.getDirection()
+							fmHoming.getFrequency(),
+							fmHoming.getDirection()
 							)
 						)
 					);
 
-				if (fmTestHoming.getDirection()==Servo::POSITIVE_DIRECTION){
+				if (fmHoming.getDirection()==Servo::POSITIVE_DIRECTION){
 					servoFrequencyPositive = frequency;
 				}else{
 					servoFrequencyNegative = frequency;
@@ -1154,7 +1154,7 @@ void MainTick::process(){ //called every 100ms
 
 				if (PositionTask::getDirection(ForceTestStatic::getTestPosition())==Servo::POSITIVE_DIRECTION){
 
-					fmTestHoming.prepare(
+					fmHoming.prepare(
 						Parking::servoFrequencyPositive,
 						ForceTestStatic::getTestPosition(),
 						Servo::POSITIVE_DIRECTION
@@ -1162,8 +1162,8 @@ void MainTick::process(){ //called every 100ms
 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
-							fmTestHoming.getDirection(),
-							servoFrequencyPositive=fmTestHoming.getFrequency()
+							fmHoming.getDirection(),
+							servoFrequencyPositive=fmHoming.getFrequency()
 							)
 						);
 
@@ -1173,7 +1173,7 @@ void MainTick::process(){ //called every 100ms
 
 				}else{
 
-					fmTestHoming.prepare(
+					fmHoming.prepare(
 						Parking::servoFrequencyNegative,
 						ForceTestStatic::getTestPosition(),
 						Servo::NEGATIVE_DIRECTION
@@ -1181,8 +1181,8 @@ void MainTick::process(){ //called every 100ms
 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
-							fmTestHoming.getDirection(),
-							servoFrequencyNegative=fmTestHoming.getFrequency()
+							fmHoming.getDirection(),
+							servoFrequencyNegative=fmHoming.getFrequency()
 							)
 						);
 
@@ -1231,15 +1231,15 @@ void MainTick::process(){ //called every 100ms
 
 				Fieldbus::pushUSSRequest(
 					USS::makeSetFrequencyRequest(
-						fmTestHoming.getDirection(),
+						fmHoming.getDirection(),
 						frequency=Servo::limitFrequency(
-							fmTestHoming.getFrequency(),
-							fmTestHoming.getDirection()
+							fmHoming.getFrequency(),
+							fmHoming.getDirection()
 							)
 						)
 					);
 
-				if (fmTestHoming.getDirection()==Servo::POSITIVE_DIRECTION){
+				if (fmHoming.getDirection()==Servo::POSITIVE_DIRECTION){
 					servoFrequencyPositive = frequency;
 				}else{
 					servoFrequencyNegative = frequency;
@@ -1335,14 +1335,14 @@ void MainTick::process(){ //called every 100ms
 	case EXERCISE_StartingSet:
 
 		Excercise::setStart();
-		setSubmode(EXERCISE_Homing_SettingPositiveSpeed);
+		setSubmode(EXERCISE_Homing_Preparing);
 
 
 		processFieldbus();
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
-	case EXERCISE_Homing_SettingPositiveSpeed:
+/*	case EXERCISE_Homing_SettingPositiveSpeed:
 
 		if (Fieldbus::responseIsValid()==false){
 			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
@@ -1357,14 +1357,14 @@ void MainTick::process(){ //called every 100ms
 		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=Parking::servoFrequencyPositive));
 
 		break;
-	//------------------------------------------------EXCERCISE----------------------------------
-	case EXERCISE_Homing_SettingNegativeSpeed:
+*/	//------------------------------------------------EXCERCISE----------------------------------
+/*	case EXERCISE_Homing_SettingNegativeSpeed:
 
 		if (Fieldbus::responseIsValid()==false){
 			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
 		}else{
 			if (Fieldbus::checkSetFrequencyResponse(false,Parking::servoFrequencyNegative)==true){
-				setSubmode(EXERCISE_Homing_PreparingMain);
+				setSubmode(EXERCISE_Homing_Preparing);
 			}else{
 				//TODO: countdown is necessary here
 			}
@@ -1372,8 +1372,8 @@ void MainTick::process(){ //called every 100ms
 		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Parking::servoFrequencyNegative));
 
 		break;
-	//------------------------------------------------EXCERCISE----------------------------------
-	case EXERCISE_Homing_PreparingMain:
+*/	//------------------------------------------------EXCERCISE----------------------------------
+	case EXERCISE_Homing_Preparing:
 
 		{
 			bool positionTaskIsNotNeeded = 
@@ -1382,7 +1382,7 @@ void MainTick::process(){ //called every 100ms
 					);
 
 			if (positionTaskIsNotNeeded==true){
-
+				//skip homing
 				Servo::brake();				
 				setSubmode(EXERCISE_Pause);
 				reportServoModeStop();
@@ -1392,14 +1392,40 @@ void MainTick::process(){ //called every 100ms
 
 				if (PositionTask::getDirection(Excercise::getPositionMainHoming())==Servo::POSITIVE_DIRECTION){
 
+					fmHoming.prepare(
+						Parking::servoFrequencyPositive,
+						Excercise::getPositionMainHoming(),
+						Servo::POSITIVE_DIRECTION
+						);
+
+					Fieldbus::pushUSSRequest(
+						USS::makeSetFrequencyRequest(
+							fmHoming.getDirection(),
+							servoFrequencyPositive=fmHoming.getFrequency()
+							)
+						);
+
 					Servo::movePositive();
-					setSubmode(EXERCISE_Homing_MovingMain);
+					setSubmode(EXERCISE_Homing_Moving);
 					reportServoModePositive();
 					
 				}else{
 
+					fmHoming.prepare(
+						Parking::servoFrequencyNegative,
+						Excercise::getPositionMainHoming(),
+						Servo::NEGATIVE_DIRECTION
+						);
+
+					Fieldbus::pushUSSRequest(
+						USS::makeSetFrequencyRequest(
+							fmHoming.getDirection(),
+							servoFrequencyNegative=fmHoming.getFrequency()
+							)
+						);
+
 					Servo::moveNegative();
-					setSubmode(EXERCISE_Homing_MovingMain);
+					setSubmode(EXERCISE_Homing_Moving);
 					reportServoModeNegative();
 
 				}	
@@ -1412,13 +1438,15 @@ void MainTick::process(){ //called every 100ms
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
-	case EXERCISE_Homing_MovingMain:
+	case EXERCISE_Homing_Moving:
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
 			Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
+
+			processFieldbus();
 
 		}else{
 
@@ -1434,13 +1462,33 @@ void MainTick::process(){ //called every 100ms
 				setSubmode(EXERCISE_Pause);
 				reportServoModeStop();
 
+				processFieldbus();
+
 			}else{
+
+				float frequency;
+
+				Fieldbus::pushUSSRequest(
+					USS::makeSetFrequencyRequest(
+						fmHoming.getDirection(),
+						frequency=Servo::limitFrequency(
+							fmHoming.getFrequency(),
+							fmHoming.getDirection()
+							)
+						)
+					);
+
+				if (fmHoming.getDirection()==Servo::POSITIVE_DIRECTION){
+					servoFrequencyPositive = frequency;
+				}else{
+					servoFrequencyNegative = frequency;
+				}
+
 				reportServoModeContinue();
+
 			}
 
 		} 
-
-		processFieldbus();
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------

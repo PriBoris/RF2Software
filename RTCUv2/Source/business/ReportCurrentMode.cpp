@@ -68,8 +68,6 @@ void MainTick::reportCurrentMode(){
 
 		switch(submode){
 		case FTEST_DYNAMIC_Starting:
-//		case FTEST_DYNAMIC_Homing_SettingPositiveSpeed:
-//		case FTEST_DYNAMIC_Homing_SettingNegativeSpeed:
 		case FTEST_DYNAMIC_Homing_Preparing:
 		case FTEST_DYNAMIC_Homing_Moving:
 			{
@@ -165,8 +163,6 @@ void MainTick::reportCurrentMode(){
 
 		switch(submode){
 		case FTEST_STATIC_Starting:
-//		case FTEST_STATIC_Homing_SettingPositiveSpeed:
-//		case FTEST_STATIC_Homing_SettingNegativeSpeed:
 		case FTEST_STATIC_Homing_Preparing:
 		case FTEST_STATIC_Homing_Moving:
 
@@ -281,10 +277,8 @@ void MainTick::reportCurrentMode(){
 		case EXERCISE_Homing_PreparingAux:
 		case EXERCISE_Homing_MovingAux:
 		case EXERCISE_StartingSet:
-		case EXERCISE_Homing_SettingPositiveSpeed:
-		case EXERCISE_Homing_SettingNegativeSpeed:
-		case EXERCISE_Homing_PreparingMain:
-		case EXERCISE_Homing_MovingMain:
+		case EXERCISE_Homing_Preparing:
+		case EXERCISE_Homing_Moving:
 
 			{
 				uint8_t message[MSGLEN_ReportCurrentMode_EXCERCISE_Homing];
