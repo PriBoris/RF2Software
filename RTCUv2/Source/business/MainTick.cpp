@@ -52,9 +52,10 @@ float MainTick::servoFrequencyNegative = 0.0f;
 uint32_t MainTick::fieldbusErrorCounter;
 uint32_t MainTick::fieldbusErrorCounterMax;
 
-FrequencyModulation MainTick::fmTestDynamic;
+FrequencyModulation MainTick::fmTest;
 FrequencyModulation MainTick::fmHoming;
 FrequencyModulation MainTick::fmParking;
+FrequencyModulation MainTick::fmExcercise;
 
 
 //==================================================================================================================
@@ -1002,7 +1003,7 @@ void MainTick::process(){ //called every 100ms
 
 		if (PositionTask::getDirection(ForceTestDynamic::getStopPosition())==Servo::POSITIVE_DIRECTION){
 
-			fmTestDynamic.prepare(
+			fmTest.prepare(
 				ForceTestDynamic::servoFrequencyPositive,
 				ForceTestDynamic::getStopPosition(),
 				Servo::POSITIVE_DIRECTION
@@ -1010,8 +1011,8 @@ void MainTick::process(){ //called every 100ms
 
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
-					fmTestDynamic.getDirection(),
-					servoFrequencyPositive=fmTestDynamic.getFrequency()
+					fmTest.getDirection(),
+					servoFrequencyPositive=fmTest.getFrequency()
 					)
 				);
 			Servo::movePositive();
@@ -1020,7 +1021,7 @@ void MainTick::process(){ //called every 100ms
 
 		}else{
 
-			fmTestDynamic.prepare(
+			fmTest.prepare(
 				ForceTestDynamic::servoFrequencyNegative,
 				ForceTestDynamic::getStopPosition(),
 				Servo::NEGATIVE_DIRECTION
@@ -1028,8 +1029,8 @@ void MainTick::process(){ //called every 100ms
 
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
-					fmTestDynamic.getDirection(),
-					servoFrequencyNegative=fmTestDynamic.getFrequency()
+					fmTest.getDirection(),
+					servoFrequencyNegative=fmTest.getFrequency()
 					)
 				);
 			Servo::moveNegative();
@@ -1061,8 +1062,6 @@ void MainTick::process(){ //called every 100ms
 
 			if (positionTaskIsComplete==true){
 
-				fmTestDynamic.getFrequency();//for debug
-
 				Servo::brake();				
 				setSubmode(WAITING_Waiting);
 				reportServoModeStop();
@@ -1074,15 +1073,15 @@ void MainTick::process(){ //called every 100ms
 				float frequency;
 				Fieldbus::pushUSSRequest(
 					USS::makeSetFrequencyRequest(
-						fmTestDynamic.getDirection(),
+						fmTest.getDirection(),
 						frequency = Servo::limitFrequency(
-							fmTestDynamic.getFrequency(),
-							fmTestDynamic.getDirection()
+							fmTest.getFrequency(),
+							fmTest.getDirection()
 							)
 						)
 					);
 
-				if (fmTestDynamic.getDirection()==Servo::POSITIVE_DIRECTION){
+				if (fmTest.getDirection()==Servo::POSITIVE_DIRECTION){
 					servoFrequencyPositive = frequency;
 				}else{
 					servoFrequencyNegative = frequency;
@@ -1342,37 +1341,6 @@ void MainTick::process(){ //called every 100ms
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
-/*	case EXERCISE_Homing_SettingPositiveSpeed:
-
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-			if (Fieldbus::checkSetFrequencyResponse(true,Parking::servoFrequencyPositive)==true){
-				
-				setSubmode(EXERCISE_Homing_SettingNegativeSpeed);
-			}else{
-				//TODO: countdown is necessary here
-			}
-		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=Parking::servoFrequencyPositive));
-
-		break;
-*/	//------------------------------------------------EXCERCISE----------------------------------
-/*	case EXERCISE_Homing_SettingNegativeSpeed:
-
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-			if (Fieldbus::checkSetFrequencyResponse(false,Parking::servoFrequencyNegative)==true){
-				setSubmode(EXERCISE_Homing_Preparing);
-			}else{
-				//TODO: countdown is necessary here
-			}
-		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Parking::servoFrequencyNegative));
-
-		break;
-*/	//------------------------------------------------EXCERCISE----------------------------------
 	case EXERCISE_Homing_Preparing:
 
 		{
@@ -1498,71 +1466,68 @@ void MainTick::process(){ //called every 100ms
 
 			setSubmode(WAITING_Waiting);
 
+			processFieldbus();
+
 		}else if (Excercise::isSetPauseDone()==true){
 
 			Excercise::recalculateServoFrequency();
-			setSubmode(EXERCISE_SettingPositiveSpeed);
 
-		}
+			Excercise::repetitionStart();
+			bool firstMovementDirection = 
+				PositionTask::getDirection(
+					Excercise::getPositionMainFirstMovement()
+					);
 
-		processFieldbus();
+			if (firstMovementDirection==Servo::POSITIVE_DIRECTION){
 
-		break;
-	//------------------------------------------------EXCERCISE----------------------------------
-	case EXERCISE_SettingPositiveSpeed:
+				fmExcercise.prepare(
+					Excercise::servoFrequencyPositive,
+					Excercise::getPositionMainFirstMovement(),
+					Servo::POSITIVE_DIRECTION
+					);
 
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-			if (Fieldbus::checkSetFrequencyResponse(true,Excercise::servoFrequencyPositive)==true){
-				setSubmode(EXERCISE_SettingNegativeSpeed);
-			}else{
-				//TODO: countdown is necessary here
-			}
-		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=Excercise::servoFrequencyPositive));
+				Fieldbus::pushUSSRequest(
+					USS::makeSetFrequencyRequest(
+						fmExcercise.getDirection(),
+						servoFrequencyPositive=fmExcercise.getFrequency()
+						)
+					);
 
-		break;
-	//------------------------------------------------EXCERCISE----------------------------------
-	case EXERCISE_SettingNegativeSpeed:
-
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-
-			if (Fieldbus::checkSetFrequencyResponse(false,Excercise::servoFrequencyNegative)==true){
-
-				Excercise::repetitionStart();
-
-				bool firstMovementDirection = 
-					PositionTask::getDirection(
-						Excercise::getPositionMainFirstMovement()
-						);
-
-				if (firstMovementDirection==Servo::POSITIVE_DIRECTION){
-					Servo::movePositive();
-					setSubmode(EXERCISE_FirstMovement);
-					reportServoModePositive();
-				}else{
-					Servo::moveNegative();
-					setSubmode(EXERCISE_FirstMovement);
-					reportServoModeNegative();
-				}
+				Servo::movePositive();
+				setSubmode(EXERCISE_FirstMovement);
+				reportServoModePositive();
 
 			}else{
 
-				//TODO: countdown is necessary here
+				fmExcercise.prepare(
+					Excercise::servoFrequencyNegative,
+					Excercise::getPositionMainFirstMovement(),
+					Servo::NEGATIVE_DIRECTION
+					);
+
+				Fieldbus::pushUSSRequest(
+					USS::makeSetFrequencyRequest(
+						fmExcercise.getDirection(),
+						servoFrequencyNegative=fmExcercise.getFrequency()
+						)
+					);
+
+				Servo::moveNegative();
+				setSubmode(EXERCISE_FirstMovement);
+				reportServoModeNegative();
 
 			}
+
+
 		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Excercise::servoFrequencyNegative));
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
 	case EXERCISE_FirstMovement:
+
 	/*
 		Steps here from 
-			EXERCISE_SettingNegativeSpeed
+			EXERCISE_Pause
 			EXERCISE_SecondMovement
 			EXERCISE_SecondInterruption
 	*/
@@ -1572,6 +1537,8 @@ void MainTick::process(){ //called every 100ms
 			Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
+
+			processFieldbus();
 
 		}else{
 
@@ -1589,6 +1556,7 @@ void MainTick::process(){ //called every 100ms
 					setSubmode(EXERCISE_FirstInterruption);
 					reportServoModeStop();
 
+					processFieldbus();
 
 				}else{
 					//interruption disabled
@@ -1598,27 +1566,76 @@ void MainTick::process(){ //called every 100ms
 							);
 
 					if (secondMovementDirection==Servo::POSITIVE_DIRECTION){
+
+						fmExcercise.prepare(
+							Excercise::servoFrequencyPositive,
+							Excercise::getPositionMainSecondMovement(),
+							Servo::POSITIVE_DIRECTION
+							);
+
+						Fieldbus::pushUSSRequest(
+							USS::makeSetFrequencyRequest(
+								fmExcercise.getDirection(),
+								servoFrequencyPositive=fmExcercise.getFrequency()
+								)
+							);
+
 						Servo::movePositive();
 						setSubmode(EXERCISE_SecondMovement);
 						reportServoModePositive();
+
+
 					}else{
+
+						fmExcercise.prepare(
+							Excercise::servoFrequencyNegative,
+							Excercise::getPositionMainSecondMovement(),
+							Servo::NEGATIVE_DIRECTION
+							);
+
+						Fieldbus::pushUSSRequest(
+							USS::makeSetFrequencyRequest(
+								fmExcercise.getDirection(),
+								servoFrequencyNegative=fmExcercise.getFrequency()
+								)
+							);
+
 						Servo::moveNegative();
 						setSubmode(EXERCISE_SecondMovement);
 						reportServoModeNegative();
+
 					}
 
 				}
 
 				Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
 
+				
+
 			}else{
-				//positionTaskIsComplete==false
+
+				float frequency;
+				Fieldbus::pushUSSRequest(
+					USS::makeSetFrequencyRequest(
+						fmExcercise.getDirection(),
+						frequency = Servo::limitFrequency(
+							fmExcercise.getFrequency(),
+							fmExcercise.getDirection()
+							)
+						)
+					);
+
+				if (fmExcercise.getDirection()==Servo::POSITIVE_DIRECTION){
+					servoFrequencyPositive = frequency;
+				}else{
+					servoFrequencyNegative = frequency;
+				}
+
 				reportServoModeContinue();
+
 			}
 
 		}
-
-		processFieldbus();
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
@@ -1629,9 +1646,12 @@ void MainTick::process(){ //called every 100ms
 	*/
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
+
 			Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
+
+			processFieldbus();
 
 		}else if (Excercise::isFirstInterruptionDone()==true){
 
@@ -1641,18 +1661,48 @@ void MainTick::process(){ //called every 100ms
 					);
 
 			if (secondMovementDirection==Servo::POSITIVE_DIRECTION){
+
+				fmExcercise.prepare(
+					Excercise::servoFrequencyPositive,
+					Excercise::getPositionMainSecondMovement(),
+					Servo::POSITIVE_DIRECTION
+					);
+
+				Fieldbus::pushUSSRequest(
+					USS::makeSetFrequencyRequest(
+						fmExcercise.getDirection(),
+						servoFrequencyPositive=fmExcercise.getFrequency()
+						)
+					);
+
 				Servo::movePositive();
 				setSubmode(EXERCISE_SecondMovement);
 				reportServoModePositive();
+
 			}else{
+
+				fmExcercise.prepare(
+					Excercise::servoFrequencyNegative,
+					Excercise::getPositionMainSecondMovement(),
+					Servo::NEGATIVE_DIRECTION
+					);
+
+				Fieldbus::pushUSSRequest(
+					USS::makeSetFrequencyRequest(
+						fmExcercise.getDirection(),
+						servoFrequencyNegative=fmExcercise.getFrequency()
+						)
+					);
+
 				Servo::moveNegative();
 				setSubmode(EXERCISE_SecondMovement);
 				reportServoModeNegative();
+
 			}
 
 		}
 
-		processFieldbus();
+		
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
@@ -1669,6 +1719,8 @@ void MainTick::process(){ //called every 100ms
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
+			processFieldbus();
+
 		}else{
 
 			bool positionTaskIsComplete = 
@@ -1684,6 +1736,8 @@ void MainTick::process(){ //called every 100ms
 					Servo::brake();
 					setSubmode(EXERCISE_SecondInterruption);
 					reportServoModeStop();
+
+					processFieldbus();
 
 				}else{
 					//interruption disabled
@@ -1711,10 +1765,39 @@ void MainTick::process(){ //called every 100ms
 								);
 
 						if (firstMovementDirection==Servo::POSITIVE_DIRECTION){
+
+							fmExcercise.prepare(
+								Excercise::servoFrequencyPositive,
+								Excercise::getPositionMainFirstMovement(),
+								Servo::POSITIVE_DIRECTION
+								);
+
+							Fieldbus::pushUSSRequest(
+								USS::makeSetFrequencyRequest(
+									fmExcercise.getDirection(),
+									servoFrequencyPositive=fmExcercise.getFrequency()
+									)
+								);
+
 							Servo::movePositive();
 							setSubmode(EXERCISE_FirstMovement);
 							reportServoModePositive();
+
 						}else{
+
+							fmExcercise.prepare(
+								Excercise::servoFrequencyNegative,
+								Excercise::getPositionMainFirstMovement(),
+								Servo::NEGATIVE_DIRECTION
+								);
+
+							Fieldbus::pushUSSRequest(
+								USS::makeSetFrequencyRequest(
+									fmExcercise.getDirection(),
+									servoFrequencyNegative=fmExcercise.getFrequency()
+									)
+								);
+
 							Servo::moveNegative();
 							setSubmode(EXERCISE_FirstMovement);
 							reportServoModeNegative();
@@ -1726,14 +1809,32 @@ void MainTick::process(){ //called every 100ms
 				Odometer::incrementDegrees((uint32_t)PersonalSettings::getMainRangeDegrees());
 
 			}else{
-				//positionTaskIsComplete==false
+
+				float frequency;
+				Fieldbus::pushUSSRequest(
+					USS::makeSetFrequencyRequest(
+						fmExcercise.getDirection(),
+						frequency = Servo::limitFrequency(
+							fmExcercise.getFrequency(),
+							fmExcercise.getDirection()
+							)
+						)
+					);
+
+				if (fmExcercise.getDirection()==Servo::POSITIVE_DIRECTION){
+					servoFrequencyPositive = frequency;
+				}else{
+					servoFrequencyNegative = frequency;
+				}
 
 				reportServoModeContinue();
+
+
 			}
 
 		}
 
-		processFieldbus();
+		
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
@@ -1748,6 +1849,8 @@ void MainTick::process(){ //called every 100ms
 			Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
+
+			processFieldbus();
 
 		}else if (Excercise::isSecondInterruptionDone()==true){
 
@@ -1764,6 +1867,8 @@ void MainTick::process(){ //called every 100ms
 				}
 				reportServoModeStop();
 
+				processFieldbus();				
+
 			}else{			
 
 				Excercise::repetitionStart();
@@ -1774,18 +1879,46 @@ void MainTick::process(){ //called every 100ms
 						);
 
 				if (firstMovementDirection==Servo::POSITIVE_DIRECTION){
+
+					fmExcercise.prepare(
+						Excercise::servoFrequencyPositive,
+						Excercise::getPositionMainFirstMovement(),
+						Servo::POSITIVE_DIRECTION
+						);
+
+					Fieldbus::pushUSSRequest(
+						USS::makeSetFrequencyRequest(
+							fmExcercise.getDirection(),
+							servoFrequencyPositive=fmExcercise.getFrequency()
+							)
+						);
+
 					Servo::movePositive();
 					setSubmode(EXERCISE_FirstMovement);
 					reportServoModePositive();
+
 				}else{
+
+					fmExcercise.prepare(
+						Excercise::servoFrequencyNegative,
+						Excercise::getPositionMainFirstMovement(),
+						Servo::NEGATIVE_DIRECTION
+						);
+
+					Fieldbus::pushUSSRequest(
+						USS::makeSetFrequencyRequest(
+							fmExcercise.getDirection(),
+							servoFrequencyNegative=fmExcercise.getFrequency()
+							)
+						);
+
 					Servo::moveNegative();
 					setSubmode(EXERCISE_FirstMovement);
 					reportServoModeNegative();
+
 				}
 			}
 		}
-
-		processFieldbus();
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------

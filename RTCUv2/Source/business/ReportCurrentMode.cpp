@@ -307,8 +307,6 @@ void MainTick::reportCurrentMode(){
 			break;
 		//----------------------------------------------------------------EXERCISE_ISOKINETIC---submode------------------------------
 		case EXERCISE_Pause:
-		case EXERCISE_SettingPositiveSpeed:
-		case EXERCISE_SettingNegativeSpeed:
 
 			{
 				uint8_t message[MSGLEN_ReportCurrentMode_EXCERCISE_Pause];

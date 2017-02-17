@@ -37,27 +37,19 @@ private:
 		PERSONAL_MovingAux =12,
 
 		PARKING_Starting = 13,
-//		PARKING_SettingPositiveSpeed = 14,
-//		PARKING_SettingNegativeSpeed = 15,
 		PARKING_Preparing = 16,
 		PARKING_Moving = 17,
 		PARKING_PreparingAux = 18,
 		PARKING_MovingAux = 19,
 
 		FTEST_DYNAMIC_Starting = 20,
-//		FTEST_DYNAMIC_Homing_SettingPositiveSpeed = 21,
-//		FTEST_DYNAMIC_Homing_SettingNegativeSpeed = 22,
 		FTEST_DYNAMIC_Homing_Preparing = 23,
 		FTEST_DYNAMIC_Homing_Moving = 24,
 		FTEST_DYNAMIC_Pause = 25,
-//		FTEST_DYNAMIC_Testing_SettingPositiveSpeed = 26,
-//		FTEST_DYNAMIC_Testing_SettingNegativeSpeed = 27,
 		FTEST_DYNAMIC_Testing_Preparing = 28,
 		FTEST_DYNAMIC_Testing_Moving = 29,
 
 		FTEST_STATIC_Starting = 30,
-//		FTEST_STATIC_Homing_SettingPositiveSpeed = 31,
-//		FTEST_STATIC_Homing_SettingNegativeSpeed = 32,
 		FTEST_STATIC_Homing_Preparing = 33,
 		FTEST_STATIC_Homing_Moving = 34,
 		FTEST_STATIC_Pause = 35,
@@ -67,13 +59,9 @@ private:
 		EXERCISE_Homing_PreparingAux = 38,
 		EXERCISE_Homing_MovingAux = 39,
 		EXERCISE_StartingSet = 40,
-		//EXERCISE_Homing_SettingPositiveSpeed = 41,
-		//EXERCISE_Homing_SettingNegativeSpeed = 42,
 		EXERCISE_Homing_Preparing = 43,
 		EXERCISE_Homing_Moving = 44,
 		EXERCISE_Pause = 45,
-		EXERCISE_SettingPositiveSpeed = 46,
-		EXERCISE_SettingNegativeSpeed = 47,
 		EXERCISE_FirstMovement = 48,
 		EXERCISE_FirstInterruption = 49,
 		EXERCISE_SecondMovement = 50,
@@ -377,9 +365,10 @@ private:
 
 	static uint32_t tickID;
 
-	static FrequencyModulation fmTestDynamic;
+	static FrequencyModulation fmTest;
 	static FrequencyModulation fmHoming;
 	static FrequencyModulation fmParking;
+	static FrequencyModulation fmExcercise;
 
 
 public:

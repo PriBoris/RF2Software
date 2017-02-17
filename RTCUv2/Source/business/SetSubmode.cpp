@@ -78,8 +78,6 @@ void MainTick::setSubmode(MainTick::Submode newSubmode){
 	case EXERCISE_Homing_Preparing:
 	case EXERCISE_Homing_Moving:
 	case EXERCISE_Pause:
-	case EXERCISE_SettingPositiveSpeed:
-	case EXERCISE_SettingNegativeSpeed:
 	case EXERCISE_FirstMovement:
 	case EXERCISE_FirstInterruption:
 	case EXERCISE_SecondMovement:
