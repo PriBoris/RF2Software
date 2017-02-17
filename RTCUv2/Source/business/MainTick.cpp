@@ -692,7 +692,8 @@ void MainTick::process(){ //called every 100ms
 					fmParking.prepare(
 						Parking::servoFrequencyPositive,
 						PersonalSettings::protocolStruct.positionMainParking,
-						Servo::POSITIVE_DIRECTION
+						Servo::POSITIVE_DIRECTION,
+						FrequencyModulation::LAW_2
 						);
 
 					Fieldbus::pushUSSRequest(
@@ -711,7 +712,8 @@ void MainTick::process(){ //called every 100ms
 					fmParking.prepare(
 						Parking::servoFrequencyNegative,
 						PersonalSettings::protocolStruct.positionMainParking,
-						Servo::NEGATIVE_DIRECTION
+						Servo::NEGATIVE_DIRECTION,
+						FrequencyModulation::LAW_2
 						);
 
 					Fieldbus::pushUSSRequest(
@@ -881,8 +883,9 @@ void MainTick::process(){ //called every 100ms
 					fmHoming.prepare(
 						Parking::servoFrequencyPositive,
 						ForceTestDynamic::getStartPosition(),
-						Servo::POSITIVE_DIRECTION
-						);
+						Servo::POSITIVE_DIRECTION,
+						FrequencyModulation::LAW_2
+					);
 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
@@ -900,8 +903,9 @@ void MainTick::process(){ //called every 100ms
 					fmHoming.prepare(
 						Parking::servoFrequencyNegative,
 						ForceTestDynamic::getStartPosition(),
-						Servo::NEGATIVE_DIRECTION
-						);
+						Servo::NEGATIVE_DIRECTION,
+						FrequencyModulation::LAW_2
+					);
 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
@@ -1006,8 +1010,9 @@ void MainTick::process(){ //called every 100ms
 			fmTest.prepare(
 				ForceTestDynamic::servoFrequencyPositive,
 				ForceTestDynamic::getStopPosition(),
-				Servo::POSITIVE_DIRECTION
-				);
+				Servo::POSITIVE_DIRECTION,
+				FrequencyModulation::LAW_4
+			);
 
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
@@ -1024,8 +1029,9 @@ void MainTick::process(){ //called every 100ms
 			fmTest.prepare(
 				ForceTestDynamic::servoFrequencyNegative,
 				ForceTestDynamic::getStopPosition(),
-				Servo::NEGATIVE_DIRECTION
-				);
+				Servo::NEGATIVE_DIRECTION,
+				FrequencyModulation::LAW_4
+			);
 
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
@@ -1156,8 +1162,9 @@ void MainTick::process(){ //called every 100ms
 					fmHoming.prepare(
 						Parking::servoFrequencyPositive,
 						ForceTestStatic::getTestPosition(),
-						Servo::POSITIVE_DIRECTION
-						);
+						Servo::POSITIVE_DIRECTION,
+						FrequencyModulation::LAW_2
+					);
 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
@@ -1175,8 +1182,9 @@ void MainTick::process(){ //called every 100ms
 					fmHoming.prepare(
 						Parking::servoFrequencyNegative,
 						ForceTestStatic::getTestPosition(),
-						Servo::NEGATIVE_DIRECTION
-						);
+						Servo::NEGATIVE_DIRECTION,
+						FrequencyModulation::LAW_2
+					);
 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
@@ -1363,8 +1371,9 @@ void MainTick::process(){ //called every 100ms
 					fmHoming.prepare(
 						Parking::servoFrequencyPositive,
 						Excercise::getPositionMainHoming(),
-						Servo::POSITIVE_DIRECTION
-						);
+						Servo::POSITIVE_DIRECTION,
+						FrequencyModulation::LAW_2
+					);
 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
@@ -1382,7 +1391,8 @@ void MainTick::process(){ //called every 100ms
 					fmHoming.prepare(
 						Parking::servoFrequencyNegative,
 						Excercise::getPositionMainHoming(),
-						Servo::NEGATIVE_DIRECTION
+						Servo::NEGATIVE_DIRECTION,
+						FrequencyModulation::LAW_2
 						);
 
 					Fieldbus::pushUSSRequest(
@@ -1483,7 +1493,8 @@ void MainTick::process(){ //called every 100ms
 				fmExcercise.prepare(
 					Excercise::servoFrequencyPositive,
 					Excercise::getPositionMainFirstMovement(),
-					Servo::POSITIVE_DIRECTION
+					Servo::POSITIVE_DIRECTION,
+					FrequencyModulation::LAW_4
 					);
 
 				Fieldbus::pushUSSRequest(
@@ -1502,7 +1513,8 @@ void MainTick::process(){ //called every 100ms
 				fmExcercise.prepare(
 					Excercise::servoFrequencyNegative,
 					Excercise::getPositionMainFirstMovement(),
-					Servo::NEGATIVE_DIRECTION
+					Servo::NEGATIVE_DIRECTION,
+					FrequencyModulation::LAW_4
 					);
 
 				Fieldbus::pushUSSRequest(
@@ -1570,7 +1582,8 @@ void MainTick::process(){ //called every 100ms
 						fmExcercise.prepare(
 							Excercise::servoFrequencyPositive,
 							Excercise::getPositionMainSecondMovement(),
-							Servo::POSITIVE_DIRECTION
+							Servo::POSITIVE_DIRECTION,
+							FrequencyModulation::LAW_4
 							);
 
 						Fieldbus::pushUSSRequest(
@@ -1590,7 +1603,8 @@ void MainTick::process(){ //called every 100ms
 						fmExcercise.prepare(
 							Excercise::servoFrequencyNegative,
 							Excercise::getPositionMainSecondMovement(),
-							Servo::NEGATIVE_DIRECTION
+							Servo::NEGATIVE_DIRECTION,
+							FrequencyModulation::LAW_4
 							);
 
 						Fieldbus::pushUSSRequest(
@@ -1665,7 +1679,8 @@ void MainTick::process(){ //called every 100ms
 				fmExcercise.prepare(
 					Excercise::servoFrequencyPositive,
 					Excercise::getPositionMainSecondMovement(),
-					Servo::POSITIVE_DIRECTION
+					Servo::POSITIVE_DIRECTION,
+					FrequencyModulation::LAW_4
 					);
 
 				Fieldbus::pushUSSRequest(
@@ -1684,7 +1699,8 @@ void MainTick::process(){ //called every 100ms
 				fmExcercise.prepare(
 					Excercise::servoFrequencyNegative,
 					Excercise::getPositionMainSecondMovement(),
-					Servo::NEGATIVE_DIRECTION
+					Servo::NEGATIVE_DIRECTION,
+					FrequencyModulation::LAW_4
 					);
 
 				Fieldbus::pushUSSRequest(
@@ -1769,7 +1785,8 @@ void MainTick::process(){ //called every 100ms
 							fmExcercise.prepare(
 								Excercise::servoFrequencyPositive,
 								Excercise::getPositionMainFirstMovement(),
-								Servo::POSITIVE_DIRECTION
+								Servo::POSITIVE_DIRECTION,
+								FrequencyModulation::LAW_4
 								);
 
 							Fieldbus::pushUSSRequest(
@@ -1788,7 +1805,8 @@ void MainTick::process(){ //called every 100ms
 							fmExcercise.prepare(
 								Excercise::servoFrequencyNegative,
 								Excercise::getPositionMainFirstMovement(),
-								Servo::NEGATIVE_DIRECTION
+								Servo::NEGATIVE_DIRECTION,
+								FrequencyModulation::LAW_4	
 								);
 
 							Fieldbus::pushUSSRequest(
@@ -1883,7 +1901,8 @@ void MainTick::process(){ //called every 100ms
 					fmExcercise.prepare(
 						Excercise::servoFrequencyPositive,
 						Excercise::getPositionMainFirstMovement(),
-						Servo::POSITIVE_DIRECTION
+						Servo::POSITIVE_DIRECTION,
+						FrequencyModulation::LAW_4
 						);
 
 					Fieldbus::pushUSSRequest(
@@ -1902,7 +1921,8 @@ void MainTick::process(){ //called every 100ms
 					fmExcercise.prepare(
 						Excercise::servoFrequencyNegative,
 						Excercise::getPositionMainFirstMovement(),
-						Servo::NEGATIVE_DIRECTION
+						Servo::NEGATIVE_DIRECTION,
+						FrequencyModulation::LAW_4
 						);
 
 					Fieldbus::pushUSSRequest(

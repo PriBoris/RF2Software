@@ -10,7 +10,8 @@
 void FrequencyModulation::prepare(
 	float mainFrequency,
 	int32_t stopPosition,
-	bool direction
+	bool direction,
+	Law law
 	){
 
 	this->mainFrequency = mainFrequency;
@@ -20,6 +21,8 @@ void FrequencyModulation::prepare(
 
 	this->x = 0.0f;
 	this->y = 0.0f;
+
+	this->law = law;
 	
 }
 //================================================================================================
@@ -43,11 +46,23 @@ float FrequencyModulation::getFrequency(
 		this->x = xTemp;
 	}
 
-	{
-		// LAW = 2
-		float yTemp = 2*(this->x-0.5f);
-		this->y = 1-yTemp*yTemp;
+	switch(this->law){
+	default:
+	case LAW_2:
+		{
+			float yTemp = 2*(this->x-0.5f);
+			this->y = 1-yTemp*yTemp;
+		}
+		break;
+	case LAW_4:
+		{
+			float yTemp = 2*(this->x-0.5f);
+			yTemp *= yTemp;
+			this->y = 1-yTemp*yTemp;
+		}
+		break;
 	}
+
 
 	this->frequency = this->mainFrequency * this->y;
 

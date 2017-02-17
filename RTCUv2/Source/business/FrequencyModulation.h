@@ -6,6 +6,15 @@
 
 
 class FrequencyModulation{
+
+public:
+	enum Law{
+		LAW_0 = 0,
+		LAW_2,
+		LAW_4
+	};
+
+
 private:
 
 	float mainFrequency;
@@ -18,18 +27,22 @@ private:
 	float x;
 	float y;
 
+	Law law;
+
 public:
 
 	void prepare(
 		float mainFrequency,
 		int32_t stopPosition,
-		bool direction
+		bool direction,
+		Law law
 		);
 
 
 	float getFrequency();
 
 	bool getDirection();
+
 
 
 };
