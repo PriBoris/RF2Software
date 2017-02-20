@@ -24,6 +24,8 @@ private:
 	int32_t actualPosition;
 	bool direction;
 
+	float mainFrequencyToRangeRatio;
+
 	float x;
 	float y;
 

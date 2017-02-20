@@ -19,6 +19,8 @@ void FrequencyModulation::prepare(
 	this->startPosition = this->actualPosition = Encoder::getValue();
 	this->direction = direction;
 
+	this->mainFrequencyToRangeRatio = this->mainFrequency /	 (float)(this->stopPosition - this->startPosition);
+
 	this->x = 0.0f;
 	this->y = 0.0f;
 
@@ -58,6 +60,7 @@ float FrequencyModulation::getFrequency(
 		{
 			float yTemp = 2*(this->x-0.5f);
 			yTemp *= yTemp;
+			yTemp *= yTemp;//6
 			this->y = 1-yTemp*yTemp;
 		}
 		break;
