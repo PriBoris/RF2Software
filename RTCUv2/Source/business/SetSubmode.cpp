@@ -90,10 +90,8 @@ void MainTick::setSubmode(MainTick::Submode newSubmode){
 	case GENERIC_SET_Homing_PreparingAux:
 	case GENERIC_SET_Homing_MovingAux:
 	case GENERIC_SET_Pause1:
-	case GENERIC_SET_Homing_SettingPositiveSpeed:
-	case GENERIC_SET_Homing_SettingNegativeSpeed:
-	case GENERIC_SET_Homing_PreparingMain:
-	case GENERIC_SET_Homing_MovingMain:
+	case GENERIC_SET_Homing_Preparing:
+	case GENERIC_SET_Homing_Moving:
 	case GENERIC_SET_Pause2:
 	case GENERIC_SET_Move_Preparing:
 	case GENERIC_SET_Move_Moving:

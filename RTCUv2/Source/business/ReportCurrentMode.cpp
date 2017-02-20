@@ -629,10 +629,8 @@ void MainTick::reportCurrentMode(){
 			}
 			break;
 		//----------------------------------------------------------------GENERIC_SET---submode------------------------------
-		case GENERIC_SET_Homing_SettingPositiveSpeed:
-		case GENERIC_SET_Homing_SettingNegativeSpeed:
-		case GENERIC_SET_Homing_PreparingMain:
-		case GENERIC_SET_Homing_MovingMain:
+		case GENERIC_SET_Homing_Preparing:
+		case GENERIC_SET_Homing_Moving:
 
 
 			{

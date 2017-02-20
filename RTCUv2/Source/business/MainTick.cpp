@@ -56,6 +56,7 @@ FrequencyModulation MainTick::fmTest;
 FrequencyModulation MainTick::fmHoming;
 FrequencyModulation MainTick::fmParking;
 FrequencyModulation MainTick::fmExcercise;
+FrequencyModulation MainTick::fmGenericSet;
 
 
 //==================================================================================================================
@@ -1915,9 +1916,9 @@ void MainTick::process(){ //called every 100ms
 		
 		}else if (GenericSet::isPauseDone()==true){
 
-			Parking::recalculateServoFrequency();
+			Parking::recalculateServoFrequency();// for homing
 			
-			setSubmode(GENERIC_SET_Homing_SettingPositiveSpeed);
+			setSubmode(GENERIC_SET_Homing_Preparing);
 
 		}else{
 			
@@ -1928,7 +1929,7 @@ void MainTick::process(){ //called every 100ms
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
-	case GENERIC_SET_Homing_SettingPositiveSpeed:
+/*	case GENERIC_SET_Homing_SettingPositiveSpeed:
 
 		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(
 			Servo::POSITIVE_DIRECTION,
@@ -1939,8 +1940,8 @@ void MainTick::process(){ //called every 100ms
 	
 	
 		break;
-	//------------------------------------------------GENERIC-SET---------------------------------
-	case GENERIC_SET_Homing_SettingNegativeSpeed:
+*/	//------------------------------------------------GENERIC-SET---------------------------------
+/*	case GENERIC_SET_Homing_SettingNegativeSpeed:
 
 		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(
 			Servo::NEGATIVE_DIRECTION,
@@ -1951,40 +1952,88 @@ void MainTick::process(){ //called every 100ms
 		setSubmode(GENERIC_SET_Homing_PreparingMain);
 	
 
-		break;
+		break;*/
 	//------------------------------------------------GENERIC-SET---------------------------------
-	case GENERIC_SET_Homing_PreparingMain:
+	case GENERIC_SET_Homing_Preparing:
 
-		if (PositionTask::checkPositionStatically(GenericSet::getPositionMainStart())==false){
+		{
+			bool positionTaskIsNotNeeded = 
+				PositionTask::checkPositionStatically(
+					GenericSet::getPositionMainStart()
+					);
 
-			if (PositionTask::getDirection(GenericSet::getPositionMainStart())==Servo::POSITIVE_DIRECTION){
+			if (positionTaskIsNotNeeded==true){
 
-				Servo::movePositive();
+				//skip homing
+				Servo::brake();	
 
-				setSubmode(GENERIC_SET_Homing_MovingMain);
-				reportServoModePositive();
+				GenericSet::pause2Start();
+				setSubmode(GENERIC_SET_Pause2);
+
+				reportServoModeStop();
+
+				processFieldbus();				
+
+
 			}else{
 
-				Servo::moveNegative();
+				if (PositionTask::getDirection(GenericSet::getPositionMainStart())==Servo::POSITIVE_DIRECTION){
 
-				setSubmode(GENERIC_SET_Homing_MovingMain);
-				reportServoModeNegative();
-			}						
-		}else{
-			GenericSet::pause2Start();
-			setSubmode(GENERIC_SET_Pause2);
+					fmHoming.prepare(
+						Parking::servoFrequencyPositive,
+						GenericSet::getPositionMainStart(),
+						Servo::POSITIVE_DIRECTION,
+						FrequencyModulation::LAW_2
+					);
+
+					Fieldbus::pushUSSRequest(
+						USS::makeSetFrequencyRequest(
+							fmHoming.getDirection(),
+							servoFrequencyPositive=fmHoming.getFrequency()
+							)
+						);
+
+					Servo::movePositive();
+					setSubmode(GENERIC_SET_Homing_Moving);
+					reportServoModePositive();
+
+				}else{
+
+					fmHoming.prepare(
+						Parking::servoFrequencyNegative,
+						GenericSet::getPositionMainStart(),
+						Servo::NEGATIVE_DIRECTION,
+						FrequencyModulation::LAW_2
+					);
+
+					Fieldbus::pushUSSRequest(
+						USS::makeSetFrequencyRequest(
+							fmHoming.getDirection(),
+							servoFrequencyNegative=fmHoming.getFrequency()
+							)
+						);
+
+					Servo::moveNegative();
+					setSubmode(GENERIC_SET_Homing_Moving);
+					reportServoModeNegative();
+				}	
+
+			}
+
 		}
-		processFieldbus();
+
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
-	case GENERIC_SET_Homing_MovingMain:
+	case GENERIC_SET_Homing_Moving:
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
 			Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
+
+			processFieldbus();
 
 		}else{
 
@@ -2002,15 +2051,33 @@ void MainTick::process(){ //called every 100ms
 				setSubmode(GENERIC_SET_Pause2);
 				reportServoModeStop();
 
+				processFieldbus();	
+
 			}else{
+
+				float frequency;
+
+				Fieldbus::pushUSSRequest(
+					USS::makeSetFrequencyRequest(
+						fmHoming.getDirection(),
+						frequency=Servo::limitFrequency(
+							fmHoming.getFrequency(),
+							fmHoming.getDirection()
+							)
+						)
+					);
+
+				if (fmHoming.getDirection()==Servo::POSITIVE_DIRECTION){
+					servoFrequencyPositive = frequency;
+				}else{
+					servoFrequencyNegative = frequency;
+				}
 
 				reportServoModeContinue();
 
 			}
 
 		}
-
-		processFieldbus();
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------

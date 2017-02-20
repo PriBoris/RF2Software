@@ -71,10 +71,10 @@ private:
 		GENERIC_SET_Homing_PreparingAux = 53,
 		GENERIC_SET_Homing_MovingAux = 54,
 		GENERIC_SET_Pause1 = 55,
-		GENERIC_SET_Homing_SettingPositiveSpeed = 56,
+/*		GENERIC_SET_Homing_SettingPositiveSpeed = 56,
 		GENERIC_SET_Homing_SettingNegativeSpeed = 57,
-		GENERIC_SET_Homing_PreparingMain = 58,
-		GENERIC_SET_Homing_MovingMain = 59,
+*/		GENERIC_SET_Homing_Preparing = 58,
+		GENERIC_SET_Homing_Moving = 59,
 		GENERIC_SET_Pause2 = 60,
 		GENERIC_SET_Move_Preparing = 61,
 		GENERIC_SET_Move_Moving = 62,
@@ -369,6 +369,7 @@ private:
 	static FrequencyModulation fmHoming;
 	static FrequencyModulation fmParking;
 	static FrequencyModulation fmExcercise;
+	static FrequencyModulation fmGenericSet;
 
 
 public:
