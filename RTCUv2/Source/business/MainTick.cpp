@@ -635,40 +635,6 @@ void MainTick::process(){ //called every 100ms
 
 		break;
 	//-------------------------------------------------PARKING-----------------------------------
-/*	case PARKING_SettingPositiveSpeed:
-
-		//MessageQueue::flush();
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-			if (Fieldbus::checkSetFrequencyResponse(true,Parking::servoFrequencyPositive)==true){
-				setSubmode(PARKING_SettingNegativeSpeed);
-			}else{
-				//TODO: countdown is necessary here
-			}
-		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=Parking::servoFrequencyPositive));
-
-
-		break;
-*/	//-------------------------------------------------PARKING-----------------------------------
-/*	case PARKING_SettingNegativeSpeed:
-
-		//MessageQueue::flush();
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-			if (Fieldbus::checkSetFrequencyResponse(false,Parking::servoFrequencyNegative)==true){
-				setSubmode(PARKING_Preparing);
-			}else{
-				//TODO: countdown is necessary here
-			}
-		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Parking::servoFrequencyNegative));
-
-
-		break;
-*/	//-------------------------------------------------PARKING-----------------------------------
 	case PARKING_Preparing:
 
 		//MessageQueue::flush();
@@ -680,10 +646,13 @@ void MainTick::process(){ //called every 100ms
 					);
 
 			if (positionTaskIsNotNeeded==true){
+
 				//skip moving
 				Servo::brake();				
 				setSubmode(PARKING_PreparingAux);
 				reportServoModeStop();
+
+				processFieldbus();				
 
 			}else{
 
@@ -731,7 +700,7 @@ void MainTick::process(){ //called every 100ms
 			}	
 		}
 
-		processFieldbus();
+		
 
 		break;
 	//-------------------------------------------------PARKING-----------------------------------
@@ -802,7 +771,6 @@ void MainTick::process(){ //called every 100ms
 		);	
 		setSubmode(PARKING_MovingAux);
 
-
 		processFieldbus();
 		break;
 	//-------------------------------------------------PARKING-----------------------------------
@@ -829,39 +797,8 @@ void MainTick::process(){ //called every 100ms
 		setSubmode(FTEST_DYNAMIC_Homing_Preparing);
 
 		processFieldbus();
-
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
-/*	case FTEST_DYNAMIC_Homing_SettingPositiveSpeed:
-
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-			if (Fieldbus::checkSetFrequencyResponse(true,Parking::servoFrequencyPositive)==true){
-				setSubmode(FTEST_DYNAMIC_Homing_SettingNegativeSpeed);
-			}else{
-				//TODO: countdown is necessary here
-			}
-		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=Parking::servoFrequencyPositive));
-
-		break;
-*/	//------------------------------------------------FTEST--DYNAMIC----------------------------------
-/*	case FTEST_DYNAMIC_Homing_SettingNegativeSpeed:
-
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-			if (Fieldbus::checkSetFrequencyResponse(false,Parking::servoFrequencyNegative)==true){
-				setSubmode(FTEST_DYNAMIC_Homing_Preparing);
-			}else{
-				//TODO: countdown is necessary here
-			}
-		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Parking::servoFrequencyNegative));
-
-		break;
-*/	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Homing_Preparing:
 
 		{
@@ -875,6 +812,8 @@ void MainTick::process(){ //called every 100ms
 				Servo::brake();				
 				setSubmode(FTEST_DYNAMIC_Pause);
 				reportServoModeStop();
+
+				processFieldbus();				
 
 			}else{
 
@@ -924,7 +863,7 @@ void MainTick::process(){ //called every 100ms
 
 		}
 
-		processFieldbus();
+		
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Homing_Moving:
@@ -1044,8 +983,6 @@ void MainTick::process(){ //called every 100ms
 			reportServoModeNegative();
 		}	
 
-		processFieldbus();
-
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Testing_Moving:
@@ -1112,34 +1049,6 @@ void MainTick::process(){ //called every 100ms
 		processFieldbus();
 		break;
 	//------------------------------------------------FTEST--STATIC----------------------------------
-/*	case FTEST_STATIC_Homing_SettingPositiveSpeed:
-
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-			if (Fieldbus::checkSetFrequencyResponse(true,Parking::servoFrequencyPositive)==true){
-				setSubmode(FTEST_STATIC_Homing_SettingNegativeSpeed);
-			}else{
-				//TODO: countdown is necessary here
-			}
-		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=Parking::servoFrequencyPositive));
-		break;*/
-	//------------------------------------------------FTEST--STATIC----------------------------------
-/*	case FTEST_STATIC_Homing_SettingNegativeSpeed:
-
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-			if (Fieldbus::checkSetFrequencyResponse(false,Parking::servoFrequencyNegative)==true){
-				setSubmode(FTEST_STATIC_Homing_Preparing);
-			}else{
-				//TODO: countdown is necessary here
-			}
-		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=Parking::servoFrequencyNegative));
-		break;*/
-	//------------------------------------------------FTEST--STATIC----------------------------------
 	case FTEST_STATIC_Homing_Preparing:
 
 		{
@@ -1154,6 +1063,8 @@ void MainTick::process(){ //called every 100ms
 				Servo::brake();				
 				setSubmode(FTEST_STATIC_Pause);
 				reportServoModeStop();
+
+				processFieldbus();
 
 			}else{
 
@@ -1201,8 +1112,6 @@ void MainTick::process(){ //called every 100ms
 			}
 
 		}
-
-		processFieldbus();
 
 		break;
 	//------------------------------------------------FTEST--STATIC----------------------------------
@@ -1324,10 +1233,13 @@ void MainTick::process(){ //called every 100ms
 	case EXERCISE_Homing_MovingAux:
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
+
 			Actuators::disable(0);
 			Actuators::disable(1);
 			setSubmode(WAITING_Waiting);
+
 		}else if ((Actuators::targetPositionReached(0)==true)&&(Actuators::targetPositionReached(1)==true)){
+
 			Actuators::disable(0);
 			Actuators::disable(1);
 			
