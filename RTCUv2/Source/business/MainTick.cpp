@@ -2111,12 +2111,21 @@ void MainTick::process(){ //called every 100ms
 		if (PositionTask::getDirection(GenericSet::getMoveDestinationPosition())==Servo::POSITIVE_DIRECTION){
 
 			GenericSet::recalculateServoFrequency(Servo::POSITIVE_DIRECTION);
+
+			fmGenericSet.prepare(
+				GenericSet::servoFrequencyPositive_,
+				GenericSet::getMoveDestinationPosition(),
+				Servo::POSITIVE_DIRECTION,
+				FrequencyModulation::LAW_4
+			);
+
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
-					Servo::POSITIVE_DIRECTION,
-					servoFrequencyPositive=GenericSet::servoFrequencyPositive_
+					fmGenericSet.getDirection(),
+					servoFrequencyPositive=fmGenericSet.getFrequency()
 					)
 				);
+
 			Servo::movePositive();
 			setSubmode(GENERIC_SET_Move_Moving);
 			reportServoModePositive();
@@ -2124,12 +2133,21 @@ void MainTick::process(){ //called every 100ms
 		}else{
 
 			GenericSet::recalculateServoFrequency(Servo::NEGATIVE_DIRECTION);
+
+			fmGenericSet.prepare(
+				GenericSet::servoFrequencyNegative_,
+				GenericSet::getMoveDestinationPosition(),
+				Servo::NEGATIVE_DIRECTION,
+				FrequencyModulation::LAW_4
+			);
+
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
-					Servo::NEGATIVE_DIRECTION,
-					servoFrequencyNegative=GenericSet::servoFrequencyNegative_
+					fmGenericSet.getDirection(),
+					servoFrequencyNegative=fmGenericSet.getFrequency()
 					)
 				);
+
 			Servo::moveNegative();
 			setSubmode(GENERIC_SET_Move_Moving);
 			reportServoModeNegative();
@@ -2174,41 +2192,16 @@ void MainTick::process(){ //called every 100ms
 
 					}else{
 
-						//setSubmode(GENERIC_SET_Move_Preparing);
-						if (PositionTask::getDirection(GenericSet::getMoveDestinationPosition())==Servo::POSITIVE_DIRECTION){
-
-							GenericSet::recalculateServoFrequency(Servo::POSITIVE_DIRECTION);
-							Fieldbus::pushUSSRequest(
-								USS::makeSetFrequencyRequest(
-									Servo::POSITIVE_DIRECTION,
-									servoFrequencyPositive=GenericSet::servoFrequencyPositive_
-									)
-								);
-							Servo::movePositive();
-							setSubmode(GENERIC_SET_Move_Moving);
-							reportServoModePositive();
-
-						}else{
-
-							GenericSet::recalculateServoFrequency(Servo::NEGATIVE_DIRECTION);
-							Fieldbus::pushUSSRequest(
-								USS::makeSetFrequencyRequest(
-									Servo::NEGATIVE_DIRECTION,
-									servoFrequencyNegative=GenericSet::servoFrequencyNegative_
-									)
-								);
-							Servo::moveNegative();
-							setSubmode(GENERIC_SET_Move_Moving);
-							reportServoModeNegative();
-
-						}	
-
+						setSubmode(GENERIC_SET_Move_Preparing);
+						reportServoModeStop();
+						processFieldbus();
 
 					}
 
 
 				}else{
 
+					//set complete
 					setSubmode(WAITING_Waiting);
 					reportServoModeStop();
 					processFieldbus();
@@ -2218,14 +2211,28 @@ void MainTick::process(){ //called every 100ms
 
 			}else{
 
+				float frequency;
+				Fieldbus::pushUSSRequest(
+					USS::makeSetFrequencyRequest(
+						fmGenericSet.getDirection(),
+						frequency = Servo::limitFrequency(
+							fmGenericSet.getFrequency(),
+							fmGenericSet.getDirection()
+							)
+						)
+					);
+
+				if (fmGenericSet.getDirection()==Servo::POSITIVE_DIRECTION){
+					servoFrequencyPositive = frequency;
+				}else{
+					servoFrequencyNegative = frequency;
+				}
+
 				reportServoModeContinue();
-				processFieldbus();
 
 			}
 
 		}
-
-		//processFieldbus();
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
@@ -2236,6 +2243,8 @@ void MainTick::process(){ //called every 100ms
 			Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
+
+
 
 		}else if (GenericSet::isStaticMoveDone()){
 
