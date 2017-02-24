@@ -7,11 +7,11 @@
 #include <QScrollArea>
 
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
+
     QApplication a(argc, argv);
     QCoreApplication::setOrganizationName("REFORCE");
-    QCoreApplication::setApplicationName("RTCUDiagnostic");
+    QCoreApplication::setApplicationName("RTCUD");
 
     WidgetMain *widgetMain = new WidgetMain;
 
