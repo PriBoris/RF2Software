@@ -4,16 +4,16 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui
 QT += serialport
 QT += printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = RTCUDiagnostic
+TARGET = RTCUD
 TEMPLATE = app
 
-RC_ICONS = RTCUDiagnostic.ico
+RC_ICONS = RTCUD.ico
 
 
 

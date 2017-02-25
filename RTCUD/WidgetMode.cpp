@@ -184,13 +184,6 @@ WidgetMode::WidgetMode(
 
 
 	{
-		btnCancel = new QPushButton("CANCEL");btnCancel->setFixedWidth(300);
-		btnCancel->setFont(QFont("Verdana",10,QFont::Bold,true));
-	}
-
-
-
-	{
 		plotForceVsPosition = new QCustomPlot;
 		plotForceVsPosition->addGraph();
 		plotForceVsPosition->graph(0)->setPen(QPen(Qt::blue));
@@ -250,7 +243,6 @@ WidgetMode::WidgetMode(
 	loMain->addWidget(btnResetError);
 	loMain->addWidget(btnExcerciseIsokineticStart);
 	loMain->addWidget(btnGenericSetStart);
-	loMain->addWidget(btnCancel);
 
 	loMain->addWidget(plotForceVsPosition);
 	loMain->addWidget(plotForceVsTime);
@@ -336,7 +328,6 @@ WidgetMode::WidgetMode(
 	connect(btnResetError,SIGNAL(clicked(bool)),SLOT(slotResetError()));
 	connect(btnExcerciseIsokineticStart,SIGNAL(clicked(bool)),SLOT(slotExcerciseIsokineticStart()));
 	connect(btnGenericSetStart,SIGNAL(clicked(bool)),SLOT(slotGenericSetStart()));
-	connect(btnCancel,SIGNAL(clicked(bool)),SLOT(slotCancel()));
 
 	connect(btnPlotForceReset,SIGNAL(clicked(bool)),SLOT(slotPlotForceReset()));
 
@@ -435,7 +426,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 			lblSetIndex->setVisible(false);
 			lblRepIndex->setVisible(false);
 			lblRepDirection->setVisible(false);
-			btnCancel->setVisible(false);
 			break;
 		//------------------------------------------------------------------------
 		case RTCU::Mode::INITIALIZING:
@@ -460,7 +450,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 			lblTimeToSet->setVisible(false);
 			lblRepIndex->setVisible(false);
 			lblRepDirection->setVisible(false);
-			btnCancel->setVisible(false);
 			break;
 			//------------------------------------------------------------------------
 		case RTCU::Mode::IDLE:
@@ -486,7 +475,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 			lblTimeToSet->setVisible(false);
 			lblRepIndex->setVisible(false);
 			lblRepDirection->setVisible(false);
-			btnCancel->setVisible(false);
 			break;
 		//------------------------------------------------------------------------
 		case RTCU::Mode::WAITING:
@@ -511,7 +499,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 			lblTimeToSet->setVisible(false);
 			lblRepIndex->setVisible(false);
 			lblRepDirection->setVisible(false);
-			btnCancel->setVisible(false);
 			break;
 			//------------------------------------------------------------------------
 		case RTCU::Mode::PARKING:
@@ -535,7 +522,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 			lblTimeToSet->setVisible(false);
 			lblRepIndex->setVisible(false);
 			lblRepDirection->setVisible(false);
-			btnCancel->setVisible(true);
 			break;
 
 			//------------------------------------------------------------------------
@@ -561,7 +547,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 			lblTimeToSet->setVisible(false);
 			lblRepIndex->setVisible(false);
 			lblRepDirection->setVisible(false);
-			btnCancel->setVisible(false);
 			break;
 		//------------------------------------------------------------------------
 		case RTCU::Mode::TEST_CONCENTRIC:
@@ -664,7 +649,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 			lblTimeToSet->setVisible(false);
 			lblRepIndex->setVisible(false);
 			lblRepDirection->setVisible(false);
-			btnCancel->setVisible(true);
 
 
 
@@ -773,7 +757,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 			lblTimeToSet->setVisible(false);
 			lblRepIndex->setVisible(false);
 			lblRepDirection->setVisible(false);
-			btnCancel->setVisible(true);
 			break;
 		//------------------------------------------------------------------------
 		case RTCU::Mode::TEST_STATIC:
@@ -895,7 +878,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 			lblTimeToSet->setVisible(false);
 			lblRepIndex->setVisible(false);
 			lblRepDirection->setVisible(false);
-			btnCancel->setVisible(true);
 			break;
 		//------------------------------------------------------------------------
 		case RTCU::Mode::EXCERCISE_ISOKINETIC:
@@ -1085,7 +1067,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 			btnResetError->setVisible(false);
 			btnExcerciseIsokineticStart->setVisible(false);
 			btnGenericSetStart->setVisible(false);
-			btnCancel->setVisible(true);
 			break;
 		//------------------------------------------------------------------------
 		case RTCU::Mode::GENERIC_SET:
@@ -1237,7 +1218,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 			btnResetError->setVisible(false);
 			btnExcerciseIsokineticStart->setVisible(false);
 			btnGenericSetStart->setVisible(false);
-			btnCancel->setVisible(true);
 
 			break;
 		//------------------------------------------------------------------------
@@ -1310,7 +1290,6 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 			btnGenericSetStart->setVisible(false);
 			lblSetIndex->setVisible(false);
 			lblTimeToSet->setVisible(false);
-			btnCancel->setVisible(false);
 
 			lblRepIndex->setVisible(false);
 			lblRepDirection->setVisible(false);
@@ -1498,18 +1477,6 @@ void WidgetMode::slotGenericSetStart(){
 	}
 
 
-}
-//============================================================================================================
-void WidgetMode::slotCancel(){
-
-	if (serialPortTransceiver_->isPortOK()==true){
-
-		QByteArray valueArray;
-		TLVWriter tlv(TLV::TAG_Cancel,valueArray);
-		QByteArray *txArray = tlv.getStuffedArray();
-		serialPortTransceiver_->write(*txArray);
-		delete txArray;
-	}
 }
 //============================================================================================================
 void WidgetMode::slotPlotForceReset(){

@@ -97,11 +97,20 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent){
 		rxErrorCounter = 0;
 	}
 
+	{
+		btnCancel = new QPushButton("CANCEL");
+        btnCancel->setFont(QFont("Verdana",12,QFont::Bold,false));
+		btnCancel->setFixedWidth(150);
+		btnCancel->setFixedHeight(40);
+		btnCancel->setStyleSheet("border: 2px solid red");    
+	}
+
 
 	{
 		loHeader = new QHBoxLayout;
 
 		loHeader->addLayout(loTabs);
+		loHeader->addWidget(btnCancel);
 		loHeader->addLayout(loPort);
 		loHeader->addStretch(1);
 	}
@@ -202,6 +211,7 @@ WidgetMain::WidgetMain(QWidget *parent) : QWidget(parent){
 	connect(tlvReader,SIGNAL(newMessageReceived(quint8,quint32,QByteArray&)),SLOT(newMessageReceived(quint8,quint32,QByteArray&)));
 	connect(tlvReader,SIGNAL(errorDetected(void)),SLOT(errorDetected(void)));
 
+	connect(btnCancel,SIGNAL(clicked(bool)),SLOT(slotCancel()));
 
 
 
@@ -474,5 +484,17 @@ void WidgetMain::errorDetected(void){
 
 }
 //===============================================================================================================
+void WidgetMain::slotCancel(){
+
+    if (serialPortTransceiver->isPortOK()==true){
+
+		QByteArray valueArray;
+		TLVWriter tlv(TLV::TAG_Cancel,valueArray);
+		QByteArray *txArray = tlv.getStuffedArray();
+        serialPortTransceiver->write(*txArray);
+		delete txArray;
+	}
+}
+//============================================================================================================
 
 

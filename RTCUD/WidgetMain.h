@@ -59,6 +59,7 @@ class WidgetMain : public QWidget{
 	quint32 rxMessageMaxLength;
 	quint32 rxErrorCounter;
 
+	QPushButton *btnCancel;
 
 	QHBoxLayout *loHeader;
 
@@ -104,6 +105,7 @@ public slots:
 	void slotTabClicked(int tabIndex);
 	void newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value);
 	void errorDetected(void);
+    void slotCancel();
 
 
 };
