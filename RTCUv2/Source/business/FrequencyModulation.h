@@ -22,7 +22,11 @@ private:
 	int32_t startPosition;
 	int32_t stopPosition;
 	int32_t actualPosition;
+	int32_t range;
+	float frange;
 	bool direction;
+	int32_t minRange;
+	bool rangeOk;
 
 	float mainFrequencyToRangeRatio;
 
@@ -37,7 +41,8 @@ public:
 		float mainFrequency,
 		int32_t stopPosition,
 		bool direction,
-		Law law
+		Law law,
+		int32_t minRange
 		);
 
 

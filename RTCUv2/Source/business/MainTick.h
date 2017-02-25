@@ -367,9 +367,13 @@ private:
 
 	static FrequencyModulation fmTest;
 	static FrequencyModulation fmHoming;
-	static FrequencyModulation fmParking;
 	static FrequencyModulation fmExcercise;
 	static FrequencyModulation fmGenericSet;
+
+	static const int32_t FM_TEST_MIN_RANGE = 200;
+	static const int32_t FM_HOMING_MIN_RANGE = 1000;
+	static const int32_t FM_EXCERCISE_MIN_RANGE = 200;
+	static const int32_t FM_GENERIC_SET_MIN_RANGE = 200;
 
 
 public:
