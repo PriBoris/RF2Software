@@ -247,7 +247,7 @@ void Actuators::disable(uint_fast8_t actuatorIndex){
 //======================================================================================
 bool Actuators::targetPositionReached(uint_fast8_t actuatorIndex){
 
-	return true;
+	//return true;
 	
 	if (
 		(feedbackValue[actuatorIndex]>targetPosition[actuatorIndex]-FEEDBACK_VALUE_HYSTERESIS)&&
