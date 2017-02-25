@@ -51,7 +51,6 @@ class WidgetMode : public QWidget{
     QPushButton *btnResetError;
     QPushButton *btnExcerciseIsokineticStart;
     QPushButton *btnGenericSetStart;
-    QPushButton *btnCancel;
     QLabel *lblOdometer;
     /*---------------------------------------------------*/
 
@@ -141,7 +140,6 @@ public slots:
     void slotResetError();
     void slotExcerciseIsokineticStart();
     void slotGenericSetStart();
-    void slotCancel();
 
     void slotPlotForceReset();
 
