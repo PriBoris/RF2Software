@@ -17,7 +17,7 @@ public:
 	};
 
 	static const uint32_t MOVE_COUNT_MIN = (1);
-	static const uint32_t MOVE_COUNT_MAX = (50);
+	static const uint32_t MOVE_COUNT_MAX = (100);
 
 	struct Set{
 		int32_t pause1;
