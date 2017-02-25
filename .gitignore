@@ -4,4 +4,6 @@
 
 *.ods#
 
+*-checkpoint.ipynb
+
 Docs/~*.tmp
