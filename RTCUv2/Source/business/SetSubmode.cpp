@@ -32,9 +32,6 @@ void MainTick::setSubmode(MainTick::Submode newSubmode){
 		mode = WAITING;
 		break;
 
-	case PERSONAL_Starting:
-	case PERSONAL_SettingPositiveSpeed:
-	case PERSONAL_SettingNegativeSpeed:		
 	case PERSONAL_Waiting:
 	case PERSONAL_MovingMain:
 	case PERSONAL_MovingAux:

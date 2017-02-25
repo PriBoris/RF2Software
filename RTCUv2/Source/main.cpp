@@ -61,9 +61,7 @@ int main(void){
 	Actuators::controlInit();
 	
 	Servo::parkingBrake(true);//TODO: make Servo::init()
-	Servo::brake(false);
-	Servo::movePositive(false);
-	Servo::moveNegative(false);
+	Servo::brake();
 
 
 	StrainGauge::init();

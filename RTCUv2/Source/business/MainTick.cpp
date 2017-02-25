@@ -56,6 +56,7 @@ FrequencyModulation MainTick::fmTest;
 FrequencyModulation MainTick::fmHoming;
 FrequencyModulation MainTick::fmExcercise;
 FrequencyModulation MainTick::fmGenericSet;
+FrequencyModulation MainTick::fmPersonal;
 
 
 //==================================================================================================================
@@ -80,9 +81,7 @@ void MainTick::process(){ //called every 100ms
 
 	if (EmergencyStop::pressed()){
 
-		Servo::brake(true);
-		Servo::movePositive(false);
-		Servo::moveNegative(false);
+		Servo::brake();
 		Actuators::emergencyStop();
 		
 		Errors::setFlag(Errors::FLAG_EMERGENCY_STOP);
@@ -245,9 +244,7 @@ void MainTick::process(){ //called every 100ms
 	case WAITING_Waiting:
 
 		{
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
+			Servo::brake();
 			//TODO: aux
 
 		}
@@ -283,7 +280,7 @@ void MainTick::process(){ //called every 100ms
 					break;
 				case Protocol::TAG_Personal:
 					if (MachineSettings::protocolStructExtendedValid==true){
-						setSubmode(PERSONAL_Starting);//TODO:check message length
+						setSubmode(PERSONAL_Waiting);//TODO:check message length
 						DebugConsole::pushMessage(" #Personal\0");
 					}
 					break;
@@ -354,16 +351,16 @@ void MainTick::process(){ //called every 100ms
 		break;
 	//--------------------------------------------------PERSONAL----------------------------------
 	//--------------------------------------------------PERSONAL----------------------------------
-	case PERSONAL_Starting:	
+/*	case PERSONAL_Starting:	
 
 		RxMessageQueue::flush();
-		setSubmode(PERSONAL_SettingPositiveSpeed);
+		//setSubmode(PERSONAL_SettingPositiveSpeed);
 
 		processFieldbus();
 
 		break;
-	//--------------------------------------------------PERSONAL----------------------------------
-	case PERSONAL_SettingPositiveSpeed:
+*/	//--------------------------------------------------PERSONAL----------------------------------
+/*	case PERSONAL_SettingPositiveSpeed:
 
 		RangeAdjustment::servoFrequency = Servo::rangeToFrequency(
 			MachineSettings::getMainRange(),
@@ -383,8 +380,8 @@ void MainTick::process(){ //called every 100ms
 		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=RangeAdjustment::servoFrequency));
 
 		break;
-	//--------------------------------------------------PERSONAL----------------------------------
-	case PERSONAL_SettingNegativeSpeed:
+*/	//--------------------------------------------------PERSONAL----------------------------------
+/*	case PERSONAL_SettingNegativeSpeed:
 
 		RxMessageQueue::flush();
 		if (Fieldbus::responseIsValid()==false){
@@ -400,13 +397,10 @@ void MainTick::process(){ //called every 100ms
 		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=-RangeAdjustment::servoFrequency));
 
 		break;
-	//--------------------------------------------------PERSONAL----------------------------------
+*/	//--------------------------------------------------PERSONAL----------------------------------
 	case PERSONAL_Waiting:
 
-		Servo::brake(true);
-		Servo::movePositive(false);
-		Servo::moveNegative(false);
-
+		Servo::brake();
 
 		{
 			RxMessage *message = RxMessageQueue::pop();
@@ -419,12 +413,11 @@ void MainTick::process(){ //called every 100ms
 
 					RangeAdjustment::actualButtonID = message->value[0];//TODO: check message length
 					switch(RangeAdjustment::actualButtonID){
+					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_MAIN_MINUS:
 						if (true==Servo::validateActualPosition(Servo::NEGATIVE_DIRECTION)){
 
-							Servo::movePositive(false);
-							Servo::moveNegative(true);
-							Servo::brake(false);
+							Servo::moveNegative();
 							setSubmode(PERSONAL_MovingMain);
 							reportServoModeNegative();
 
@@ -432,13 +425,12 @@ void MainTick::process(){ //called every 100ms
 						}else{
 						}
 						break;
+					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_MAIN_PLUS:
 
 						if (true==Servo::validateActualPosition(Servo::POSITIVE_DIRECTION)){
 
-							Servo::movePositive(true);
-							Servo::moveNegative(false);
-							Servo::brake(false);
+							Servo::movePositive();
 							setSubmode(PERSONAL_MovingMain);
 							reportServoModePositive();
 
@@ -446,6 +438,7 @@ void MainTick::process(){ //called every 100ms
 						}else{
 						}
 						break;
+					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_AUX1_MINUS:
 
 						Actuators::enable(
@@ -456,6 +449,7 @@ void MainTick::process(){ //called every 100ms
 						);	
 						setSubmode(PERSONAL_MovingAux);
 						break;
+					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_AUX1_PLUS:
 
 						Actuators::enable(
@@ -466,6 +460,7 @@ void MainTick::process(){ //called every 100ms
 						);	
 						setSubmode(PERSONAL_MovingAux);
 						break;
+					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_AUX2_MINUS:
 
 						Actuators::enable(
@@ -476,6 +471,7 @@ void MainTick::process(){ //called every 100ms
 						);	
 						setSubmode(PERSONAL_MovingAux);
 						break;
+					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_AUX2_PLUS:
 
 						Actuators::enable(
@@ -486,6 +482,7 @@ void MainTick::process(){ //called every 100ms
 						);	
 						setSubmode(PERSONAL_MovingAux);
 						break;
+					//-----button------------------------------------------------------------------------
 					}
 					break;
 				}
@@ -504,9 +501,7 @@ void MainTick::process(){ //called every 100ms
 			(false==Servo::validateActualPosition(Servo::POSITIVE_DIRECTION))
 		){
 
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
+			Servo::brake();
 			setSubmode(PERSONAL_Waiting);
 			reportServoModeStop();
 
@@ -515,17 +510,13 @@ void MainTick::process(){ //called every 100ms
 			(false==Servo::validateActualPosition(Servo::NEGATIVE_DIRECTION))
 		){
 
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
+			Servo::brake();
 			setSubmode(PERSONAL_Waiting);
 			reportServoModeStop();
 
 		}else if ((rangeAdjustmentTimeoutCounter--)==0){
 
-			Servo::brake(true);
-			Servo::movePositive(false);
-			Servo::moveNegative(false);
+			Servo::brake();
 			setSubmode(PERSONAL_Waiting);
 			reportServoModeStop();
 
@@ -536,9 +527,7 @@ void MainTick::process(){ //called every 100ms
 				switch(message->tag){
 				case Protocol::TAG_PersonalExit:
 
-					Servo::brake(true);
-					Servo::movePositive(false);
-					Servo::moveNegative(false);
+					Servo::brake();
 					setSubmode(WAITING_Waiting);
 					reportServoModeStop();
 
@@ -552,9 +541,7 @@ void MainTick::process(){ //called every 100ms
 						reportServoModeContinue();
 
 					}else{
-						Servo::brake(true);
-						Servo::movePositive(false);
-						Servo::moveNegative(false);
+						Servo::brake();
 						setSubmode(PERSONAL_Waiting);
 						reportServoModeStop();
 					}
@@ -562,9 +549,7 @@ void MainTick::process(){ //called every 100ms
 
 				case Protocol::TAG_PersonalButtonReleased:
 				
-					Servo::brake(true);
-					Servo::movePositive(false);
-					Servo::moveNegative(false);
+					Servo::brake();
 					setSubmode(PERSONAL_Waiting);
 					reportServoModeStop();
 
@@ -2305,9 +2290,7 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------------------------------------------
 	case FAULT_Fault:
 
-		Servo::brake(true);
-		Servo::movePositive(false);
-		Servo::moveNegative(false);
+		Servo::brake();
 		Actuators::emergencyStop();
 		Servo::parkingBrake(true);
 		

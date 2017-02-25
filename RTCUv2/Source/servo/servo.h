@@ -11,6 +11,10 @@ private:
 
 	static bool actualMoveDirection;
 	
+	static void movePositive(bool move);
+	static void moveNegative(bool move);
+	static void brake(bool on);
+	
 
 public:
 	
@@ -27,9 +31,7 @@ public:
 	static const bool NEGATIVE_DIRECTION = false;
 
 	static void parkingBrake(bool brake);	
-	static void movePositive(bool move);
-	static void moveNegative(bool move);
-	static void brake(bool on);
+
 
 	static void movePositive(void);
 	static void moveNegative(void);

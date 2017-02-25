@@ -29,9 +29,6 @@ private:
 		IDLE_Idle = 5,
 		WAITING_Waiting =6,
 
-		PERSONAL_Starting = 7,
-		PERSONAL_SettingPositiveSpeed = 8,
-		PERSONAL_SettingNegativeSpeed = 9,
 		PERSONAL_Waiting = 10,
 		PERSONAL_MovingMain = 11,
 		PERSONAL_MovingAux =12,
@@ -71,9 +68,7 @@ private:
 		GENERIC_SET_Homing_PreparingAux = 53,
 		GENERIC_SET_Homing_MovingAux = 54,
 		GENERIC_SET_Pause1 = 55,
-/*		GENERIC_SET_Homing_SettingPositiveSpeed = 56,
-		GENERIC_SET_Homing_SettingNegativeSpeed = 57,
-*/		GENERIC_SET_Homing_Preparing = 58,
+		GENERIC_SET_Homing_Preparing = 58,
 		GENERIC_SET_Homing_Moving = 59,
 		GENERIC_SET_Pause2 = 60,
 		GENERIC_SET_Move_Preparing = 61,
@@ -369,11 +364,13 @@ private:
 	static FrequencyModulation fmHoming;
 	static FrequencyModulation fmExcercise;
 	static FrequencyModulation fmGenericSet;
+	static FrequencyModulation fmPersonal;
 
 	static const int32_t FM_TEST_MIN_RANGE = 200;
 	static const int32_t FM_HOMING_MIN_RANGE = 1000;
 	static const int32_t FM_EXCERCISE_MIN_RANGE = 200;
 	static const int32_t FM_GENERIC_SET_MIN_RANGE = 200;
+	static const int32_t FM_PERSONAL_MIN_RANGE = 2000;
 
 
 public:
