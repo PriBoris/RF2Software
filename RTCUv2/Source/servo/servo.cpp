@@ -72,7 +72,7 @@ bool Servo::getMoveDirection(){
 
 
 
-bool Servo::validateActualPosition(){
+/*bool Servo::validateActualPosition(){
 
 	int32_t encoderActualValue = Encoder::getValue();
 	if (encoderActualValue>MachineSettings::protocolStructExtended.positionMainMax){
@@ -83,9 +83,9 @@ bool Servo::validateActualPosition(){
 		return true;
 	}
 
-}
+}*/
 //==================================================================================================================
-bool Servo::validateActualPosition(bool direction){
+/*bool Servo::validateActualPosition(bool direction){
 
 	int32_t encoderActualValue = Encoder::getValue();
 	if (POSITIVE_DIRECTION==direction){
@@ -110,7 +110,7 @@ bool Servo::validateActualPosition(bool direction){
 		return false;
 	}
 
-}
+}*/
 //==================================================================================================================
 /*
 1395 motor rotations per minute @ 50Hz

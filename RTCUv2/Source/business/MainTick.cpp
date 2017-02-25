@@ -351,92 +351,113 @@ void MainTick::process(){ //called every 100ms
 		break;
 	//--------------------------------------------------PERSONAL----------------------------------
 	//--------------------------------------------------PERSONAL----------------------------------
-/*	case PERSONAL_Starting:	
-
-		RxMessageQueue::flush();
-		//setSubmode(PERSONAL_SettingPositiveSpeed);
-
-		processFieldbus();
-
-		break;
-*/	//--------------------------------------------------PERSONAL----------------------------------
-/*	case PERSONAL_SettingPositiveSpeed:
-
-		RangeAdjustment::servoFrequency = Servo::rangeToFrequency(
-			MachineSettings::getMainRange(),
-			MachineSettings::protocolStructExtended.speedAbsMainPersonal
-			);
-
-		RxMessageQueue::flush();
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-			if (Fieldbus::checkSetFrequencyResponse(true,RangeAdjustment::servoFrequency)==true){
-				setSubmode(PERSONAL_SettingNegativeSpeed);
-			}else{
-				//TODO: countdown is necessary here
-			}
-		}
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::POSITIVE_DIRECTION,servoFrequencyPositive=RangeAdjustment::servoFrequency));
-
-		break;
-*/	//--------------------------------------------------PERSONAL----------------------------------
-/*	case PERSONAL_SettingNegativeSpeed:
-
-		RxMessageQueue::flush();
-		if (Fieldbus::responseIsValid()==false){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);
-		}else{
-			if (Fieldbus::checkSetFrequencyResponse(false,-RangeAdjustment::servoFrequency)==true){
-				setSubmode(PERSONAL_Waiting);
-			}else{
-				//TODO: countdown is necessary here
-			}
-		}
-
-		Fieldbus::pushUSSRequest(USS::makeSetFrequencyRequest(Servo::NEGATIVE_DIRECTION,servoFrequencyNegative=-RangeAdjustment::servoFrequency));
-
-		break;
-*/	//--------------------------------------------------PERSONAL----------------------------------
 	case PERSONAL_Waiting:
 
-		Servo::brake();
-
 		{
+			Servo::brake();
+
 			RxMessage *message = RxMessageQueue::pop();
 			if (message!=NULL){
 				switch(message->tag){
+				//---message----------------------------------------------------------------------------
+				default:
+					processFieldbus();
+					break;
+				//---message----------------------------------------------------------------------------
 				case Protocol::TAG_PersonalExit:
 					setSubmode(WAITING_Waiting);
+					processFieldbus();
 					break;
+				//---message----------------------------------------------------------------------------
 				case Protocol::TAG_PersonalButtonPressed:
 
 					RangeAdjustment::actualButtonID = message->value[0];//TODO: check message length
 					switch(RangeAdjustment::actualButtonID){
 					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_MAIN_MINUS:
-						if (true==Servo::validateActualPosition(Servo::NEGATIVE_DIRECTION)){
 
-							Servo::moveNegative();
-							setSubmode(PERSONAL_MovingMain);
-							reportServoModeNegative();
+						{
+							bool positionTaskIsNotNeeded = 
+								PositionTask::checkPositionStatically(
+									MachineSettings::protocolStructExtended.positionMainMin
+									);
 
-							rangeAdjustmentTimeoutCounter = TIMEOUT_RangeAdjusmentMessage;
-						}else{
+							if (positionTaskIsNotNeeded==false){
+
+								float maxFrequency = Servo::rangeToFrequency(
+									MachineSettings::getMainRange(),
+									MachineSettings::protocolStructExtended.speedAbsMainPersonal
+									);
+
+								fmPersonal.prepare(
+									-maxFrequency,
+									MachineSettings::protocolStructExtended.positionMainMin,
+									Servo::NEGATIVE_DIRECTION,
+									FrequencyModulation::LAW_2,
+									FM_PERSONAL_MIN_RANGE
+									);
+
+								Fieldbus::pushUSSRequest(
+									USS::makeSetFrequencyRequest(
+										fmPersonal.getDirection(),
+										servoFrequencyNegative=fmPersonal.getFrequency()
+										)
+									);
+
+								Servo::moveNegative();
+								setSubmode(PERSONAL_MovingMain);
+								reportServoModeNegative();
+
+								rangeAdjustmentTimeoutCounter = TIMEOUT_RangeAdjusmentMessage;
+
+							}
+
+
 						}
+
 						break;
 					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_MAIN_PLUS:
 
-						if (true==Servo::validateActualPosition(Servo::POSITIVE_DIRECTION)){
+						{
+							bool positionTaskIsNotNeeded = 
+								PositionTask::checkPositionStatically(
+									MachineSettings::protocolStructExtended.positionMainMax
+									);
 
-							Servo::movePositive();
-							setSubmode(PERSONAL_MovingMain);
-							reportServoModePositive();
+							if (positionTaskIsNotNeeded==false){
 
-							rangeAdjustmentTimeoutCounter = TIMEOUT_RangeAdjusmentMessage;
-						}else{
+								float maxFrequency = Servo::rangeToFrequency(
+									MachineSettings::getMainRange(),
+									MachineSettings::protocolStructExtended.speedAbsMainPersonal
+									);
+
+								fmPersonal.prepare(
+									maxFrequency,
+									MachineSettings::protocolStructExtended.positionMainMax,
+									Servo::POSITIVE_DIRECTION,
+									FrequencyModulation::LAW_2,
+									FM_PERSONAL_MIN_RANGE
+									);
+
+								Fieldbus::pushUSSRequest(
+									USS::makeSetFrequencyRequest(
+										fmPersonal.getDirection(),
+										servoFrequencyPositive=fmPersonal.getFrequency()
+										)
+									);
+
+								Servo::movePositive();
+								setSubmode(PERSONAL_MovingMain);
+								reportServoModePositive();	
+								
+								rangeAdjustmentTimeoutCounter = TIMEOUT_RangeAdjusmentMessage;							
+								
+							}
+
+
 						}
+
 						break;
 					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_AUX1_MINUS:
@@ -448,6 +469,7 @@ void MainTick::process(){ //called every 100ms
 							MachineSettings::protocolStructExtended.positionAux1Max
 						);	
 						setSubmode(PERSONAL_MovingAux);
+						processFieldbus();
 						break;
 					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_AUX1_PLUS:
@@ -459,6 +481,7 @@ void MainTick::process(){ //called every 100ms
 							MachineSettings::protocolStructExtended.positionAux1Max
 						);	
 						setSubmode(PERSONAL_MovingAux);
+						processFieldbus();
 						break;
 					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_AUX2_MINUS:
@@ -470,6 +493,7 @@ void MainTick::process(){ //called every 100ms
 							MachineSettings::protocolStructExtended.positionAux2Max
 						);	
 						setSubmode(PERSONAL_MovingAux);
+						processFieldbus();
 						break;
 					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_AUX2_PLUS:
@@ -481,16 +505,19 @@ void MainTick::process(){ //called every 100ms
 							MachineSettings::protocolStructExtended.positionAux2Max
 						);	
 						setSubmode(PERSONAL_MovingAux);
+						processFieldbus();
 						break;
 					//-----button------------------------------------------------------------------------
 					}
 					break;
+				//---message----------------------------------------------------------------------------
 				}
+			}else{
+				processFieldbus();
 			}			
 		}
 
 
-		processFieldbus();
 
 		break;
 	//--------------------------------------------------PERSONAL----------------------------------
@@ -498,68 +525,103 @@ void MainTick::process(){ //called every 100ms
 
 		if (
 			(RangeAdjustment::BUTTONID_MAIN_PLUS==RangeAdjustment::actualButtonID)&&
-			(false==Servo::validateActualPosition(Servo::POSITIVE_DIRECTION))
+			(PositionTask::checkPositionStatically(
+									MachineSettings::protocolStructExtended.positionMainMax
+									)==true)
 		){
 
 			Servo::brake();
 			setSubmode(PERSONAL_Waiting);
 			reportServoModeStop();
+			processFieldbus();
 
 		}else if (
 			(RangeAdjustment::BUTTONID_MAIN_MINUS==RangeAdjustment::actualButtonID)&&
-			(false==Servo::validateActualPosition(Servo::NEGATIVE_DIRECTION))
+			(PositionTask::checkPositionStatically(
+									MachineSettings::protocolStructExtended.positionMainMin
+									)==true)
 		){
 
 			Servo::brake();
 			setSubmode(PERSONAL_Waiting);
 			reportServoModeStop();
+			processFieldbus();
 
 		}else if ((rangeAdjustmentTimeoutCounter--)==0){
 
 			Servo::brake();
 			setSubmode(PERSONAL_Waiting);
 			reportServoModeStop();
+			processFieldbus();
 
 		}else{
 
 			RxMessage *message = RxMessageQueue::pop();
 			if (message!=NULL){
 				switch(message->tag){
+				//---------------------------------------------------------------------------------------
+				default:
+					processFieldbus();
+					break;
+				//---------------------------------------------------------------------------------------
 				case Protocol::TAG_PersonalExit:
 
 					Servo::brake();
 					setSubmode(WAITING_Waiting);
 					reportServoModeStop();
 
+					processFieldbus();
 					break;
+				//---------------------------------------------------------------------------------------
 				case Protocol::TAG_PersonalButtonHold:
 
-					if (RangeAdjustment::actualButtonID==message->value[0]){//TODO: check message length
+					if (RangeAdjustment::actualButtonID==message->value[0]){
 
 						rangeAdjustmentTimeoutCounter = TIMEOUT_RangeAdjusmentMessage;
+
 						//keep moving
+
+						float frequency;
+						Fieldbus::pushUSSRequest(
+							USS::makeSetFrequencyRequest(
+								fmPersonal.getDirection(),
+								frequency=Servo::limitFrequency(
+									fmPersonal.getFrequency(),
+									fmPersonal.getDirection()
+									)
+								)
+							);			
+						if (fmPersonal.getDirection()==Servo::POSITIVE_DIRECTION){
+							servoFrequencyPositive = frequency;
+						}else{
+							servoFrequencyNegative = frequency;
+						}				
 						reportServoModeContinue();
 
 					}else{
+
 						Servo::brake();
 						setSubmode(PERSONAL_Waiting);
 						reportServoModeStop();
+						processFieldbus();
 					}
 					break;
-
+				//---------------------------------------------------------------------------------------
 				case Protocol::TAG_PersonalButtonReleased:
 				
 					Servo::brake();
 					setSubmode(PERSONAL_Waiting);
 					reportServoModeStop();
-
+					processFieldbus();
+					break;
+				//---------------------------------------------------------------------------------------
 				}
 			}else{
 				reportServoModeContinue();				
+				processFieldbus();
 			}			
 		}
 
-		processFieldbus();
 		break;
 
 	//--------------------------------------------------PERSONAL----------------------------------

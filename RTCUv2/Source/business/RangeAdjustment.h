@@ -12,7 +12,7 @@ private:
 
 public:
 
-	static float servoFrequency;
+	//static float servoFrequency;
 
 	static uint8_t actualButtonID;
 

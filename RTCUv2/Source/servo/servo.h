@@ -41,9 +41,9 @@ public:
 
 
 
-	static bool validateActualPosition();
+/*	static bool validateActualPosition();
 	static bool validateActualPosition(bool direction);
-
+*/
 	static float rangeToFrequency(
 		int32_t absRange,
 		int32_t absSpeedMsec
