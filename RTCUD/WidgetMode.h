@@ -73,6 +73,11 @@ class WidgetMode : public QWidget{
     QCustomPlot* plotForceVsPosition;
     QCustomPlot* plotForceVsTime;
     QPushButton* btnPlotForceReset;
+    QLineEdit *edtForceCompensation0;
+    QLineEdit *edtForceCompensation100;
+    QCheckBox *chkForceCompensationEnable;
+
+
     QVector<double> plotX,plotY,plotT;
     double getMax(QVector<double> &data);
     double getMin(QVector<double> &data);
@@ -106,7 +111,8 @@ class WidgetMode : public QWidget{
 
 
 
-
+    static const int PLOT_WIDTH = 1000;
+    static const int PLOT_HEIGHT = 500;
 
 
 public:
@@ -142,7 +148,8 @@ public slots:
     void slotGenericSetStart();
 
     void slotPlotForceReset();
-
+    void slotForceCompensationEditingFinished();
+    void slotForceCompensationEnableStateChanged(int state);
 
 };
 

@@ -188,7 +188,7 @@ WidgetMode::WidgetMode(
 		plotForceVsPosition->addGraph();
 		plotForceVsPosition->graph(0)->setPen(QPen(Qt::blue));
 		plotForceVsPosition->yAxis->setVisible(true);
-		plotForceVsPosition->setFixedSize(700,200);
+		plotForceVsPosition->setFixedSize(PLOT_WIDTH, PLOT_HEIGHT);
 		plotForceVsPosition->xAxis->setRange(-20, 120);
 		plotForceVsPosition->yAxis->setLabel("force [kg]");
 		plotForceVsPosition->xAxis->setLabel("relative position [%]");
@@ -199,7 +199,7 @@ WidgetMode::WidgetMode(
 		plotForceVsTime->addGraph();
 		plotForceVsTime->graph(0)->setPen(QPen(Qt::red));
 		plotForceVsTime->yAxis->setVisible(true);
-		plotForceVsTime->setFixedSize(700,200);
+		plotForceVsTime->setFixedSize(PLOT_WIDTH, PLOT_HEIGHT);
 		plotForceVsTime->xAxis->setRange(0, 1);
 		plotForceVsTime->yAxis->setLabel("force [kg]");
 		plotForceVsTime->xAxis->setLabel("time [1/10s]");
@@ -207,10 +207,33 @@ WidgetMode::WidgetMode(
 		plotForceVsTime->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
 
 
-		btnPlotForceReset = new QPushButton("clear plot");btnPlotForceReset->setFixedWidth(300);
+		btnPlotForceReset = new QPushButton("clear plot");btnPlotForceReset->setFixedWidth(150);
 		btnPlotForceReset->setFont(QFont("Verdana",10,QFont::Normal,true));
 		plotTime = 0;
 
+		edtForceCompensation0 = new QLineEdit();
+		edtForceCompensation0->setFixedWidth(150);
+		edtForceCompensation0->setFont(QFont("Verdana",10,QFont::Normal,true));
+		edtForceCompensation0->setValidator(new QDoubleValidator(-100.0,100.0,3));
+
+		edtForceCompensation100 = new QLineEdit();
+		edtForceCompensation100->setFixedWidth(150);
+		edtForceCompensation100->setFont(QFont("Verdana",10,QFont::Normal,true));
+		edtForceCompensation100->setValidator(new QDoubleValidator(-100.0,100.0,3));
+
+        chkForceCompensationEnable= new QCheckBox();
+		chkForceCompensationEnable->setFixedWidth(150);
+		chkForceCompensationEnable->setFont(QFont("Verdana",10,QFont::Normal,true));
+
+		QSettings *settings = new QSettings();
+		float valueForceCompensation0 = settings->value("Mode_ForceCompensation0", -10.0).toFloat();
+		float valueForceCompensation100 = settings->value("Mode_ForceCompensation100", -1.0).toFloat();
+		edtForceCompensation0->setText(QString::number(valueForceCompensation0));
+		edtForceCompensation100->setText(QString::number(valueForceCompensation100));
+
+	    connect(edtForceCompensation0,SIGNAL(editingFinished()),SLOT(slotForceCompensationEditingFinished()));
+	    connect(edtForceCompensation100,SIGNAL(editingFinished()),SLOT(slotForceCompensationEditingFinished()));
+	    connect(chkForceCompensationEnable,SIGNAL(stateChanged(int)),SLOT(slotForceCompensationEnableStateChanged(int)));
 	}
 
 
@@ -247,6 +270,9 @@ WidgetMode::WidgetMode(
 	loMain->addWidget(plotForceVsPosition);
 	loMain->addWidget(plotForceVsTime);
 	loMain->addWidget(btnPlotForceReset);
+	loMain->addWidget(edtForceCompensation0);
+	loMain->addWidget(edtForceCompensation100);
+    loMain->addWidget(chkForceCompensationEnable);
 
 
 	loMain->addStretch(1);
@@ -1519,6 +1545,20 @@ double WidgetMode::getMin(QVector<double> &data){
 	}
 }
 //============================================================================================================
+void WidgetMode::slotForceCompensationEditingFinished(){
+
+	QSettings *settings = new QSettings();
+	float valueForceCompensation0 = edtForceCompensation0->text().toFloat();
+	float valueForceCompensation100 = edtForceCompensation100->text().toFloat();
+    settings->setValue("Mode_ForceCompensation0", valueForceCompensation0);
+    settings->setValue("Mode_ForceCompensation100", valueForceCompensation100);
+
+}
+//============================================================================================================
+void WidgetMode::slotForceCompensationEnableStateChanged(int state){
 
 
+
+}
+//============================================================================================================
 
