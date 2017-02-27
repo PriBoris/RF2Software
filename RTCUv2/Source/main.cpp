@@ -60,9 +60,7 @@ int main(void){
 	Actuators::feedbackInit();
 	Actuators::controlInit();
 	
-	Servo::parkingBrake(true);//TODO: make Servo::init()
-	Servo::brake();
-
+	Servo::init();
 
 	StrainGauge::init();
 	Encoder::init();

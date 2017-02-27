@@ -18,6 +18,8 @@ private:
 
 public:
 	
+	static void init();
+
 	static const uint16_t LEFT_FREQUENCY_INDEX = 0; // 0 means Fixed Frequency 1
 	static const uint16_t RIGHT_FREQUENCY_INDEX = 1; // 1 means Fixed Frequency 2
 

@@ -13,8 +13,19 @@ int32_t Servo::heatsinkTemperature = 0;
 int32_t Servo::internalTemperature = 0;
 int32_t Servo::motorTemperature = 0;
 
+
+//==================================================================================================================
+void Servo::init(){
+
+	parkingBrake(true);
+
+	brake(false);// !!! this is necessary for servo to start properly !!!
+	movePositive(false);
+	moveNegative(false);
+}
 //==================================================================================================================
 void Servo::parkingBrake(bool brake){
+
 	if (brake==false){
 		// GPIOB->BSRRL = (1<<2);
 		GPIOD->BSRRL = (1<<14);
@@ -31,6 +42,12 @@ void Servo::movePositive(bool move){
 		GPIOE->BSRRL = (1<<3);
 	}
 }
+void Servo::movePositive(void){
+	moveNegative(false);
+	movePositive(true);
+	brake(false);
+	actualMoveDirection = POSITIVE_DIRECTION;
+}
 //==================================================================================================================
 void Servo::moveNegative(bool move){
 	if (move==false){
@@ -38,6 +55,12 @@ void Servo::moveNegative(bool move){
 	}else{
 		GPIOE->BSRRL = (1<<4);
 	}
+}
+void Servo::moveNegative(void){
+	movePositive(false);
+	moveNegative(true);
+	brake(false);
+	actualMoveDirection = NEGATIVE_DIRECTION;
 }
 //==================================================================================================================
 void Servo::brake(bool on){
@@ -47,24 +70,12 @@ void Servo::brake(bool on){
 		GPIOE->BSRRL = (1<<1);
 	}
 }
-//==================================================================================================================
-void Servo::movePositive(void){
-	moveNegative(false);
-	movePositive(true);
-	brake(false);
-	actualMoveDirection = POSITIVE_DIRECTION;
-}
-void Servo::moveNegative(void){
-	movePositive(false);
-	moveNegative(true);
-	brake(false);
-	actualMoveDirection = NEGATIVE_DIRECTION;
-}
 void Servo::brake(void){
 	brake(true);
 	movePositive(false);
 	moveNegative(false);
 }
+//==================================================================================================================
 bool Servo::getMoveDirection(){
 	return actualMoveDirection;
 }
