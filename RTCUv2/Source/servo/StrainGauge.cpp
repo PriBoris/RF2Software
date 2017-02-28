@@ -4,6 +4,7 @@
 #include <stm32f4xx_conf.h>
 
 #include "business/MachineSettings.h"
+#include "servo/encoder.h"
 
 
 
@@ -289,36 +290,36 @@ bool StrainGauge::getFault(){
 	return fault;
 }
 //===================================================================================================
-int32_t StrainGauge::getFilteredValue(void)
-{
+int32_t StrainGauge::getFilteredValue(void){
+	
 	uint32_t ptr = valueBufferPtr;
 	
-/*	int32_t accu = 0;
-	for(uint32_t i=0;i<filterLength;i++)
-	{
-		ptr = (ptr-1)&(valueBufferLength-1);
-		accu += valueBuffer[ptr]/filterLength;//TODO: smells bad
-	}
-*/
-
 	int64_t accu = 0;
-	for(uint32_t i=0;i<filterLength;i++)
-	{
+	for(uint32_t i=0; i<filterLength; i++){
 		ptr = (ptr-1)&(valueBufferLength-1);
 		accu += (int64_t)valueBuffer[ptr];
 	}
+
 	accu /= (int64_t)filterLength;
 
-	//static const int32_t VALUE_OFFSET = 13000;
-	//return ((int32_t)accu/(int32_t)4096)+VALUE_OFFSET;
-	
 	
 	if (MachineSettings::protocolStructExtendedValid==true){
+		
 		float forceSensorRawValue = (float)accu;
+
+		const float c = 0.39708711184391315f;
+		const float d = -2857.371530640286f;
+		float p = (float)Encoder::getValue();
+
 		float forceSensorValue = forceSensorRawValue* MachineSettings::protocolStructExtended.forceSensorGain;
-		return (int32_t)forceSensorValue + MachineSettings::protocolStructExtended.forceSensorOffset;
+
+		return (int32_t)(forceSensorValue + c*p + d);
+		//return (int32_t)forceSensorValue + MachineSettings::protocolStructExtended.forceSensorOffset;
+
 	}else{
+
 		return 0;
+		
 	}
 	
 	
