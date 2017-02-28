@@ -178,8 +178,10 @@ public:
 		qint32 encoderBitCount;
 		qint32 encoderDirection;
 		qint32 encoderOffset;
-		qint32 forceSensorOffset;
 		float forceSensorGain;
+		float forceSensorOffset0;
+		float forceSensorOffset1;
+		float forceSensorOffset2;
 
 	};
 	//----------------------------------------------------------------------------------

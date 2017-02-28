@@ -6,7 +6,7 @@
 #include "business/Settings.h"
 #include "hmi/hmi.h"
 #include "hmi/diagnostics.h"
-//#include "hmi/debugConsole.h"
+#include "hmi/debugConsole.h"
 #include "servo/servo.h"
 #include "servo/encoder.h"
 
@@ -34,15 +34,17 @@ void MachineSettings::init(){
 		(settings->encoderBitCount==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->encoderDirection==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->encoderOffset==Settings::INT32_UNKNOWN_VALUE)||
-		(settings->forceSensorOffset==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->forceSensorGain==Settings::FLOAT_UNKNOWN_VALUE)||
+		(settings->forceSensorOffset0==Settings::FLOAT_UNKNOWN_VALUE)||
+		(settings->forceSensorOffset1==Settings::FLOAT_UNKNOWN_VALUE)||
+		(settings->forceSensorOffset2==Settings::FLOAT_UNKNOWN_VALUE)||
 		false
 
 	){
 		protocolStructExtendedValid = false;
 		memset(&protocolStructExtended,0,sizeof(protocolStructExtended));
-		//DebugConsole::pushMessage(" #MachineSettings INVALID");
-
+		
+		DebugConsole::pushMessage(" #MachineSettings INVALID");
 
 	}else{
 
@@ -62,11 +64,14 @@ void MachineSettings::init(){
 		protocolStructExtended.encoderBitCount = settings->encoderBitCount;
 		protocolStructExtended.encoderDirection = settings->encoderDirection;
 		protocolStructExtended.encoderOffset = settings->encoderOffset;
-		protocolStructExtended.forceSensorOffset = settings->forceSensorOffset;
 		protocolStructExtended.forceSensorGain = settings->forceSensorGain;
+		protocolStructExtended.forceSensorOffset0 = settings->forceSensorOffset0;
+		protocolStructExtended.forceSensorOffset1 = settings->forceSensorOffset1;
+		protocolStructExtended.forceSensorOffset2 = settings->forceSensorOffset2;
 
 		protocolStructExtendedValid = true;
-		//DebugConsole::pushMessage(" #MachineSettings VALID");
+
+		DebugConsole::pushMessage(" #MachineSettings VALID");
 
 
 	}
@@ -134,8 +139,10 @@ void MachineSettings::load(RxMessage *message){
 			settings->encoderBitCount = newProtocolStructExtended.encoderBitCount;
 			settings->encoderDirection = newProtocolStructExtended.encoderDirection;
 			settings->encoderOffset = newProtocolStructExtended.encoderOffset;
-			settings->forceSensorOffset = newProtocolStructExtended.forceSensorOffset;
 			settings->forceSensorGain = newProtocolStructExtended.forceSensorGain;
+			settings->forceSensorOffset0 = newProtocolStructExtended.forceSensorOffset0;
+			settings->forceSensorOffset1 = newProtocolStructExtended.forceSensorOffset1;
+			settings->forceSensorOffset2 = newProtocolStructExtended.forceSensorOffset2;
 
 
 

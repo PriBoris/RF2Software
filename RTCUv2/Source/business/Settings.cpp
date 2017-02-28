@@ -116,8 +116,10 @@ void Settings::initializeStruct(uint8_t structIndex){
 	ss->encoderBitCount = INT32_UNKNOWN_VALUE;
 	ss->encoderDirection = INT32_UNKNOWN_VALUE;
 	ss->encoderOffset = INT32_UNKNOWN_VALUE;
-	ss->forceSensorOffset = INT32_UNKNOWN_VALUE;
 	ss->forceSensorGain = FLOAT_UNKNOWN_VALUE;
+	ss->forceSensorOffset0 = FLOAT_UNKNOWN_VALUE;
+	ss->forceSensorOffset1 = FLOAT_UNKNOWN_VALUE;
+	ss->forceSensorOffset2 = FLOAT_UNKNOWN_VALUE;
 
 	ss->checksum = calculateChecksum(structIndex);
 	

@@ -35,8 +35,10 @@ public:
 		int32_t	encoderBitCount;
 		int32_t	encoderDirection;
 		int32_t	encoderOffset;
-		int32_t	forceSensorOffset;
 		float forceSensorGain;		
+		float forceSensorOffset0;
+		float forceSensorOffset1;
+		float forceSensorOffset2;
 		uint32_t checksum;
 		
 	};	

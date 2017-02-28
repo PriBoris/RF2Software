@@ -261,7 +261,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>181</TopLine>
+      <TopLine>187</TopLine>
       <CurrentLine>188</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\startup_stm32f427x.s</PathWithFileName>
@@ -499,10 +499,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>11</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>209</TopLine>
-      <CurrentLine>217</CurrentLine>
+      <TopLine>295</TopLine>
+      <CurrentLine>310</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\servo\StrainGauge.cpp</PathWithFileName>
       <FilenameWithoutPath>StrainGauge.cpp</FilenameWithoutPath>
@@ -659,10 +659,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>22</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>76</TopLine>
-      <CurrentLine>85</CurrentLine>
+      <TopLine>71</TopLine>
+      <CurrentLine>76</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\hmi\hmi.cpp</PathWithFileName>
       <FilenameWithoutPath>hmi.cpp</FilenameWithoutPath>
@@ -939,10 +939,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2496764</ColumnNumber>
+      <ColumnNumber>24</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>107</TopLine>
+      <CurrentLine>122</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\business\settings.cpp</PathWithFileName>
       <FilenameWithoutPath>settings.cpp</FilenameWithoutPath>
@@ -1131,10 +1131,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>2496764</ColumnNumber>
+      <ColumnNumber>23</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>11</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\business\MachineSettings.cpp</PathWithFileName>
       <FilenameWithoutPath>MachineSettings.cpp</FilenameWithoutPath>
@@ -1435,10 +1435,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>4</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>91</TopLine>
-      <CurrentLine>103</CurrentLine>
+      <TopLine>99</TopLine>
+      <CurrentLine>104</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\business\GenericSetSettings.cpp</PathWithFileName>
       <FilenameWithoutPath>GenericSetSettings.cpp</FilenameWithoutPath>
@@ -1739,10 +1739,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>5</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>242</TopLine>
-      <CurrentLine>253</CurrentLine>
+      <CurrentLine>249</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\CommonSrc\protocol.cpp</PathWithFileName>
       <FilenameWithoutPath>protocol.cpp</FilenameWithoutPath>

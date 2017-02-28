@@ -48,9 +48,11 @@ WidgetMachineSettingsExtended::WidgetMachineSettingsExtended(
 		wgtEncoderBitCount = new WidgetSettingsInteger("encoderBitCount","MachineSettingsExtended_encoderBitCount",15);
 		wgtEncoderDirection = new WidgetSettingsInteger("encoderDirection","MachineSettingsExtended_encoderDirection",1);
 		wgtEncoderOffset = new WidgetSettingsInteger("encoderOffset","MachineSettingsExtended_encoderOffset",10000);
-		wgtForceSensorOffset = new WidgetSettingsInteger("forceSensorOffset","MachineSettingsExtended_forceSensorOffset",20000);
-		wgtForceSensorGain = new WidgetSettingsFloat("forceSensorGain","MachineSettingsExtended_forceSensorGain",4000.0f);
 
+		wgtForceSensorGain = new WidgetSettingsFloat("forceSensorGain","MachineSettingsExtended_forceSensorGain",0.000244141f);
+		wgtForceSensorOffset0 = new WidgetSettingsFloat("forceSensorOffset0","MachineSettingsExtended_forceSensorOffset0",0.0f);
+		wgtForceSensorOffset1 = new WidgetSettingsFloat("forceSensorOffset1","MachineSettingsExtended_forceSensorOffset1",0.0f);
+		wgtForceSensorOffset2 = new WidgetSettingsFloat("forceSensorOffset2","MachineSettingsExtended_forceSensorOffset2",0.0f);
 
 
 		wgtEncoderOffset->setValidator(new QIntValidator(-1000000,1000000));
@@ -90,8 +92,10 @@ WidgetMachineSettingsExtended::WidgetMachineSettingsExtended(
 		loMain->addWidget(wgtEncoderDirection);
 		loMain->addWidget(wgtEncoderOffset);
 			loMain->addSpacing(10);
-		loMain->addWidget(wgtForceSensorOffset);
 		loMain->addWidget(wgtForceSensorGain);
+		loMain->addWidget(wgtForceSensorOffset0);
+		loMain->addWidget(wgtForceSensorOffset1);
+		loMain->addWidget(wgtForceSensorOffset2);
 			loMain->addSpacing(10);
 		loMain->addWidget(btnWriteSettings);
 			loMain->addSpacing(10);
@@ -130,8 +134,11 @@ void WidgetMachineSettingsExtended::slotWriteSettings(){
 		newMachineSettingsExtended.encoderBitCount = wgtEncoderBitCount->getWriteValue();
 		newMachineSettingsExtended.encoderDirection = wgtEncoderDirection->getWriteValue();
 		newMachineSettingsExtended.encoderOffset = wgtEncoderOffset->getWriteValue();
-		newMachineSettingsExtended.forceSensorOffset = wgtForceSensorOffset->getWriteValue();
+
 		newMachineSettingsExtended.forceSensorGain = wgtForceSensorGain->getWriteValue();
+		newMachineSettingsExtended.forceSensorOffset0 = wgtForceSensorOffset0->getWriteValue();
+		newMachineSettingsExtended.forceSensorOffset1 = wgtForceSensorOffset1->getWriteValue();
+		newMachineSettingsExtended.forceSensorOffset2 = wgtForceSensorOffset2->getWriteValue();
 
 
 		QByteArray valueArray;
@@ -180,8 +187,11 @@ void WidgetMachineSettingsExtended::newMessageReceived(quint8 tag,quint32 msgID,
 			wgtEncoderBitCount->setReadValue(machineSettingsExtended.encoderBitCount);
 			wgtEncoderDirection->setReadValue(machineSettingsExtended.encoderDirection);
 			wgtEncoderOffset->setReadValue(machineSettingsExtended.encoderOffset);
-			wgtForceSensorOffset->setReadValue(machineSettingsExtended.forceSensorOffset);
+
 			wgtForceSensorGain->setReadValue(machineSettingsExtended.forceSensorGain);
+			wgtForceSensorOffset0->setReadValue(machineSettingsExtended.forceSensorOffset0);
+			wgtForceSensorOffset1->setReadValue(machineSettingsExtended.forceSensorOffset1);
+			wgtForceSensorOffset2->setReadValue(machineSettingsExtended.forceSensorOffset2);
 
 
 
@@ -198,8 +208,10 @@ void WidgetMachineSettingsExtended::newMessageReceived(quint8 tag,quint32 msgID,
 			(reportLogger->stream) << "encoderBitCount=" << QString::number(machineSettingsExtended.encoderBitCount) << "\n";
 			(reportLogger->stream) << "encoderDirection=" << QString::number(machineSettingsExtended.encoderDirection) << "\n";
 			(reportLogger->stream) << "encoderOffset=" << QString::number(machineSettingsExtended.encoderOffset) << "\n";
-			(reportLogger->stream) << "forceSensorOffset=" << QString::number(machineSettingsExtended.forceSensorOffset) << "\n";
 			(reportLogger->stream) << "forceSensorGain=" << QString::number(machineSettingsExtended.forceSensorGain) << "\n";
+			(reportLogger->stream) << "forceSensorOffset0=" << QString::number(machineSettingsExtended.forceSensorOffset0) << "\n";
+			(reportLogger->stream) << "forceSensorOffset1=" << QString::number(machineSettingsExtended.forceSensorOffset1) << "\n";
+			(reportLogger->stream) << "forceSensorOffset2=" << QString::number(machineSettingsExtended.forceSensorOffset2) << "\n";
 
 
 
@@ -218,8 +230,10 @@ void WidgetMachineSettingsExtended::newMessageReceived(quint8 tag,quint32 msgID,
 			wgtEncoderBitCount->setUnknownReadValue();
 			wgtEncoderDirection->setUnknownReadValue();
 			wgtEncoderOffset->setUnknownReadValue();
-			wgtForceSensorOffset->setUnknownReadValue();
 			wgtForceSensorGain->setUnknownReadValue();
+			wgtForceSensorOffset0->setUnknownReadValue();
+			wgtForceSensorOffset1->setUnknownReadValue();
+			wgtForceSensorOffset2->setUnknownReadValue();
 
 		}
 

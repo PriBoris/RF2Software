@@ -39,8 +39,10 @@ class WidgetMachineSettingsExtended : public QWidget
 	WidgetSettingsInteger *wgtEncoderBitCount;
 	WidgetSettingsInteger *wgtEncoderDirection;
 	WidgetSettingsInteger *wgtEncoderOffset;
-	WidgetSettingsInteger *wgtForceSensorOffset;
 	WidgetSettingsFloat *wgtForceSensorGain;
+    WidgetSettingsFloat *wgtForceSensorOffset0;
+    WidgetSettingsFloat *wgtForceSensorOffset1;
+    WidgetSettingsFloat *wgtForceSensorOffset2;
 
 
 
