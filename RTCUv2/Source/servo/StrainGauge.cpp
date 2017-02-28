@@ -307,13 +307,19 @@ int32_t StrainGauge::getFilteredValue(void){
 		
 		float forceSensorRawValue = (float)accu;
 
-		const float c = 0.39708711184391315f;
-		const float d = -2857.371530640286f;
+		const float b = -8.067524270844363e-06f;
+		const float c = 0.6274308099267285f;
+		const float d = -4059.8547046114027f;
+
+		// const float c = 0.39708711184391315f;
+		// const float d = -2857.371530640286f;
+		
 		float p = (float)Encoder::getValue();
 
 		float forceSensorValue = forceSensorRawValue* MachineSettings::protocolStructExtended.forceSensorGain;
 
-		return (int32_t)(forceSensorValue + c*p + d);
+		return (int32_t)(forceSensorValue + p*(b*p + c) + d);
+
 		//return (int32_t)forceSensorValue + MachineSettings::protocolStructExtended.forceSensorOffset;
 
 	}else{
