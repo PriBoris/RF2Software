@@ -24,7 +24,7 @@ del RFSoftwareTest\*.cd
 del RFSoftwareTest\*.user
 
 
-del RTCUDiagnostic\*.user /q /s
+del RTCUD\*.user /q /s
 
 del *.sublime-workspace /q /s
 

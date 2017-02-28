@@ -221,7 +221,7 @@ WidgetMode::WidgetMode(
 		edtForceCompensation100->setFont(QFont("Verdana",10,QFont::Normal,true));
 		edtForceCompensation100->setValidator(new QDoubleValidator(-100.0,100.0,3));
 
-        chkForceCompensationEnable= new QCheckBox();
+        chkForceCompensationEnable= new QCheckBox("Compensation");
 		chkForceCompensationEnable->setFixedWidth(150);
 		chkForceCompensationEnable->setFont(QFont("Verdana",10,QFont::Normal,true));
 
@@ -230,10 +230,19 @@ WidgetMode::WidgetMode(
 		float valueForceCompensation100 = settings->value("Mode_ForceCompensation100", -1.0).toFloat();
 		edtForceCompensation0->setText(QString::number(valueForceCompensation0));
 		edtForceCompensation100->setText(QString::number(valueForceCompensation100));
+		chkForceCompensationEnable->setChecked(settings->value("Mode_ForceCompensationEnable", 0).toBool());
 
 	    connect(edtForceCompensation0,SIGNAL(editingFinished()),SLOT(slotForceCompensationEditingFinished()));
 	    connect(edtForceCompensation100,SIGNAL(editingFinished()),SLOT(slotForceCompensationEditingFinished()));
 	    connect(chkForceCompensationEnable,SIGNAL(stateChanged(int)),SLOT(slotForceCompensationEnableStateChanged(int)));
+
+        loForcePlot = new QHBoxLayout;
+		loForcePlot->addWidget(btnPlotForceReset);
+		loForcePlot->addWidget(edtForceCompensation0);
+		loForcePlot->addWidget(edtForceCompensation100);
+    	loForcePlot->addWidget(chkForceCompensationEnable);
+        loForcePlot->addStretch(1);
+
 	}
 
 
@@ -269,10 +278,7 @@ WidgetMode::WidgetMode(
 
 	loMain->addWidget(plotForceVsPosition);
 	loMain->addWidget(plotForceVsTime);
-	loMain->addWidget(btnPlotForceReset);
-	loMain->addWidget(edtForceCompensation0);
-	loMain->addWidget(edtForceCompensation100);
-    loMain->addWidget(chkForceCompensationEnable);
+	loMain->addLayout(loForcePlot);
 
 
 	loMain->addStretch(1);
@@ -1557,7 +1563,10 @@ void WidgetMode::slotForceCompensationEditingFinished(){
 //============================================================================================================
 void WidgetMode::slotForceCompensationEnableStateChanged(int state){
 
+	bool checked = chkForceCompensationEnable->isChecked();
 
+	QSettings *settings = new QSettings();
+    settings->setValue("Mode_ForceCompensationEnable", checked);
 
 }
 //============================================================================================================

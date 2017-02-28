@@ -76,6 +76,7 @@ class WidgetMode : public QWidget{
     QLineEdit *edtForceCompensation0;
     QLineEdit *edtForceCompensation100;
     QCheckBox *chkForceCompensationEnable;
+    QHBoxLayout *loForcePlot;
 
 
     QVector<double> plotX,plotY,plotT;
