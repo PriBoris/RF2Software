@@ -71,12 +71,12 @@ class WidgetMode : public QWidget{
 
 
     QCustomPlot* plotForceVsPosition;
-    QCustomPlot* plotForceVsTime;
+    // QCustomPlot* plotForceVsTime;
     QPushButton* btnPlotForceReset;
-    QLineEdit *edtForceCompensation0;
+/*    QLineEdit *edtForceCompensation0;
     QLineEdit *edtForceCompensation100;
     QCheckBox *chkForceCompensationEnable;
-    QHBoxLayout *loForcePlot;
+*/    QHBoxLayout *loForcePlot;
 
 
     QVector<double> plotX,plotY,plotT;
@@ -149,9 +149,9 @@ public slots:
     void slotGenericSetStart();
 
     void slotPlotForceReset();
-    void slotForceCompensationEditingFinished();
+/*    void slotForceCompensationEditingFinished();
     void slotForceCompensationEnableStateChanged(int state);
-
+*/
 };
 
 #endif // WIDGETHMIMODE_H

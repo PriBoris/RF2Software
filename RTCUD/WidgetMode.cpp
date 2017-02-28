@@ -195,7 +195,7 @@ WidgetMode::WidgetMode(
 		plotForceVsPosition->graph(0)->setLineStyle(QCPGraph::lsNone);
 		plotForceVsPosition->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
 
-		plotForceVsTime = new QCustomPlot;
+/*		plotForceVsTime = new QCustomPlot;
 		plotForceVsTime->addGraph();
 		plotForceVsTime->graph(0)->setPen(QPen(Qt::red));
 		plotForceVsTime->yAxis->setVisible(true);
@@ -205,13 +205,13 @@ WidgetMode::WidgetMode(
 		plotForceVsTime->xAxis->setLabel("time [1/10s]");
 		plotForceVsTime->graph(0)->setLineStyle(QCPGraph::lsNone);
 		plotForceVsTime->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 2));
-
+*/
 
 		btnPlotForceReset = new QPushButton("clear plot");btnPlotForceReset->setFixedWidth(150);
 		btnPlotForceReset->setFont(QFont("Verdana",10,QFont::Normal,true));
 		plotTime = 0;
 
-		edtForceCompensation0 = new QLineEdit();
+/*		edtForceCompensation0 = new QLineEdit();
 		edtForceCompensation0->setFixedWidth(150);
 		edtForceCompensation0->setFont(QFont("Verdana",10,QFont::Normal,true));
 		edtForceCompensation0->setValidator(new QDoubleValidator(-100.0,100.0,3));
@@ -224,8 +224,8 @@ WidgetMode::WidgetMode(
         chkForceCompensationEnable= new QCheckBox("Compensation");
 		chkForceCompensationEnable->setFixedWidth(150);
 		chkForceCompensationEnable->setFont(QFont("Verdana",10,QFont::Normal,true));
-
-		QSettings *settings = new QSettings();
+*/
+/*		QSettings *settings = new QSettings();
 		float valueForceCompensation0 = settings->value("Mode_ForceCompensation0", -10.0).toFloat();
 		float valueForceCompensation100 = settings->value("Mode_ForceCompensation100", -1.0).toFloat();
 		edtForceCompensation0->setText(QString::number(valueForceCompensation0));
@@ -235,13 +235,13 @@ WidgetMode::WidgetMode(
 	    connect(edtForceCompensation0,SIGNAL(editingFinished()),SLOT(slotForceCompensationEditingFinished()));
 	    connect(edtForceCompensation100,SIGNAL(editingFinished()),SLOT(slotForceCompensationEditingFinished()));
 	    connect(chkForceCompensationEnable,SIGNAL(stateChanged(int)),SLOT(slotForceCompensationEnableStateChanged(int)));
-
+*/
         loForcePlot = new QHBoxLayout;
 		loForcePlot->addWidget(btnPlotForceReset);
-		loForcePlot->addWidget(edtForceCompensation0);
+/*		loForcePlot->addWidget(edtForceCompensation0);
 		loForcePlot->addWidget(edtForceCompensation100);
     	loForcePlot->addWidget(chkForceCompensationEnable);
-        loForcePlot->addStretch(1);
+*/        loForcePlot->addStretch(1);
 
 	}
 
@@ -277,8 +277,8 @@ WidgetMode::WidgetMode(
 	loMain->addWidget(btnGenericSetStart);
 
 	loMain->addWidget(plotForceVsPosition);
-	loMain->addWidget(plotForceVsTime);
-	loMain->addLayout(loForcePlot);
+/*	loMain->addWidget(plotForceVsTime);
+*/	loMain->addLayout(loForcePlot);
 
 
 	loMain->addStretch(1);
@@ -663,11 +663,11 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 						plotForceVsPosition->yAxis->setRange(getMin(plotY), getMax(plotY));
 						plotForceVsPosition->graph(0)->setData(plotX, plotY);
 						plotForceVsPosition->replot();
-						plotForceVsTime->xAxis->setRange(getMin(plotT), getMax(plotT));
+/*						plotForceVsTime->xAxis->setRange(getMin(plotT), getMax(plotT));
 						plotForceVsTime->yAxis->setRange(getMin(plotY), getMax(plotY));
 						plotForceVsTime->graph(0)->setData(plotT, plotY);
 						plotForceVsTime->replot();
-					}
+*/					}
 
 					break;
 				}
@@ -773,11 +773,11 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 						plotForceVsPosition->yAxis->setRange(getMin(plotY), getMax(plotY));
 						plotForceVsPosition->graph(0)->setData(plotX, plotY);
 						plotForceVsPosition->replot();
-						plotForceVsTime->xAxis->setRange(getMin(plotT), getMax(plotT));
+/*						plotForceVsTime->xAxis->setRange(getMin(plotT), getMax(plotT));
 						plotForceVsTime->yAxis->setRange(getMin(plotY), getMax(plotY));
 						plotForceVsTime->graph(0)->setData(plotT, plotY);
 						plotForceVsTime->replot();
-					}
+*/					}
 					break;
 				}
 			}
@@ -892,11 +892,11 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 						plotForceVsPosition->yAxis->setRange(getMin(plotY), getMax(plotY));
 						plotForceVsPosition->graph(0)->setData(plotX, plotY);
 						plotForceVsPosition->replot();
-						plotForceVsTime->xAxis->setRange(getMin(plotT), getMax(plotT));
+/*						plotForceVsTime->xAxis->setRange(getMin(plotT), getMax(plotT));
 						plotForceVsTime->yAxis->setRange(getMin(plotY), getMax(plotY));
 						plotForceVsTime->graph(0)->setData(plotT, plotY);
 						plotForceVsTime->replot();
-					}
+*/					}
 
 					break;
 				}
@@ -1068,10 +1068,10 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 						plotForceVsPosition->yAxis->setRange(getMin(plotY), getMax(plotY));
 						plotForceVsPosition->graph(0)->setData(plotX, plotY);
 						plotForceVsPosition->replot();
-						plotForceVsTime->xAxis->setRange(getMin(plotT), getMax(plotT));
-						plotForceVsTime->yAxis->setRange(getMin(plotY), getMax(plotY));
-						plotForceVsTime->graph(0)->setData(plotT, plotY);
-						plotForceVsTime->replot();
+						// plotForceVsTime->xAxis->setRange(getMin(plotT), getMax(plotT));
+						// plotForceVsTime->yAxis->setRange(getMin(plotY), getMax(plotY));
+						// plotForceVsTime->graph(0)->setData(plotT, plotY);
+						// plotForceVsTime->replot();
 					}
 
 
@@ -1230,10 +1230,10 @@ void WidgetMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &value){
 						plotForceVsPosition->yAxis->setRange(getMin(plotY), getMax(plotY));
 						plotForceVsPosition->graph(0)->setData(plotX, plotY);
 						plotForceVsPosition->replot();
-						plotForceVsTime->xAxis->setRange(getMin(plotT), getMax(plotT));
-						plotForceVsTime->yAxis->setRange(getMin(plotY), getMax(plotY));
-						plotForceVsTime->graph(0)->setData(plotT, plotY);
-						plotForceVsTime->replot();
+						// plotForceVsTime->xAxis->setRange(getMin(plotT), getMax(plotT));
+						// plotForceVsTime->yAxis->setRange(getMin(plotY), getMax(plotY));
+						// plotForceVsTime->graph(0)->setData(plotT, plotY);
+						// plotForceVsTime->replot();
 					}
 
 					break;
@@ -1518,8 +1518,8 @@ void WidgetMode::slotPlotForceReset(){
 	plotY.clear();
 	plotForceVsPosition->graph(0)->setData(plotX, plotY);
 	plotForceVsPosition->replot();
-	plotForceVsTime->graph(0)->setData(plotT, plotY);
-	plotForceVsTime->replot();
+	// plotForceVsTime->graph(0)->setData(plotT, plotY);
+	// plotForceVsTime->replot();
 
 }
 //============================================================================================================
@@ -1551,7 +1551,7 @@ double WidgetMode::getMin(QVector<double> &data){
 	}
 }
 //============================================================================================================
-void WidgetMode::slotForceCompensationEditingFinished(){
+/*void WidgetMode::slotForceCompensationEditingFinished(){
 
 	QSettings *settings = new QSettings();
 	float valueForceCompensation0 = edtForceCompensation0->text().toFloat();
@@ -1569,5 +1569,5 @@ void WidgetMode::slotForceCompensationEnableStateChanged(int state){
     settings->setValue("Mode_ForceCompensationEnable", checked);
 
 }
-//============================================================================================================
+*///============================================================================================================
 
