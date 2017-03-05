@@ -261,7 +261,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>183</TopLine>
+      <TopLine>180</TopLine>
       <CurrentLine>188</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\startup_stm32f427x.s</PathWithFileName>
@@ -693,7 +693,7 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>60</TopLine>
+      <TopLine>59</TopLine>
       <CurrentLine>72</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\hmi\diagnostics.cpp</PathWithFileName>
@@ -971,10 +971,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>14</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>225</TopLine>
-      <CurrentLine>230</CurrentLine>
+      <TopLine>1917</TopLine>
+      <CurrentLine>1927</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\business\MainTick.cpp</PathWithFileName>
       <FilenameWithoutPath>MainTick.cpp</FilenameWithoutPath>
@@ -1131,10 +1131,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>23</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>1</TopLine>
-      <CurrentLine>11</CurrentLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\business\MachineSettings.cpp</PathWithFileName>
       <FilenameWithoutPath>MachineSettings.cpp</FilenameWithoutPath>
@@ -1499,10 +1499,10 @@
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>28</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>21</TopLine>
-      <CurrentLine>28</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>1</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\Source\business\FrequencyModulation.cpp</PathWithFileName>
       <FilenameWithoutPath>FrequencyModulation.cpp</FilenameWithoutPath>

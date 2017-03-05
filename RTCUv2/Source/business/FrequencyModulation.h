@@ -7,13 +7,6 @@
 
 class FrequencyModulation{
 
-public:
-	enum Law{
-		LAW_0 = 0,
-		LAW_2,
-		LAW_4
-	};
-
 
 private:
 
@@ -33,7 +26,11 @@ private:
 	float x;
 	float y;
 
-	Law law;
+	int32_t accelerationLaw;
+	int32_t decelerationLaw;
+
+	static const int32_t MAX_LAW = 8;
+	static const int32_t MIN_LAW = 1;
 
 public:
 
@@ -41,7 +38,8 @@ public:
 		float mainFrequency,
 		int32_t stopPosition,
 		bool direction,
-		Law law,
+		int32_t accelerationLaw,
+		int32_t decelerationLaw,
 		int32_t minRange
 		);
 

@@ -393,7 +393,8 @@ void MainTick::process(){ //called every 100ms
 									-maxFrequency,
 									MachineSettings::protocolStructExtended.positionMainMin,
 									Servo::NEGATIVE_DIRECTION,
-									FrequencyModulation::LAW_2,
+									FM_PERSONAL_LAW,
+									FM_PERSONAL_LAW,
 									FM_PERSONAL_MIN_RANGE
 									);
 
@@ -436,7 +437,8 @@ void MainTick::process(){ //called every 100ms
 									maxFrequency,
 									MachineSettings::protocolStructExtended.positionMainMax,
 									Servo::POSITIVE_DIRECTION,
-									FrequencyModulation::LAW_2,
+									FM_PERSONAL_LAW,
+									FM_PERSONAL_LAW,
 									FM_PERSONAL_MIN_RANGE
 									);
 
@@ -709,7 +711,8 @@ void MainTick::process(){ //called every 100ms
 						Parking::servoFrequencyPositive,
 						PersonalSettings::protocolStruct.positionMainParking,
 						Servo::POSITIVE_DIRECTION,
-						FrequencyModulation::LAW_2,
+						FM_HOMING_LAW,
+						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 						);
 
@@ -730,7 +733,8 @@ void MainTick::process(){ //called every 100ms
 						Parking::servoFrequencyNegative,
 						PersonalSettings::protocolStruct.positionMainParking,
 						Servo::NEGATIVE_DIRECTION,
-						FrequencyModulation::LAW_2,
+						FM_HOMING_LAW,
+						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 						);
 
@@ -872,7 +876,8 @@ void MainTick::process(){ //called every 100ms
 						Parking::servoFrequencyPositive,
 						ForceTestDynamic::getStartPosition(),
 						Servo::POSITIVE_DIRECTION,
-						FrequencyModulation::LAW_2,
+						FM_HOMING_LAW,
+						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 					);
 
@@ -893,7 +898,8 @@ void MainTick::process(){ //called every 100ms
 						Parking::servoFrequencyNegative,
 						ForceTestDynamic::getStartPosition(),
 						Servo::NEGATIVE_DIRECTION,
-						FrequencyModulation::LAW_2,
+						FM_HOMING_LAW,
+						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 					);
 
@@ -1001,7 +1007,8 @@ void MainTick::process(){ //called every 100ms
 				ForceTestDynamic::servoFrequencyPositive,
 				ForceTestDynamic::getStopPosition(),
 				Servo::POSITIVE_DIRECTION,
-				FrequencyModulation::LAW_4,
+				MachineSettings::protocolStructExtended.eccentricAccelerationLaw,
+				MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 				FM_TEST_MIN_RANGE
 			);
 
@@ -1021,7 +1028,8 @@ void MainTick::process(){ //called every 100ms
 				ForceTestDynamic::servoFrequencyNegative,
 				ForceTestDynamic::getStopPosition(),
 				Servo::NEGATIVE_DIRECTION,
-				FrequencyModulation::LAW_4,
+				MachineSettings::protocolStructExtended.concentricAccelerationLaw,
+				MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 				FM_TEST_MIN_RANGE
 			);
 
@@ -1127,7 +1135,8 @@ void MainTick::process(){ //called every 100ms
 						Parking::servoFrequencyPositive,
 						ForceTestStatic::getTestPosition(),
 						Servo::POSITIVE_DIRECTION,
-						FrequencyModulation::LAW_2,
+						FM_HOMING_LAW,
+						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 					);
 
@@ -1148,7 +1157,8 @@ void MainTick::process(){ //called every 100ms
 						Parking::servoFrequencyNegative,
 						ForceTestStatic::getTestPosition(),
 						Servo::NEGATIVE_DIRECTION,
-						FrequencyModulation::LAW_2,
+						FM_HOMING_LAW,
+						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 					);
 
@@ -1339,7 +1349,8 @@ void MainTick::process(){ //called every 100ms
 						Parking::servoFrequencyPositive,
 						Excercise::getPositionMainHoming(),
 						Servo::POSITIVE_DIRECTION,
-						FrequencyModulation::LAW_2,
+						FM_HOMING_LAW,
+						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE	
 					);
 
@@ -1360,7 +1371,8 @@ void MainTick::process(){ //called every 100ms
 						Parking::servoFrequencyNegative,
 						Excercise::getPositionMainHoming(),
 						Servo::NEGATIVE_DIRECTION,
-						FrequencyModulation::LAW_2,
+						FM_HOMING_LAW,
+						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 						);
 
@@ -1463,7 +1475,8 @@ void MainTick::process(){ //called every 100ms
 					Excercise::servoFrequencyPositive,
 					Excercise::getPositionMainFirstMovement(),
 					Servo::POSITIVE_DIRECTION,
-					FrequencyModulation::LAW_4,
+					MachineSettings::protocolStructExtended.eccentricAccelerationLaw,
+					MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 					FM_EXCERCISE_MIN_RANGE
 					);
 
@@ -1484,7 +1497,8 @@ void MainTick::process(){ //called every 100ms
 					Excercise::servoFrequencyNegative,
 					Excercise::getPositionMainFirstMovement(),
 					Servo::NEGATIVE_DIRECTION,
-					FrequencyModulation::LAW_4,
+					MachineSettings::protocolStructExtended.concentricAccelerationLaw,
+					MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 					FM_EXCERCISE_MIN_RANGE
 					);
 
@@ -1554,7 +1568,8 @@ void MainTick::process(){ //called every 100ms
 							Excercise::servoFrequencyPositive,
 							Excercise::getPositionMainSecondMovement(),
 							Servo::POSITIVE_DIRECTION,
-							FrequencyModulation::LAW_4,
+							MachineSettings::protocolStructExtended.eccentricAccelerationLaw,
+							MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 							FM_EXCERCISE_MIN_RANGE
 							);
 
@@ -1576,7 +1591,8 @@ void MainTick::process(){ //called every 100ms
 							Excercise::servoFrequencyNegative,
 							Excercise::getPositionMainSecondMovement(),
 							Servo::NEGATIVE_DIRECTION,
-							FrequencyModulation::LAW_4,
+							MachineSettings::protocolStructExtended.concentricAccelerationLaw,
+							MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 							FM_EXCERCISE_MIN_RANGE
 							);
 
@@ -1653,7 +1669,8 @@ void MainTick::process(){ //called every 100ms
 					Excercise::servoFrequencyPositive,
 					Excercise::getPositionMainSecondMovement(),
 					Servo::POSITIVE_DIRECTION,
-					FrequencyModulation::LAW_4,
+					MachineSettings::protocolStructExtended.eccentricAccelerationLaw,
+					MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 					FM_EXCERCISE_MIN_RANGE
 					);
 
@@ -1674,7 +1691,8 @@ void MainTick::process(){ //called every 100ms
 					Excercise::servoFrequencyNegative,
 					Excercise::getPositionMainSecondMovement(),
 					Servo::NEGATIVE_DIRECTION,
-					FrequencyModulation::LAW_4,
+					MachineSettings::protocolStructExtended.concentricAccelerationLaw,
+					MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 					FM_EXCERCISE_MIN_RANGE
 					);
 
@@ -1761,7 +1779,8 @@ void MainTick::process(){ //called every 100ms
 								Excercise::servoFrequencyPositive,
 								Excercise::getPositionMainFirstMovement(),
 								Servo::POSITIVE_DIRECTION,
-								FrequencyModulation::LAW_4,
+								MachineSettings::protocolStructExtended.eccentricAccelerationLaw,
+								MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 								FM_EXCERCISE_MIN_RANGE
 								);
 
@@ -1782,7 +1801,8 @@ void MainTick::process(){ //called every 100ms
 								Excercise::servoFrequencyNegative,
 								Excercise::getPositionMainFirstMovement(),
 								Servo::NEGATIVE_DIRECTION,
-								FrequencyModulation::LAW_4,
+								MachineSettings::protocolStructExtended.concentricAccelerationLaw,
+								MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 								FM_EXCERCISE_MIN_RANGE							
 								);
 
@@ -1879,7 +1899,8 @@ void MainTick::process(){ //called every 100ms
 						Excercise::servoFrequencyPositive,
 						Excercise::getPositionMainFirstMovement(),
 						Servo::POSITIVE_DIRECTION,
-						FrequencyModulation::LAW_4,
+						MachineSettings::protocolStructExtended.eccentricAccelerationLaw,
+						MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 						FM_EXCERCISE_MIN_RANGE
 						);
 
@@ -1900,7 +1921,8 @@ void MainTick::process(){ //called every 100ms
 						Excercise::servoFrequencyNegative,
 						Excercise::getPositionMainFirstMovement(),
 						Servo::NEGATIVE_DIRECTION,
-						FrequencyModulation::LAW_4,
+						MachineSettings::protocolStructExtended.concentricAccelerationLaw,
+						MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 						FM_EXCERCISE_MIN_RANGE
 						);
 
@@ -2049,7 +2071,8 @@ void MainTick::process(){ //called every 100ms
 						Parking::servoFrequencyPositive,
 						GenericSet::getPositionMainStart(),
 						Servo::POSITIVE_DIRECTION,
-						FrequencyModulation::LAW_2,
+						FM_HOMING_LAW,
+						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 					);
 
@@ -2070,7 +2093,8 @@ void MainTick::process(){ //called every 100ms
 						Parking::servoFrequencyNegative,
 						GenericSet::getPositionMainStart(),
 						Servo::NEGATIVE_DIRECTION,
-						FrequencyModulation::LAW_2,
+						FM_HOMING_LAW,
+						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 					);
 
@@ -2184,7 +2208,8 @@ void MainTick::process(){ //called every 100ms
 				GenericSet::servoFrequencyPositive_,
 				GenericSet::getMoveDestinationPosition(),
 				Servo::POSITIVE_DIRECTION,
-				FrequencyModulation::LAW_4,
+				MachineSettings::protocolStructExtended.eccentricAccelerationLaw,
+				MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 				FM_GENERIC_SET_MIN_RANGE
 			);
 
@@ -2207,7 +2232,8 @@ void MainTick::process(){ //called every 100ms
 				GenericSet::servoFrequencyNegative_,
 				GenericSet::getMoveDestinationPosition(),
 				Servo::NEGATIVE_DIRECTION,
-				FrequencyModulation::LAW_4,
+				MachineSettings::protocolStructExtended.concentricAccelerationLaw,
+				MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 				FM_GENERIC_SET_MIN_RANGE
 			);
 

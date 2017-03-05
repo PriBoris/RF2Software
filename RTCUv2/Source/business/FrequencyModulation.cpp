@@ -11,7 +11,8 @@ void FrequencyModulation::prepare(
 	float mainFrequency,
 	int32_t stopPosition,
 	bool direction,
-	Law law,
+	int32_t accelerationLaw,
+	int32_t decelerationLaw,
 	int32_t minRange
 	){
 
@@ -41,7 +42,23 @@ void FrequencyModulation::prepare(
 	this->x = 0.0f;
 	this->y = 0.0f;
 
-	this->law = law;
+
+	this->accelerationLaw = accelerationLaw;
+	this->decelerationLaw = decelerationLaw;
+
+	if (this->accelerationLaw < MIN_LAW){
+		this->accelerationLaw = MIN_LAW;
+	}
+	if (this->decelerationLaw < MIN_LAW){
+		this->decelerationLaw = MIN_LAW;
+	}
+	if (this->accelerationLaw > MAX_LAW){
+		this->accelerationLaw = MAX_LAW;
+	}
+	if (this->decelerationLaw > MAX_LAW){
+		this->decelerationLaw = MAX_LAW;
+	}
+
 	
 }
 //================================================================================================
@@ -65,28 +82,35 @@ float FrequencyModulation::getFrequency(
 		this->x = xTemp;
 	}
 
-	switch(this->law){
-	default:
-	case LAW_2:
-		if (this->rangeOk!=false){
-			float yTemp = 2*(this->x-0.5f);
-			this->y = 1-yTemp*yTemp;
-		}else{
-			this->y = 0;
-		}
-
-		break;
-	case LAW_4:
-		if (this->rangeOk!=false){
-			float yTemp = 2*(this->x-0.5f);
-			yTemp *= yTemp;
-			this->y = 1-yTemp*yTemp;
-		}else{
-			this->y = 0;
-		}
-		break;
+/*	int32_t law;
+	if (this->x<0.5f){
+		//acceleration
+		this->x = 1.0f-(this->x);
+		law = accelerationLaw;
+	}else{
+		//deceleration
+		law = decelerationLaw;
 	}
 
+	switch(law){
+	default:	
+	case 1:
+		
+
+
+
+	}
+*/
+
+
+	{
+		if (this->rangeOk!=false){
+			float yTemp = 2*(this->x-0.5f);
+			this->y = 1-yTemp*yTemp;
+		}else{
+			this->y = 0;
+		}
+	}
 
 	this->frequency = this->mainFrequency * this->y;
 

@@ -372,6 +372,10 @@ private:
 	static const int32_t FM_GENERIC_SET_MIN_RANGE = 200;
 	static const int32_t FM_PERSONAL_MIN_RANGE = 2000;
 
+	static const int32_t FM_PERSONAL_LAW = 2;
+	static const int32_t FM_HOMING_LAW = 2;
+
+
 
 public:
 
