@@ -103,6 +103,7 @@ void Settings::initializeStruct(uint8_t structIndex){
 	
 	ss->positionMainMax = INT32_UNKNOWN_VALUE;
 	ss->positionMainMin = INT32_UNKNOWN_VALUE;
+	
 	ss->positionAux1Max = INT32_UNKNOWN_VALUE;
 	ss->positionAux1Min = INT32_UNKNOWN_VALUE;
 	ss->positionAux2Max = INT32_UNKNOWN_VALUE;
@@ -111,15 +112,28 @@ void Settings::initializeStruct(uint8_t structIndex){
 	ss->positionAux3Min = INT32_UNKNOWN_VALUE;;
 	ss->positionAux4Max = INT32_UNKNOWN_VALUE;
 	ss->positionAux4Min = INT32_UNKNOWN_VALUE;;
+
 	ss->speedAbsMainMax = INT32_UNKNOWN_VALUE;
 	ss->speedAbsMainPersonal = INT32_UNKNOWN_VALUE;
+
 	ss->encoderBitCount = INT32_UNKNOWN_VALUE;
 	ss->encoderDirection = INT32_UNKNOWN_VALUE;
 	ss->encoderOffset = INT32_UNKNOWN_VALUE;
+
 	ss->forceSensorGain = FLOAT_UNKNOWN_VALUE;
 	ss->forceSensorOffset0 = FLOAT_UNKNOWN_VALUE;
 	ss->forceSensorOffset1 = FLOAT_UNKNOWN_VALUE;
 	ss->forceSensorOffset2 = FLOAT_UNKNOWN_VALUE;
+
+	ss->minAbsServoFrequency = FLOAT_UNKNOWN_VALUE;
+	ss->maxAbsServoFrequency = FLOAT_UNKNOWN_VALUE;
+
+	ss->concentricAccelerationLaw = INT32_UNKNOWN_VALUE;
+	ss->concentricDecelerationLaw = INT32_UNKNOWN_VALUE;
+	ss->eccentricAccelerationLaw = INT32_UNKNOWN_VALUE;
+	ss->eccentricDecelerationLaw = INT32_UNKNOWN_VALUE;
+
+
 
 	ss->checksum = calculateChecksum(structIndex);
 	

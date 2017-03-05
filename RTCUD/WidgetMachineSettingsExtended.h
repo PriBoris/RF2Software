@@ -44,6 +44,13 @@ class WidgetMachineSettingsExtended : public QWidget
     WidgetSettingsFloat *wgtForceSensorOffset1;
     WidgetSettingsFloat *wgtForceSensorOffset2;
 
+    WidgetSettingsFloat *wgtMinAbsServoFrequency;
+    WidgetSettingsFloat *wgtMaxAbsServoFrequency;
+
+    WidgetSettingsInteger *wgtConcentricAccelerationLaw;
+    WidgetSettingsInteger *wgtConcentricDecelerationLaw;
+    WidgetSettingsInteger *wgtEccentricAccelerationLaw;
+    WidgetSettingsInteger *wgtEccentricDecelerationLaw;
 
 
     QPushButton *btnWriteSettings;

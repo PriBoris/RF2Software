@@ -167,22 +167,34 @@ public:
 
 		qint32 positionMainMax;
 		qint32 positionMainMin;
+
 		qint32 positionAux1Max;
 		qint32 positionAux1Min;
 		qint32 positionAux2Max;
 		qint32 positionAux2Min;
 		qint32 positionAux3Max;
 		qint32 positionAux3Min;
+
 		qint32 speedAbsMainMax;
 		qint32 speedAbsMainPersonal;
+
 		qint32 encoderBitCount;
 		qint32 encoderDirection;
 		qint32 encoderOffset;
+
 		float forceSensorGain;
 		float forceSensorOffset0;
 		float forceSensorOffset1;
 		float forceSensorOffset2;
 
+		float minAbsServoFrequency;
+		float maxAbsServoFrequency;
+
+		qint32 concentricAccelerationLaw;
+		qint32 concentricDecelerationLaw;
+		qint32 eccentricAccelerationLaw;
+		qint32 eccentricDecelerationLaw;
+		
 	};
 	//----------------------------------------------------------------------------------
 	struct TMachineSettings{

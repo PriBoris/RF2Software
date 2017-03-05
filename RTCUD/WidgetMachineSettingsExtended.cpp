@@ -54,10 +54,17 @@ WidgetMachineSettingsExtended::WidgetMachineSettingsExtended(
 		wgtForceSensorOffset1 = new WidgetSettingsFloat("forceSensorOffset1","MachineSettingsExtended_forceSensorOffset1",0.0f);
 		wgtForceSensorOffset2 = new WidgetSettingsFloat("forceSensorOffset2","MachineSettingsExtended_forceSensorOffset2",0.0f);
 
+		wgtMinAbsServoFrequency = new WidgetSettingsFloat("minAbsServoFrequency","MachineSettingsExtended_minAbsServoFrequency",2.0f);
+		wgtMaxAbsServoFrequency = new WidgetSettingsFloat("maxAbsServoFrequency","MachineSettingsExtended_maxAbsServoFrequency",30.0f);
+		wgtConcentricAccelerationLaw = new WidgetSettingsInteger("concentricAccelerationLaw","MachineSettingsExtended_concentricAccelerationLaw",2.0);
+		wgtConcentricDecelerationLaw = new WidgetSettingsInteger("concentricDecelerationLaw","MachineSettingsExtended_concentricDecelerationLaw",2.0);
+		wgtEccentricAccelerationLaw = new WidgetSettingsInteger("eccentricAccelerationLaw","MachineSettingsExtended_eccentricAccelerationLaw",2.0);
+		wgtEccentricDecelerationLaw = new WidgetSettingsInteger("eccentricDecelerationLaw","MachineSettingsExtended_eccentricDecelerationLaw",2.0);
 
 		wgtEncoderOffset->setValidator(new QIntValidator(-1000000,1000000));
 		wgtEncoderDirection->setValidator(new QIntValidator(-1,1));
 		wgtEncoderBitCount->setValidator(new QIntValidator(10,16));
+
 	}
 
 	{
@@ -97,6 +104,16 @@ WidgetMachineSettingsExtended::WidgetMachineSettingsExtended(
 		loMain->addWidget(wgtForceSensorOffset1);
 		loMain->addWidget(wgtForceSensorOffset2);
 			loMain->addSpacing(10);
+
+		loMain->addWidget(wgtMinAbsServoFrequency);
+		loMain->addWidget(wgtMaxAbsServoFrequency);
+			loMain->addSpacing(10);
+		loMain->addWidget(wgtConcentricAccelerationLaw);
+		loMain->addWidget(wgtConcentricDecelerationLaw);
+		loMain->addWidget(wgtEccentricAccelerationLaw);
+		loMain->addWidget(wgtEccentricDecelerationLaw);
+			loMain->addSpacing(10);
+
 		loMain->addWidget(btnWriteSettings);
 			loMain->addSpacing(10);
 
@@ -140,6 +157,12 @@ void WidgetMachineSettingsExtended::slotWriteSettings(){
 		newMachineSettingsExtended.forceSensorOffset1 = wgtForceSensorOffset1->getWriteValue();
 		newMachineSettingsExtended.forceSensorOffset2 = wgtForceSensorOffset2->getWriteValue();
 
+		newMachineSettingsExtended.minAbsServoFrequency = wgtMinAbsServoFrequency->getWriteValue();
+		newMachineSettingsExtended.maxAbsServoFrequency = wgtMaxAbsServoFrequency->getWriteValue();
+		newMachineSettingsExtended.concentricAccelerationLaw = wgtConcentricAccelerationLaw->getWriteValue();
+		newMachineSettingsExtended.concentricDecelerationLaw = wgtConcentricDecelerationLaw->getWriteValue();
+		newMachineSettingsExtended.eccentricAccelerationLaw = wgtEccentricAccelerationLaw->getWriteValue();
+		newMachineSettingsExtended.eccentricDecelerationLaw = wgtEccentricDecelerationLaw->getWriteValue();
 
 		QByteArray valueArray;
 		valueArray.append((char*)&newMachineSettingsExtended,sizeof(newMachineSettingsExtended));
@@ -193,7 +216,12 @@ void WidgetMachineSettingsExtended::newMessageReceived(quint8 tag,quint32 msgID,
 			wgtForceSensorOffset1->setReadValue(machineSettingsExtended.forceSensorOffset1);
 			wgtForceSensorOffset2->setReadValue(machineSettingsExtended.forceSensorOffset2);
 
-
+			wgtMinAbsServoFrequency->setReadValue(machineSettingsExtended.minAbsServoFrequency);
+			wgtMaxAbsServoFrequency->setReadValue(machineSettingsExtended.maxAbsServoFrequency);
+			wgtConcentricAccelerationLaw->setReadValue(machineSettingsExtended.concentricAccelerationLaw);
+			wgtConcentricDecelerationLaw->setReadValue(machineSettingsExtended.concentricDecelerationLaw);
+			wgtEccentricAccelerationLaw->setReadValue(machineSettingsExtended.eccentricAccelerationLaw);
+			wgtEccentricDecelerationLaw->setReadValue(machineSettingsExtended.eccentricDecelerationLaw);
 
 			(reportLogger->stream) << "positionMainMax=" << QString::number(machineSettingsExtended.positionMainMax) << "\n";
 			(reportLogger->stream) << "positionMainMin=" << QString::number(machineSettingsExtended.positionMainMin) << "\n";
@@ -212,6 +240,12 @@ void WidgetMachineSettingsExtended::newMessageReceived(quint8 tag,quint32 msgID,
 			(reportLogger->stream) << "forceSensorOffset0=" << QString::number(machineSettingsExtended.forceSensorOffset0) << "\n";
 			(reportLogger->stream) << "forceSensorOffset1=" << QString::number(machineSettingsExtended.forceSensorOffset1) << "\n";
 			(reportLogger->stream) << "forceSensorOffset2=" << QString::number(machineSettingsExtended.forceSensorOffset2) << "\n";
+			(reportLogger->stream) << "minAbsServoFrequency=" << QString::number(machineSettingsExtended.minAbsServoFrequency) << "\n";
+			(reportLogger->stream) << "maxAbsServoFrequency=" << QString::number(machineSettingsExtended.maxAbsServoFrequency) << "\n";
+			(reportLogger->stream) << "concentricAccelerationLaw=" << QString::number(machineSettingsExtended.concentricAccelerationLaw) << "\n";
+			(reportLogger->stream) << "concentricDecelerationLaw=" << QString::number(machineSettingsExtended.concentricDecelerationLaw) << "\n";
+			(reportLogger->stream) << "eccentricAccelerationLaw=" << QString::number(machineSettingsExtended.eccentricAccelerationLaw) << "\n";
+			(reportLogger->stream) << "eccentricDecelerationLaw=" << QString::number(machineSettingsExtended.eccentricDecelerationLaw) << "\n";
 
 
 
@@ -219,21 +253,32 @@ void WidgetMachineSettingsExtended::newMessageReceived(quint8 tag,quint32 msgID,
 
 			wgtPositionMainMax->setUnknownReadValue();
 			wgtPositionMainMin->setUnknownReadValue();
+
 			wgtPositionAux1Max->setUnknownReadValue();
 			wgtPositionAux1Min->setUnknownReadValue();
 			wgtPositionAux2Max->setUnknownReadValue();
 			wgtPositionAux2Min->setUnknownReadValue();
 			wgtPositionAux3Max->setUnknownReadValue();
 			wgtPositionAux3Min->setUnknownReadValue();
+
 			wgtSpeedAbsMainMax->setUnknownReadValue();
 			wgtSpeedAbsMainPersonal->setUnknownReadValue();
+
 			wgtEncoderBitCount->setUnknownReadValue();
 			wgtEncoderDirection->setUnknownReadValue();
 			wgtEncoderOffset->setUnknownReadValue();
+
 			wgtForceSensorGain->setUnknownReadValue();
 			wgtForceSensorOffset0->setUnknownReadValue();
 			wgtForceSensorOffset1->setUnknownReadValue();
 			wgtForceSensorOffset2->setUnknownReadValue();
+
+			wgtMinAbsServoFrequency->setUnknownReadValue();
+			wgtMaxAbsServoFrequency->setUnknownReadValue();
+			wgtConcentricAccelerationLaw->setUnknownReadValue();
+			wgtConcentricDecelerationLaw->setUnknownReadValue();
+			wgtEccentricAccelerationLaw->setUnknownReadValue();
+			wgtEccentricDecelerationLaw->setUnknownReadValue();
 
 		}
 

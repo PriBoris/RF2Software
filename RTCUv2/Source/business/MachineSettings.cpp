@@ -38,6 +38,13 @@ void MachineSettings::init(){
 		(settings->forceSensorOffset0==Settings::FLOAT_UNKNOWN_VALUE)||
 		(settings->forceSensorOffset1==Settings::FLOAT_UNKNOWN_VALUE)||
 		(settings->forceSensorOffset2==Settings::FLOAT_UNKNOWN_VALUE)||
+		(settings->minAbsServoFrequency==Settings::FLOAT_UNKNOWN_VALUE)||
+		(settings->maxAbsServoFrequency==Settings::FLOAT_UNKNOWN_VALUE)||
+		(settings->concentricAccelerationLaw==Settings::INT32_UNKNOWN_VALUE)||
+		(settings->concentricDecelerationLaw==Settings::INT32_UNKNOWN_VALUE)||
+		(settings->eccentricAccelerationLaw==Settings::INT32_UNKNOWN_VALUE)||
+		(settings->eccentricDecelerationLaw==Settings::INT32_UNKNOWN_VALUE)||
+
 		false
 
 	){
@@ -68,6 +75,13 @@ void MachineSettings::init(){
 		protocolStructExtended.forceSensorOffset0 = settings->forceSensorOffset0;
 		protocolStructExtended.forceSensorOffset1 = settings->forceSensorOffset1;
 		protocolStructExtended.forceSensorOffset2 = settings->forceSensorOffset2;
+
+		protocolStructExtended.minAbsServoFrequency = settings->minAbsServoFrequency;
+		protocolStructExtended.maxAbsServoFrequency = settings->maxAbsServoFrequency;
+		protocolStructExtended.concentricAccelerationLaw = settings->concentricAccelerationLaw;
+		protocolStructExtended.concentricDecelerationLaw = settings->concentricDecelerationLaw;
+		protocolStructExtended.eccentricAccelerationLaw = settings->eccentricAccelerationLaw;
+		protocolStructExtended.eccentricDecelerationLaw = settings->eccentricDecelerationLaw;
 
 		protocolStructExtendedValid = true;
 
@@ -144,7 +158,12 @@ void MachineSettings::load(RxMessage *message){
 			settings->forceSensorOffset1 = newProtocolStructExtended.forceSensorOffset1;
 			settings->forceSensorOffset2 = newProtocolStructExtended.forceSensorOffset2;
 
-
+			settings->minAbsServoFrequency = newProtocolStructExtended.minAbsServoFrequency;
+			settings->maxAbsServoFrequency = newProtocolStructExtended.maxAbsServoFrequency;
+			settings->concentricAccelerationLaw = newProtocolStructExtended.concentricAccelerationLaw;
+			settings->concentricDecelerationLaw = newProtocolStructExtended.concentricDecelerationLaw;
+			settings->eccentricAccelerationLaw = newProtocolStructExtended.eccentricAccelerationLaw;
+			settings->eccentricDecelerationLaw = newProtocolStructExtended.eccentricDecelerationLaw;
 
 			Settings::updateStruct();
 
@@ -172,11 +191,26 @@ bool MachineSettings::checkProtocolStructExtended(ProtocolStructExtended *protoc
 	if (
 		(protocolStructExtended->positionMainMax<0)||
 		(protocolStructExtended->positionMainMin<0)||
-		(protocolStructExtended->positionMainMax<protocolStructExtended->positionMainMin)
-//TODO: should be dependent on encoder bits count
+		(protocolStructExtended->positionMainMax<protocolStructExtended->positionMainMin)||//TODO: should be dependent on encoder bits count
+
+		(protocolStructExtended->concentricAccelerationLaw < 1)||
+		(protocolStructExtended->concentricDecelerationLaw < 1)||
+		(protocolStructExtended->eccentricAccelerationLaw < 1)||
+		(protocolStructExtended->eccentricDecelerationLaw < 1)||
+		(protocolStructExtended->concentricAccelerationLaw > 8)||
+		(protocolStructExtended->concentricDecelerationLaw > 8)||
+		(protocolStructExtended->eccentricAccelerationLaw > 8)||
+		(protocolStructExtended->eccentricDecelerationLaw > 8)||
+
+		(protocolStructExtended->minAbsServoFrequency < 2.0f)||
+		(protocolStructExtended->maxAbsServoFrequency < 2.0f)||
+		(protocolStructExtended->minAbsServoFrequency > 30.0f)||
+		(protocolStructExtended->maxAbsServoFrequency > 30.0f)||
+		(protocolStructExtended->minAbsServoFrequency > protocolStructExtended->maxAbsServoFrequency)||
 
 		//...
 
+		false
 	){
 		valid = false;
 	}
