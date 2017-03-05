@@ -80,49 +80,6 @@ bool Servo::getMoveDirection(){
 	return actualMoveDirection;
 }
 //==================================================================================================================
-
-
-
-/*bool Servo::validateActualPosition(){
-
-	int32_t encoderActualValue = Encoder::getValue();
-	if (encoderActualValue>MachineSettings::protocolStructExtended.positionMainMax){
-		return false;
-	}else if (encoderActualValue<MachineSettings::protocolStructExtended.positionMainMin){
-		return false;
-	}else{
-		return true;
-	}
-
-}*/
-//==================================================================================================================
-/*bool Servo::validateActualPosition(bool direction){
-
-	int32_t encoderActualValue = Encoder::getValue();
-	if (POSITIVE_DIRECTION==direction){
-
-		// validate before moving servo in positive direction
-		if (encoderActualValue>MachineSettings::protocolStructExtended.positionMainMax){
-			return false;
-		}else{
-			return true;
-		}
-
-	}else if (NEGATIVE_DIRECTION==direction){
-
-		// validate before moving servo in negative direction
-		if (encoderActualValue<MachineSettings::protocolStructExtended.positionMainMin){
-			return false;
-		}else{
-			return true;
-		}
-
-	}else{
-		return false;
-	}
-
-}*/
-//==================================================================================================================
 /*
 1395 motor rotations per minute @ 50Hz
 1395/60=23.25 motor rotations per second @ 50Hz
@@ -133,12 +90,6 @@ bool Servo::getMoveDirection(){
 */
 
 const float Servo::MILLISECONDS_PER_ROTATION_AT_1HZ = 341398.0f;
-
-const float Servo::MIN_FREQUENCY = 2.0f;
-const float Servo::MAX_FREQUENCY = 30.0f;//50.0f;
-
-const float Servo::MIN_NEGATIVE_FREQUENCY = -MIN_FREQUENCY;
-const float Servo::MAX_NEGATIVE_FREQUENCY = -MAX_FREQUENCY;
 
 //==================================================================================================================
 float Servo::rangeToFrequency(
@@ -156,14 +107,21 @@ float Servo::rangeToFrequency(
 
 	} else {
 
-		float millisecondsPerRange = Servo::MILLISECONDS_PER_ROTATION_AT_1HZ*(float)range/(float)Encoder::FULL_ROTATION_TICKS;
+		float millisecondsPerRange = 
+			Servo::MILLISECONDS_PER_ROTATION_AT_1HZ
+			* (float)range
+			/ (float)Encoder::FULL_ROTATION_TICKS
+			;
 
 		float frequency = millisecondsPerRange/(float)absSpeedMsec;
 
-		if (frequency<Servo::MIN_FREQUENCY){
-			frequency=Servo::MIN_FREQUENCY;
-		} else if (frequency>Servo::MAX_FREQUENCY){
-			frequency=Servo::MAX_FREQUENCY;
+		if (frequency < MachineSettings::protocolStructExtended.minAbsServoFrequency){
+
+			frequency = MachineSettings::protocolStructExtended.minAbsServoFrequency;
+
+		} else if (frequency > MachineSettings::protocolStructExtended.maxAbsServoFrequency){
+
+			frequency = MachineSettings::protocolStructExtended.maxAbsServoFrequency;
 		}
 
 		return frequency;
@@ -191,20 +149,20 @@ float Servo::limitFrequency(float frequency, bool direction){
 
 	if (POSITIVE_DIRECTION==direction){	
 
-		if (frequency<Servo::MIN_FREQUENCY){
-			return Servo::MIN_FREQUENCY;
-		}else if (frequency>Servo::MAX_FREQUENCY){
-			return Servo::MAX_FREQUENCY;
+		if (frequency < MachineSettings::protocolStructExtended.minAbsServoFrequency){
+			return MachineSettings::protocolStructExtended.minAbsServoFrequency;
+		}else if (frequency > MachineSettings::protocolStructExtended.maxAbsServoFrequency){
+			return MachineSettings::protocolStructExtended.maxAbsServoFrequency;
 		}else {
 			return frequency;
 		}
 
 	}else{
 
-		if (frequency>Servo::MIN_NEGATIVE_FREQUENCY){
-			return Servo::MIN_NEGATIVE_FREQUENCY;
-		}else if (frequency<Servo::MAX_NEGATIVE_FREQUENCY){
-			return Servo::MAX_NEGATIVE_FREQUENCY;
+		if (frequency > (-MachineSettings::protocolStructExtended.minAbsServoFrequency)){
+			return (-MachineSettings::protocolStructExtended.minAbsServoFrequency);
+		}else if (frequency < (-MachineSettings::protocolStructExtended.maxAbsServoFrequency)){
+			return (-MachineSettings::protocolStructExtended.maxAbsServoFrequency);
 		}else {
 			return frequency;
 		}
