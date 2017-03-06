@@ -44,8 +44,10 @@ class WidgetMachineSettingsExtended : public QWidget
     WidgetSettingsFloat *wgtForceSensorOffset1;
     WidgetSettingsFloat *wgtForceSensorOffset2;
 
-    WidgetSettingsFloat *wgtMinAbsServoFrequency;
-    WidgetSettingsFloat *wgtMaxAbsServoFrequency;
+    WidgetSettingsFloat *wgtMinPositiveServoFrequency;
+    WidgetSettingsFloat *wgtMaxPositiveServoFrequency;
+    WidgetSettingsFloat *wgtMinNegativeServoFrequency;
+    WidgetSettingsFloat *wgtMaxNegativeServoFrequency;
 
     WidgetSettingsInteger *wgtConcentricAccelerationLaw;
     WidgetSettingsInteger *wgtConcentricDecelerationLaw;

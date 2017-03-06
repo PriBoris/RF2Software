@@ -33,8 +33,10 @@ public:
 		float forceSensorOffset1;
 		float forceSensorOffset2;
 
-		float minAbsServoFrequency;
-		float maxAbsServoFrequency;
+		float minPositiveServoFrequency;
+		float maxPositiveServoFrequency;
+		float minNegativeServoFrequency;
+		float maxNegativeServoFrequency;
 
 		int32_t concentricAccelerationLaw;
 		int32_t concentricDecelerationLaw;

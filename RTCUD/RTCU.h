@@ -187,8 +187,10 @@ public:
 		float forceSensorOffset1;
 		float forceSensorOffset2;
 
-		float minAbsServoFrequency;
-		float maxAbsServoFrequency;
+        float minPositiveServoFrequency;
+        float maxPositiveServoFrequency;
+        float minNegativeServoFrequency;
+        float maxNegativeServoFrequency;
 
 		qint32 concentricAccelerationLaw;
 		qint32 concentricDecelerationLaw;

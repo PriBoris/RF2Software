@@ -115,14 +115,17 @@ float Servo::rangeToFrequency(
 
 		float frequency = millisecondsPerRange/(float)absSpeedMsec;
 
-		if (frequency < MachineSettings::protocolStructExtended.minAbsServoFrequency){
+		//TODO: refactor this block using negative frequency limits as well
+		if (frequency < MachineSettings::protocolStructExtended.minPositiveServoFrequency){
 
-			frequency = MachineSettings::protocolStructExtended.minAbsServoFrequency;
+			frequency = MachineSettings::protocolStructExtended.minPositiveServoFrequency;
 
-		} else if (frequency > MachineSettings::protocolStructExtended.maxAbsServoFrequency){
+		} else if (frequency > MachineSettings::protocolStructExtended.maxPositiveServoFrequency){
 
-			frequency = MachineSettings::protocolStructExtended.maxAbsServoFrequency;
+			frequency = MachineSettings::protocolStructExtended.maxPositiveServoFrequency;
 		}
+
+
 
 		return frequency;
 		
@@ -149,20 +152,20 @@ float Servo::limitFrequency(float frequency, bool direction){
 
 	if (POSITIVE_DIRECTION==direction){	
 
-		if (frequency < MachineSettings::protocolStructExtended.minAbsServoFrequency){
-			return MachineSettings::protocolStructExtended.minAbsServoFrequency;
-		}else if (frequency > MachineSettings::protocolStructExtended.maxAbsServoFrequency){
-			return MachineSettings::protocolStructExtended.maxAbsServoFrequency;
+		if (frequency < MachineSettings::protocolStructExtended.minPositiveServoFrequency){
+			return MachineSettings::protocolStructExtended.minPositiveServoFrequency;
+		}else if (frequency > MachineSettings::protocolStructExtended.maxPositiveServoFrequency){
+			return MachineSettings::protocolStructExtended.maxPositiveServoFrequency;
 		}else {
 			return frequency;
 		}
 
 	}else{
 
-		if (frequency > (-MachineSettings::protocolStructExtended.minAbsServoFrequency)){
-			return (-MachineSettings::protocolStructExtended.minAbsServoFrequency);
-		}else if (frequency < (-MachineSettings::protocolStructExtended.maxAbsServoFrequency)){
-			return (-MachineSettings::protocolStructExtended.maxAbsServoFrequency);
+		if (frequency > MachineSettings::protocolStructExtended.minNegativeServoFrequency){
+			return MachineSettings::protocolStructExtended.minNegativeServoFrequency;
+		}else if (frequency < MachineSettings::protocolStructExtended.maxNegativeServoFrequency){
+			return MachineSettings::protocolStructExtended.maxNegativeServoFrequency;
 		}else {
 			return frequency;
 		}

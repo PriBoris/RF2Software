@@ -54,8 +54,11 @@ WidgetMachineSettingsExtended::WidgetMachineSettingsExtended(
 		wgtForceSensorOffset1 = new WidgetSettingsFloat("forceSensorOffset1","MachineSettingsExtended_forceSensorOffset1",0.0f);
 		wgtForceSensorOffset2 = new WidgetSettingsFloat("forceSensorOffset2","MachineSettingsExtended_forceSensorOffset2",0.0f);
 
-		wgtMinAbsServoFrequency = new WidgetSettingsFloat("minAbsServoFrequency","MachineSettingsExtended_minAbsServoFrequency",2.0f);
-		wgtMaxAbsServoFrequency = new WidgetSettingsFloat("maxAbsServoFrequency","MachineSettingsExtended_maxAbsServoFrequency",30.0f);
+		wgtMinPositiveServoFrequency = new WidgetSettingsFloat("minPositiveServoFrequency","MachineSettingsExtended_minPositiveServoFrequency",2.0f);
+		wgtMaxPositiveServoFrequency = new WidgetSettingsFloat("maxPositiveServoFrequency","MachineSettingsExtended_maxPositiveServoFrequency",30.0f);
+		wgtMinNegativeServoFrequency = new WidgetSettingsFloat("minNegativeServoFrequency","MachineSettingsExtended_minNegativeServoFrequency",-2.0f);
+		wgtMaxNegativeServoFrequency = new WidgetSettingsFloat("maxNegativeServoFrequency","MachineSettingsExtended_maxNegativeServoFrequency",-30.0f);
+
 		wgtConcentricAccelerationLaw = new WidgetSettingsInteger("concentricAccelerationLaw","MachineSettingsExtended_concentricAccelerationLaw",2.0);
 		wgtConcentricDecelerationLaw = new WidgetSettingsInteger("concentricDecelerationLaw","MachineSettingsExtended_concentricDecelerationLaw",2.0);
 		wgtEccentricAccelerationLaw = new WidgetSettingsInteger("eccentricAccelerationLaw","MachineSettingsExtended_eccentricAccelerationLaw",2.0);
@@ -105,8 +108,10 @@ WidgetMachineSettingsExtended::WidgetMachineSettingsExtended(
 		loMain->addWidget(wgtForceSensorOffset2);
 			loMain->addSpacing(10);
 
-		loMain->addWidget(wgtMinAbsServoFrequency);
-		loMain->addWidget(wgtMaxAbsServoFrequency);
+		loMain->addWidget(wgtMinPositiveServoFrequency);
+		loMain->addWidget(wgtMaxPositiveServoFrequency);
+		loMain->addWidget(wgtMinNegativeServoFrequency);
+		loMain->addWidget(wgtMaxNegativeServoFrequency);
 			loMain->addSpacing(10);
 		loMain->addWidget(wgtConcentricAccelerationLaw);
 		loMain->addWidget(wgtConcentricDecelerationLaw);
@@ -157,8 +162,11 @@ void WidgetMachineSettingsExtended::slotWriteSettings(){
 		newMachineSettingsExtended.forceSensorOffset1 = wgtForceSensorOffset1->getWriteValue();
 		newMachineSettingsExtended.forceSensorOffset2 = wgtForceSensorOffset2->getWriteValue();
 
-		newMachineSettingsExtended.minAbsServoFrequency = wgtMinAbsServoFrequency->getWriteValue();
-		newMachineSettingsExtended.maxAbsServoFrequency = wgtMaxAbsServoFrequency->getWriteValue();
+		newMachineSettingsExtended.minPositiveServoFrequency = wgtMinPositiveServoFrequency->getWriteValue();
+		newMachineSettingsExtended.maxPositiveServoFrequency = wgtMaxPositiveServoFrequency->getWriteValue();
+		newMachineSettingsExtended.minNegativeServoFrequency = wgtMinNegativeServoFrequency->getWriteValue();
+		newMachineSettingsExtended.maxNegativeServoFrequency = wgtMaxNegativeServoFrequency->getWriteValue();
+
 		newMachineSettingsExtended.concentricAccelerationLaw = wgtConcentricAccelerationLaw->getWriteValue();
 		newMachineSettingsExtended.concentricDecelerationLaw = wgtConcentricDecelerationLaw->getWriteValue();
 		newMachineSettingsExtended.eccentricAccelerationLaw = wgtEccentricAccelerationLaw->getWriteValue();
@@ -216,8 +224,11 @@ void WidgetMachineSettingsExtended::newMessageReceived(quint8 tag,quint32 msgID,
 			wgtForceSensorOffset1->setReadValue(machineSettingsExtended.forceSensorOffset1);
 			wgtForceSensorOffset2->setReadValue(machineSettingsExtended.forceSensorOffset2);
 
-			wgtMinAbsServoFrequency->setReadValue(machineSettingsExtended.minAbsServoFrequency);
-			wgtMaxAbsServoFrequency->setReadValue(machineSettingsExtended.maxAbsServoFrequency);
+			wgtMinPositiveServoFrequency->setReadValue(machineSettingsExtended.minPositiveServoFrequency);
+			wgtMaxPositiveServoFrequency->setReadValue(machineSettingsExtended.maxPositiveServoFrequency);
+			wgtMinNegativeServoFrequency->setReadValue(machineSettingsExtended.minNegativeServoFrequency);
+			wgtMaxNegativeServoFrequency->setReadValue(machineSettingsExtended.maxNegativeServoFrequency);
+
 			wgtConcentricAccelerationLaw->setReadValue(machineSettingsExtended.concentricAccelerationLaw);
 			wgtConcentricDecelerationLaw->setReadValue(machineSettingsExtended.concentricDecelerationLaw);
 			wgtEccentricAccelerationLaw->setReadValue(machineSettingsExtended.eccentricAccelerationLaw);
@@ -240,8 +251,10 @@ void WidgetMachineSettingsExtended::newMessageReceived(quint8 tag,quint32 msgID,
 			(reportLogger->stream) << "forceSensorOffset0=" << QString::number(machineSettingsExtended.forceSensorOffset0) << "\n";
 			(reportLogger->stream) << "forceSensorOffset1=" << QString::number(machineSettingsExtended.forceSensorOffset1) << "\n";
 			(reportLogger->stream) << "forceSensorOffset2=" << QString::number(machineSettingsExtended.forceSensorOffset2) << "\n";
-			(reportLogger->stream) << "minAbsServoFrequency=" << QString::number(machineSettingsExtended.minAbsServoFrequency) << "\n";
-			(reportLogger->stream) << "maxAbsServoFrequency=" << QString::number(machineSettingsExtended.maxAbsServoFrequency) << "\n";
+			(reportLogger->stream) << "minPositiveServoFrequency=" << QString::number(machineSettingsExtended.minPositiveServoFrequency) << "\n";
+			(reportLogger->stream) << "maxPositiveServoFrequency=" << QString::number(machineSettingsExtended.maxPositiveServoFrequency) << "\n";
+			(reportLogger->stream) << "minNegativeServoFrequency=" << QString::number(machineSettingsExtended.minNegativeServoFrequency) << "\n";
+			(reportLogger->stream) << "maxNegativeServoFrequency=" << QString::number(machineSettingsExtended.maxNegativeServoFrequency) << "\n";
 			(reportLogger->stream) << "concentricAccelerationLaw=" << QString::number(machineSettingsExtended.concentricAccelerationLaw) << "\n";
 			(reportLogger->stream) << "concentricDecelerationLaw=" << QString::number(machineSettingsExtended.concentricDecelerationLaw) << "\n";
 			(reportLogger->stream) << "eccentricAccelerationLaw=" << QString::number(machineSettingsExtended.eccentricAccelerationLaw) << "\n";
@@ -273,8 +286,10 @@ void WidgetMachineSettingsExtended::newMessageReceived(quint8 tag,quint32 msgID,
 			wgtForceSensorOffset1->setUnknownReadValue();
 			wgtForceSensorOffset2->setUnknownReadValue();
 
-			wgtMinAbsServoFrequency->setUnknownReadValue();
-			wgtMaxAbsServoFrequency->setUnknownReadValue();
+			wgtMinPositiveServoFrequency->setUnknownReadValue();
+			wgtMaxPositiveServoFrequency->setUnknownReadValue();
+			wgtMinNegativeServoFrequency->setUnknownReadValue();
+			wgtMaxNegativeServoFrequency->setUnknownReadValue();
 			wgtConcentricAccelerationLaw->setUnknownReadValue();
 			wgtConcentricDecelerationLaw->setUnknownReadValue();
 			wgtEccentricAccelerationLaw->setUnknownReadValue();

@@ -125,8 +125,10 @@ void Settings::initializeStruct(uint8_t structIndex){
 	ss->forceSensorOffset1 = FLOAT_UNKNOWN_VALUE;
 	ss->forceSensorOffset2 = FLOAT_UNKNOWN_VALUE;
 
-	ss->minAbsServoFrequency = FLOAT_UNKNOWN_VALUE;
-	ss->maxAbsServoFrequency = FLOAT_UNKNOWN_VALUE;
+	ss->minPositiveServoFrequency = FLOAT_UNKNOWN_VALUE;
+	ss->maxPositiveServoFrequency = FLOAT_UNKNOWN_VALUE;
+	ss->minNegativeServoFrequency = FLOAT_UNKNOWN_VALUE;
+	ss->maxNegativeServoFrequency = FLOAT_UNKNOWN_VALUE;
 
 	ss->concentricAccelerationLaw = INT32_UNKNOWN_VALUE;
 	ss->concentricDecelerationLaw = INT32_UNKNOWN_VALUE;

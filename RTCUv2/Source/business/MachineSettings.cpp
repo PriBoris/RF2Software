@@ -38,8 +38,10 @@ void MachineSettings::init(){
 		(settings->forceSensorOffset0==Settings::FLOAT_UNKNOWN_VALUE)||
 		(settings->forceSensorOffset1==Settings::FLOAT_UNKNOWN_VALUE)||
 		(settings->forceSensorOffset2==Settings::FLOAT_UNKNOWN_VALUE)||
-		(settings->minAbsServoFrequency==Settings::FLOAT_UNKNOWN_VALUE)||
-		(settings->maxAbsServoFrequency==Settings::FLOAT_UNKNOWN_VALUE)||
+		(settings->minPositiveServoFrequency==Settings::FLOAT_UNKNOWN_VALUE)||
+		(settings->maxPositiveServoFrequency==Settings::FLOAT_UNKNOWN_VALUE)||
+		(settings->minNegativeServoFrequency==Settings::FLOAT_UNKNOWN_VALUE)||
+		(settings->maxNegativeServoFrequency==Settings::FLOAT_UNKNOWN_VALUE)||
 		(settings->concentricAccelerationLaw==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->concentricDecelerationLaw==Settings::INT32_UNKNOWN_VALUE)||
 		(settings->eccentricAccelerationLaw==Settings::INT32_UNKNOWN_VALUE)||
@@ -76,8 +78,11 @@ void MachineSettings::init(){
 		protocolStructExtended.forceSensorOffset1 = settings->forceSensorOffset1;
 		protocolStructExtended.forceSensorOffset2 = settings->forceSensorOffset2;
 
-		protocolStructExtended.minAbsServoFrequency = settings->minAbsServoFrequency;
-		protocolStructExtended.maxAbsServoFrequency = settings->maxAbsServoFrequency;
+		protocolStructExtended.minPositiveServoFrequency = settings->minPositiveServoFrequency;
+		protocolStructExtended.maxPositiveServoFrequency = settings->maxPositiveServoFrequency;
+		protocolStructExtended.minNegativeServoFrequency = settings->minNegativeServoFrequency;
+		protocolStructExtended.maxNegativeServoFrequency = settings->maxNegativeServoFrequency;
+
 		protocolStructExtended.concentricAccelerationLaw = settings->concentricAccelerationLaw;
 		protocolStructExtended.concentricDecelerationLaw = settings->concentricDecelerationLaw;
 		protocolStructExtended.eccentricAccelerationLaw = settings->eccentricAccelerationLaw;
@@ -158,8 +163,11 @@ void MachineSettings::load(RxMessage *message){
 			settings->forceSensorOffset1 = newProtocolStructExtended.forceSensorOffset1;
 			settings->forceSensorOffset2 = newProtocolStructExtended.forceSensorOffset2;
 
-			settings->minAbsServoFrequency = newProtocolStructExtended.minAbsServoFrequency;
-			settings->maxAbsServoFrequency = newProtocolStructExtended.maxAbsServoFrequency;
+			settings->minPositiveServoFrequency = newProtocolStructExtended.minPositiveServoFrequency;
+			settings->maxPositiveServoFrequency = newProtocolStructExtended.maxPositiveServoFrequency;
+			settings->minNegativeServoFrequency = newProtocolStructExtended.minNegativeServoFrequency;
+			settings->maxNegativeServoFrequency = newProtocolStructExtended.maxNegativeServoFrequency;
+
 			settings->concentricAccelerationLaw = newProtocolStructExtended.concentricAccelerationLaw;
 			settings->concentricDecelerationLaw = newProtocolStructExtended.concentricDecelerationLaw;
 			settings->eccentricAccelerationLaw = newProtocolStructExtended.eccentricAccelerationLaw;
@@ -202,11 +210,18 @@ bool MachineSettings::checkProtocolStructExtended(ProtocolStructExtended *protoc
 		(protocolStructExtended->eccentricAccelerationLaw > 8)||
 		(protocolStructExtended->eccentricDecelerationLaw > 8)||
 
-		(protocolStructExtended->minAbsServoFrequency < 2.0f)||
-		(protocolStructExtended->maxAbsServoFrequency < 2.0f)||
-		(protocolStructExtended->minAbsServoFrequency > 30.0f)||
-		(protocolStructExtended->maxAbsServoFrequency > 30.0f)||
-		(protocolStructExtended->minAbsServoFrequency > protocolStructExtended->maxAbsServoFrequency)||
+		(protocolStructExtended->minPositiveServoFrequency < 2.0f)||
+		(protocolStructExtended->maxPositiveServoFrequency < 2.0f)||
+		(protocolStructExtended->minPositiveServoFrequency > 30.0f)||
+		(protocolStructExtended->maxPositiveServoFrequency > 30.0f)||
+		(protocolStructExtended->minPositiveServoFrequency > protocolStructExtended->maxPositiveServoFrequency)||
+
+		(protocolStructExtended->minNegativeServoFrequency > -2.0f)||
+		(protocolStructExtended->maxNegativeServoFrequency > -2.0f)||
+		(protocolStructExtended->minNegativeServoFrequency < -30.0f)||
+		(protocolStructExtended->maxNegativeServoFrequency < -30.0f)||
+		(protocolStructExtended->minNegativeServoFrequency < protocolStructExtended->maxNegativeServoFrequency)||
+
 
 		//...
 
