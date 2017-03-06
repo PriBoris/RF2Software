@@ -24,10 +24,12 @@ private:
 	float mainFrequencyToRangeRatio;
 
 	float x;
+	float x1;
 	float y;
 
 	int32_t accelerationLaw;
 	int32_t decelerationLaw;
+	int32_t actualLaw;
 
 	static const int32_t MAX_LAW = 8;
 	static const int32_t MIN_LAW = 1;

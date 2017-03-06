@@ -82,39 +82,71 @@ float FrequencyModulation::getFrequency(
 		this->x = xTemp;
 	}
 
-/*	int32_t law;
-	if (this->x<0.5f){
-		//acceleration
-		this->x = 1.0f-(this->x);
-		law = accelerationLaw;
+	if (this->rangeOk==false){
+
+		actualLaw = 0;
+		this->x1 = 0.0f;
+
 	}else{
-		//deceleration
-		law = decelerationLaw;
-	}
 
-	switch(law){
-	default:	
-	case 1:
-		
-
-
-
-	}
-*/
-
-
-	{
-		if (this->rangeOk!=false){
-			float yTemp = 2*(this->x-0.5f);
-			this->y = 1-yTemp*yTemp;
+		if (this->x<0.5f){
+			//acceleration
+			this->x1 = 1.0f-2.0f*(this->x);
+			actualLaw = accelerationLaw;
 		}else{
-			this->y = 0;
+			//deceleration
+			this->x1 = -1.0f+2.0f*(this->x);
+			actualLaw = decelerationLaw;
 		}
+
+	}
+
+	this->y = 0.0f;
+	switch(actualLaw){
+	case 0:
+		this->y = 0.0f; // 1-1	
+		break;
+	case 1:
+		this->y = 1.0f - this->x1;
+		break;
+	case 2:
+		this->y = 1.0f - this->x1*this->x1;
+		break;
+	case 3:
+		this->y = 1.0f - this->x1*this->x1*this->x1;
+		break;
+	case 4:
+		{
+			float x2 = this->x1*this->x1;
+			this->y = 1.0f - x2*x2;
+		}
+		break;
+	case 5:
+		{
+			float x2 = this->x1*this->x1;
+			this->y = 1.0f - x2*x2*this->x1;
+		}
+		break;
+	case 6:
+		{
+			float x3 = this->x1*this->x1*this->x1;
+			this->y = 1.0f - x3*x3;
+		}
+		break;
+	default:// >6
+		{
+			float x2 = this->x1*this->x1;
+			float x4 = x2*x2;
+			float x8 = x4*x4;
+			float x16 = x8*x8;
+			this->y = 1.0f - x16;
+		}
+		break;
+
 	}
 
 	this->frequency = this->mainFrequency * this->y;
 
-	//return this->mainFrequency;
 	return this->frequency;
 }
 //================================================================================================
