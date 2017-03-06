@@ -68,6 +68,8 @@ void MainTick::reportCurrentMode(){
 
 		switch(submode){
 		case FTEST_DYNAMIC_Starting:
+		case FTEST_DYNAMIC_Homing_PreparingAux:
+		case FTEST_DYNAMIC_Homing_MovingAux:
 		case FTEST_DYNAMIC_Homing_Preparing:
 		case FTEST_DYNAMIC_Homing_Moving:
 			{
@@ -163,6 +165,8 @@ void MainTick::reportCurrentMode(){
 
 		switch(submode){
 		case FTEST_STATIC_Starting:
+		case FTEST_STATIC_Homing_PreparingAux:
+		case FTEST_STATIC_Homing_MovingAux:
 		case FTEST_STATIC_Homing_Preparing:
 		case FTEST_STATIC_Homing_Moving:
 

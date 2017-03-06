@@ -40,6 +40,8 @@ private:
 		PARKING_MovingAux = 19,
 
 		FTEST_DYNAMIC_Starting = 20,
+		FTEST_DYNAMIC_Homing_PreparingAux = 21,
+		FTEST_DYNAMIC_Homing_MovingAux = 22,
 		FTEST_DYNAMIC_Homing_Preparing = 23,
 		FTEST_DYNAMIC_Homing_Moving = 24,
 		FTEST_DYNAMIC_Pause = 25,
@@ -47,6 +49,8 @@ private:
 		FTEST_DYNAMIC_Testing_Moving = 29,
 
 		FTEST_STATIC_Starting = 30,
+		FTEST_STATIC_Homing_PreparingAux = 31,
+		FTEST_STATIC_Homing_MovingAux = 32,
 		FTEST_STATIC_Homing_Preparing = 33,
 		FTEST_STATIC_Homing_Moving = 34,
 		FTEST_STATIC_Pause = 35,

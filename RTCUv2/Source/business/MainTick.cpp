@@ -847,9 +847,49 @@ void MainTick::process(){ //called every 100ms
 		Parking::recalculateServoFrequency();// for homing
 		ForceTestDynamic::recalculateServoFrequency();// for actual testing
 
-		setSubmode(FTEST_DYNAMIC_Homing_Preparing);
+		setSubmode(FTEST_DYNAMIC_Homing_PreparingAux);
 
 		processFieldbus();
+		break;
+	//------------------------------------------------FTEST--DYNAMIC----------------------------------
+	case FTEST_DYNAMIC_Homing_PreparingAux:
+
+		Actuators::enable(
+			0,
+			PersonalSettings::protocolStruct.positionAux1,
+			MachineSettings::protocolStructExtended.positionAux1Min,
+			MachineSettings::protocolStructExtended.positionAux1Max
+		);	
+		Actuators::enable(
+			1,
+			PersonalSettings::protocolStruct.positionAux2,
+			MachineSettings::protocolStructExtended.positionAux2Min,
+			MachineSettings::protocolStructExtended.positionAux2Max
+		);	
+		setSubmode(FTEST_DYNAMIC_Homing_MovingAux);
+
+		processFieldbus();
+
+		break;
+	//------------------------------------------------FTEST--DYNAMIC----------------------------------
+	case FTEST_DYNAMIC_Homing_MovingAux:
+
+		if (true==RxMessageQueue::cancelMessageReceived()){
+
+			Actuators::disable(0);
+			Actuators::disable(1);
+			setSubmode(WAITING_Waiting);
+
+		}else if ((Actuators::targetPositionReached(0)==true)&&(Actuators::targetPositionReached(1)==true)){
+
+			Actuators::disable(0);
+			Actuators::disable(1);
+			
+			setSubmode(FTEST_DYNAMIC_Homing_Preparing);
+		}
+
+		processFieldbus();
+
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Homing_Preparing:
@@ -1104,10 +1144,50 @@ void MainTick::process(){ //called every 100ms
 
 		Parking::recalculateServoFrequency();// for homing
 
-		setSubmode(FTEST_STATIC_Homing_Preparing);
+		setSubmode(FTEST_STATIC_Homing_PreparingAux);
 
 
 		processFieldbus();
+		break;
+	//------------------------------------------------FTEST--STATIC----------------------------------
+	case FTEST_STATIC_Homing_PreparingAux:
+
+		Actuators::enable(
+			0,
+			PersonalSettings::protocolStruct.positionAux1,
+			MachineSettings::protocolStructExtended.positionAux1Min,
+			MachineSettings::protocolStructExtended.positionAux1Max
+		);	
+		Actuators::enable(
+			1,
+			PersonalSettings::protocolStruct.positionAux2,
+			MachineSettings::protocolStructExtended.positionAux2Min,
+			MachineSettings::protocolStructExtended.positionAux2Max
+		);	
+		setSubmode(FTEST_STATIC_Homing_MovingAux);
+
+		processFieldbus();
+
+		break;
+	//------------------------------------------------FTEST--STATIC----------------------------------
+	case FTEST_STATIC_Homing_MovingAux:
+
+		if (true==RxMessageQueue::cancelMessageReceived()){
+
+			Actuators::disable(0);
+			Actuators::disable(1);
+			setSubmode(WAITING_Waiting);
+
+		}else if ((Actuators::targetPositionReached(0)==true)&&(Actuators::targetPositionReached(1)==true)){
+
+			Actuators::disable(0);
+			Actuators::disable(1);
+			
+			setSubmode(FTEST_STATIC_Homing_Preparing);
+		}
+
+		processFieldbus();
+
 		break;
 	//------------------------------------------------FTEST--STATIC----------------------------------
 	case FTEST_STATIC_Homing_Preparing:
