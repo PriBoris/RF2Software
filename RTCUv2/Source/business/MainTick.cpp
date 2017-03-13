@@ -678,7 +678,46 @@ void MainTick::process(){ //called every 100ms
 		Parking::recalculateServoFrequency();
 
 		//MessageQueue::flush();
-		setSubmode(PARKING_Preparing);
+		setSubmode(PARKING_PreparingAux);
+
+		processFieldbus();
+
+		break;
+	//-------------------------------------------------PARKING-----------------------------------
+	case PARKING_PreparingAux:
+
+		Actuators::enable(
+			0,
+			PersonalSettings::protocolStruct.positionAux1,
+			MachineSettings::protocolStructExtended.positionAux1Min,
+			MachineSettings::protocolStructExtended.positionAux1Max
+		);	
+		Actuators::enable(
+			1,
+			PersonalSettings::protocolStruct.positionAux2,
+			MachineSettings::protocolStructExtended.positionAux2Min,
+			MachineSettings::protocolStructExtended.positionAux2Max
+		);	
+		setSubmode(PARKING_MovingAux);
+
+		processFieldbus();
+		break;
+	//-------------------------------------------------PARKING-----------------------------------
+	case PARKING_MovingAux:
+
+		if (true==RxMessageQueue::cancelMessageReceived()){
+
+			Actuators::disable(0);
+			Actuators::disable(1);
+			setSubmode(WAITING_Waiting);
+
+		}else if ((Actuators::targetPositionReached(0)==true)&&(Actuators::targetPositionReached(1)==true)){
+
+			Actuators::disable(0);
+			Actuators::disable(1);
+			
+			setSubmode(PARKING_Preparing);
+		}
 
 		processFieldbus();
 
@@ -698,7 +737,7 @@ void MainTick::process(){ //called every 100ms
 
 				//skip moving
 				Servo::brake();				
-				setSubmode(PARKING_PreparingAux);
+				setSubmode(WAITING_Waiting);
 				reportServoModeStop();
 
 				processFieldbus();				
@@ -778,7 +817,7 @@ void MainTick::process(){ //called every 100ms
 			if (positionTaskIsComplete==true){
 
 				Servo::brake();				
-				setSubmode(PARKING_PreparingAux);
+				setSubmode(WAITING_Waiting);
 				reportServoModeStop();
 
 				processFieldbus();
@@ -806,39 +845,6 @@ void MainTick::process(){ //called every 100ms
 			}
 		}
 
-		break;
-	//-------------------------------------------------PARKING-----------------------------------
-	case PARKING_PreparingAux:
-
-		Actuators::enable(
-			0,
-			PersonalSettings::protocolStruct.positionAux1,
-			MachineSettings::protocolStructExtended.positionAux1Min,
-			MachineSettings::protocolStructExtended.positionAux1Max
-		);	
-		Actuators::enable(
-			1,
-			PersonalSettings::protocolStruct.positionAux2,
-			MachineSettings::protocolStructExtended.positionAux2Min,
-			MachineSettings::protocolStructExtended.positionAux2Max
-		);	
-		setSubmode(PARKING_MovingAux);
-
-		processFieldbus();
-		break;
-	//-------------------------------------------------PARKING-----------------------------------
-	case PARKING_MovingAux:
-
-		if (
-			(true==RxMessageQueue::cancelMessageReceived())||
-			((Actuators::targetPositionReached(0)==true)&&(Actuators::targetPositionReached(1)==true))
-		){
-			Actuators::disable(0);
-			Actuators::disable(1);
-			setSubmode(WAITING_Waiting);
-		}
-
-		processFieldbus();
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
