@@ -64,7 +64,10 @@ public:
 	static int32_t getMainRange();
 
 
-	//static float absSpeedToServoFrequency(int32_t absSpeed);
+	static int32_t moveDistanceToDegrees(int32_t moveDistance);
+
+
+
 
 };
 

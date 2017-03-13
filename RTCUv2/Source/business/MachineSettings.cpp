@@ -2,6 +2,7 @@
 #include "MachineSettings.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 #include "business/Settings.h"
 #include "hmi/hmi.h"
@@ -248,6 +249,19 @@ int32_t MachineSettings::getMainRange(){
 	}else{
 		return mainRange;
 	}
+
+}
+//=================================================================================================
+int32_t MachineSettings::moveDistanceToDegrees(int32_t moveDistance){
+
+	const int32_t fullCircleDegrees = 360;
+	int32_t fullCircle = 4096;
+	switch(protocolStructExtended.encoderBitCount){
+	case 15:
+		fullCircle = 32767;
+		break;
+	}
+	return abs(moveDistance)*fullCircleDegrees/fullCircle;
 
 }
 //=================================================================================================

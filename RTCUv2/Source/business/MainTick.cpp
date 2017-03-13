@@ -2362,7 +2362,13 @@ void MainTick::process(){ //called every 100ms
 
 				Servo::brake();
 
+				{
+					int32_t moveDistance = GenericSet::getMoveDestinationPosition() - GenericSet::getMoveStartPosition();
+					Odometer::incrementDegrees(MachineSettings::moveDistanceToDegrees(moveDistance));
+				}
+
 				GenericSet::moveComplete();
+
 				if (GenericSet::isSetComplete()==false){
 
 					if (GenericSet::isMoveStatic()){
@@ -2380,13 +2386,13 @@ void MainTick::process(){ //called every 100ms
 
 					}
 
-
 				}else{
 
 					//set complete
 					setSubmode(WAITING_Waiting);
 					reportServoModeStop();
 					processFieldbus();
+
 				}
 
 				
