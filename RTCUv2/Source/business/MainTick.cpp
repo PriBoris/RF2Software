@@ -17,6 +17,7 @@
 #include "business/PositionTask.h"
 #include "business/Excercise.h"
 #include "business/GenericSet.h"
+#include "business/AuxMonitor.h"
 
 #include "hmi/diagnostics.h"
 #include "hmi/hmi.h"
@@ -266,24 +267,30 @@ void MainTick::process(){ //called every 100ms
 			RxMessage *message = RxMessageQueue::pop();
 			if (message!=NULL){
 				switch(message->tag){
+				//--------------------------------------------------------------------------
 				case Protocol::TAG_LoadPersonalSettings:
 					PersonalSettings::load(message);
 					break;
+				//--------------------------------------------------------------------------
 				case Protocol::TAG_LoadExcerciseSettings:
 					ExcerciseSettings::load(message);
 					break;
+				//--------------------------------------------------------------------------
 				case Protocol::TAG_LoadGenericSetSettings:
 					GenericSetSettings::load(message);
 					break;
+				//--------------------------------------------------------------------------
 				case Protocol::TAG_LoadMachineSettingsExtended:
 					MachineSettings::load(message);
 					break;
+				//--------------------------------------------------------------------------
 				case Protocol::TAG_Personal:
 					if (MachineSettings::protocolStructExtendedValid==true){
 						setSubmode(PERSONAL_Waiting);//TODO:check message length
 						DebugConsole::pushMessage(" #Personal\0");
 					}
 					break;
+				//--------------------------------------------------------------------------
 				case Protocol::TAG_Parking: 
 					if (
 						(MachineSettings::protocolStructExtendedValid==true)&&
@@ -293,6 +300,7 @@ void MainTick::process(){ //called every 100ms
 						DebugConsole::pushMessage(" #Parking\0");
 					}
 					break;
+				//--------------------------------------------------------------------------
 				case Protocol::TAG_TestConcentric:
 				case Protocol::TAG_TestEccentric:
 
@@ -305,8 +313,7 @@ void MainTick::process(){ //called every 100ms
 						DebugConsole::pushMessage(" #ForceTestDynamic\0");
 					}
 					break;
-
-
+				//--------------------------------------------------------------------------
 				case Protocol::TAG_TestStatic:
 
 					if (
@@ -318,7 +325,7 @@ void MainTick::process(){ //called every 100ms
 						DebugConsole::pushMessage(" #ForceTestStatic\0");
 					}
 					break;
-				
+				//--------------------------------------------------------------------------
 				case Protocol::TAG_ExcerciseIsokinetic:
 
 					if (
@@ -328,8 +335,12 @@ void MainTick::process(){ //called every 100ms
 					){
 						setSubmode(EXERCISE_Starting);
 						DebugConsole::pushMessage(" #ExcerciseIsokinetic\0");
+						AuxMonitor::setDataFromRxMessage(message->valueLen, message->value);
+						
+
 					}
 					break;
+				//--------------------------------------------------------------------------
 				case Protocol::TAG_GenericSet:
 					if (
 						(MachineSettings::protocolStructExtendedValid==true)&&
@@ -340,6 +351,7 @@ void MainTick::process(){ //called every 100ms
 						DebugConsole::pushMessage(" #GenericSet\0");
 					}
 					break;
+				//--------------------------------------------------------------------------
 				}
 			}else{
 

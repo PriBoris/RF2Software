@@ -820,6 +820,16 @@
               <FileType>5</FileType>
               <FilePath>.\Source\business\FrequencyModulation.h</FilePath>
             </File>
+            <File>
+              <FileName>AuxMonitor.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Source\business\AuxMonitor.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>AuxMonitor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\business\AuxMonitor.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
