@@ -10,6 +10,7 @@
 #include "hmi/debugConsole.h"
 #include "servo/servo.h"
 #include "servo/encoder.h"
+#include "business/FrequencyModulation.h"
 
 
 MachineSettings::ProtocolStructExtended MachineSettings::protocolStructExtended;
@@ -202,14 +203,14 @@ bool MachineSettings::checkProtocolStructExtended(ProtocolStructExtended *protoc
 		(protocolStructExtended->positionMainMin<0)||
 		(protocolStructExtended->positionMainMax<protocolStructExtended->positionMainMin)||//TODO: should be dependent on encoder bits count
 
-		(protocolStructExtended->concentricAccelerationLaw < 1)||
-		(protocolStructExtended->concentricDecelerationLaw < 1)||
-		(protocolStructExtended->eccentricAccelerationLaw < 1)||
-		(protocolStructExtended->eccentricDecelerationLaw < 1)||
-		(protocolStructExtended->concentricAccelerationLaw > 8)||
-		(protocolStructExtended->concentricDecelerationLaw > 8)||
-		(protocolStructExtended->eccentricAccelerationLaw > 8)||
-		(protocolStructExtended->eccentricDecelerationLaw > 8)||
+		(protocolStructExtended->concentricAccelerationLaw < FrequencyModulation::MIN_LAW)||
+		(protocolStructExtended->concentricDecelerationLaw < FrequencyModulation::MIN_LAW)||
+		(protocolStructExtended->eccentricAccelerationLaw < FrequencyModulation::MIN_LAW)||
+		(protocolStructExtended->eccentricDecelerationLaw < FrequencyModulation::MIN_LAW)||
+		(protocolStructExtended->concentricAccelerationLaw > FrequencyModulation::MAX_LAW)||
+		(protocolStructExtended->concentricDecelerationLaw > FrequencyModulation::MAX_LAW)||
+		(protocolStructExtended->eccentricAccelerationLaw > FrequencyModulation::MAX_LAW)||
+		(protocolStructExtended->eccentricDecelerationLaw > FrequencyModulation::MAX_LAW)||
 
 		(protocolStructExtended->minPositiveServoFrequency < 2.0f)||
 		(protocolStructExtended->maxPositiveServoFrequency < 2.0f)||

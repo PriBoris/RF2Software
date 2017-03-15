@@ -82,9 +82,10 @@ float FrequencyModulation::getFrequency(
 		this->x = xTemp;
 	}
 
+
 	if (this->rangeOk==false){
 
-		actualLaw = 0;
+		actualLaw = LAW_CREEP;
 		this->x1 = 0.0f;
 
 	}else{
@@ -103,46 +104,33 @@ float FrequencyModulation::getFrequency(
 
 	this->y = 0.0f;
 	switch(actualLaw){
-	case 0:
+	default:
+	case LAW_CREEP:
 		this->y = 0.0f; // 1-1	
 		break;
-	case 1:
-		this->y = 1.0f - this->x1;
+	case LAW_CONST:
+		this->y = 1.0f;
 		break;
-	case 2:
+	case LAW_POWER2:
 		this->y = 1.0f - this->x1*this->x1;
 		break;
-	case 3:
-		this->y = 1.0f - this->x1*this->x1*this->x1;
-		break;
-	case 4:
+	case LAW_POWER4:
 		{
 			float x2 = this->x1*this->x1;
 			this->y = 1.0f - x2*x2;
 		}
 		break;
-	case 5:
+	case LAW_QUARTER_POWER2:
 		{
-			float x2 = this->x1*this->x1;
-			this->y = 1.0f - x2*x2*this->x1;
+			float k = 0.9f;
+			if (this->x1<k){
+				this->y = 1.0f; 
+			}else{
+				float t = (this->x1-k)/(1.0f-k);
+				this->y = 1.0f - t*t; 
+			}
 		}
 		break;
-	case 6:
-		{
-			float x3 = this->x1*this->x1*this->x1;
-			this->y = 1.0f - x3*x3;
-		}
-		break;
-	default:// >6
-		{
-			float x2 = this->x1*this->x1;
-			float x4 = x2*x2;
-			float x8 = x4*x4;
-			float x16 = x8*x8;
-			this->y = 1.0f - x16;
-		}
-		break;
-
 	}
 
 	this->frequency = this->mainFrequency * this->y;

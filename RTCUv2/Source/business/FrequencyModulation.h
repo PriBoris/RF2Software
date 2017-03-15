@@ -31,8 +31,6 @@ private:
 	int32_t decelerationLaw;
 	int32_t actualLaw;
 
-	static const int32_t MAX_LAW = 8;
-	static const int32_t MIN_LAW = 1;
 
 public:
 
@@ -50,6 +48,17 @@ public:
 
 	bool getDirection();
 
+
+
+
+	static const int32_t LAW_CREEP = 0;
+	static const int32_t LAW_CONST = 1;
+	static const int32_t LAW_POWER2 = 2;
+	static const int32_t LAW_POWER4 = 3;
+	static const int32_t LAW_QUARTER_POWER2 = 4;
+
+	static const int32_t MIN_LAW = 0;
+	static const int32_t MAX_LAW = 4;
 
 
 };
