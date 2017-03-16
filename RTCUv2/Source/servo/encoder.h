@@ -11,12 +11,6 @@ private:
 	static uint32_t replyCounter;
 
 	static uint16_t rawValue;
-	//static uint16_t value;
-
-	//static const uint16_t VALUE_MASK = 0x7FFF;
-	//static const uint16_t VALUE_ADDEND = 0;
-	//static const uint16_t VALUE_SUBTRAHEND = 10000;
-	//static const int32_t VALUE_SIGN = +1;
 
 public:
 	
@@ -25,8 +19,16 @@ public:
 	static void getReply();
 	static int32_t getValue();
 
-//	static const int32_t FULL_ROTATION_TICKS = 4096;
-	static const int32_t FULL_ROTATION_TICKS = 32768;
+
+	/*
+	wheels diameters^
+	116mm/51mm=2.2745
+	32768 * 2.2745 = 74531.137254901960784313725490196
+	*/
+//	static const int32_t FULL_ROTATION_TICKS = (32768);
+	static const int32_t FULL_ROTATION_TICKS = (74531);
+
+
 
 };
 
