@@ -30,6 +30,10 @@ class WidgetServoMode : public QWidget{
 
     QLabel *lblServoCommand;
 
+    QLabel *lblBytesCountHMI;
+    QLabel *lblBytesCountNFC;
+
+
     QCustomPlot* plotPositionVsTime;
     QVector<double> plotPositionData,plotTimeData;
     QVector<double> plotPersonalAData,plotPersonalBData;

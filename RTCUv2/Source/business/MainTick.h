@@ -303,15 +303,6 @@ private:
 
 	//-----------------------------------------------------------
 
-	static const uint16_t MSGLEN_ReportServoMode_DEFAULT = 
-		sizeof(uint32_t)+
-		sizeof(NV::RealTimeClock::TCurrentDateTime)+
-		4*sizeof(uint8_t)+//mode submode before after
-		2*sizeof(float)+//frequencies
-		1*sizeof(int32_t)+//position
-		3*sizeof(int32_t)+//temperatures
-		0;
-
 	static const uint16_t MSGLEN_ReportServoMode = 
 		sizeof(uint32_t)+
 		sizeof(NV::RealTimeClock::TCurrentDateTime)+
@@ -320,6 +311,7 @@ private:
 		1*sizeof(int32_t)+//position
 		3*sizeof(int32_t)+//temperatures
 		1*sizeof(int32_t)+//command
+		4*sizeof(uint32_t)+//bytes count to/from HMI/NFC
 		0;
 		
 
@@ -329,6 +321,10 @@ private:
 
 	static const uint32_t MSGPOS_ReportServoMode_servoCommand = 38;
 		
+	static const uint32_t MSGPOS_ReportServoMode_bytesCountToHMI = MSGPOS_ReportServoMode_servoCommand+4;
+	static const uint32_t MSGPOS_ReportServoMode_bytesCountFromHMI = MSGPOS_ReportServoMode_servoCommand+8;
+	static const uint32_t MSGPOS_ReportServoMode_bytesCountToNFC = MSGPOS_ReportServoMode_servoCommand+12;
+	static const uint32_t MSGPOS_ReportServoMode_bytesCountFromNFC = MSGPOS_ReportServoMode_servoCommand+16;
 
 
 	//-----------------------------------------------------------

@@ -71,6 +71,7 @@ private:
 	static const uint8_t SLIP_ESC_ESC = 0xDD;	
 
 	uint32_t rxByteCounter;
+	uint32_t txByteCounter;
 	
 	static uint32_t rxErrorCounter;
 	static uint32_t rxStuffErrorCounter;
@@ -149,6 +150,8 @@ public:
 	static const uint8_t TAG_CheckRfidProximity = 0x80;
 
 
+	uint32_t getRxBytesCount();
+	uint32_t getTxBytesCount();
 
 };
 

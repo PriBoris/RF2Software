@@ -4,6 +4,8 @@
 #include <string.h>
 
 #include "hmi/diagnostics.h"
+#include "hmi/hmi.h"
+#include "nfc/nfc.h"
 #include "servo/encoder.h"
 #include "servo/servo.h"
 
@@ -17,9 +19,14 @@ void MainTick::reportServoModeDefault(){
 	
 	if (reportServoModeIssued==false){
 
-		uint8_t message[MSGLEN_ReportServoMode_DEFAULT];
+		uint8_t message[MSGLEN_ReportServoMode];
 		memset(message,0,sizeof(message));
 		reportServoModeHeader(message);
+
+		{
+			uint32_t cmd = REPORT_SERVO_MODE_STOP;
+			memcpy(&message[MSGPOS_ReportServoMode_servoCommand],&cmd,sizeof(cmd));
+		}
 
 		Diagnostics::protocol.sendPacket(Protocol::TAG_ReportServoMode,message,sizeof(message));
 
@@ -58,6 +65,20 @@ void MainTick::reportServoModeHeader(uint8_t *message){
 	memcpy(&message[MSGPOS_ReportServoMode_heatsinkTemperature],&Servo::heatsinkTemperature,sizeof(Servo::heatsinkTemperature));
 	memcpy(&message[MSGPOS_ReportServoMode_internalTemperature],&Servo::internalTemperature,sizeof(Servo::internalTemperature));
 	memcpy(&message[MSGPOS_ReportServoMode_motorTemperature],&Servo::motorTemperature,sizeof(Servo::motorTemperature));
+
+	{
+		uint32_t bytesCountToHMI = HMI::protocol.getTxBytesCount();
+		uint32_t bytesCountFromHMI = HMI::protocol.getRxBytesCount();
+		uint32_t bytesCountToNFC = NFC::protocol.getTxBytesCount();
+		uint32_t bytesCountFromNFC = NFC::protocol.getRxBytesCount();
+
+		memcpy(&message[MSGPOS_ReportServoMode_bytesCountToHMI], &bytesCountToHMI, sizeof(uint32_t));
+		memcpy(&message[MSGPOS_ReportServoMode_bytesCountFromHMI], &bytesCountFromHMI, sizeof(uint32_t));
+		memcpy(&message[MSGPOS_ReportServoMode_bytesCountToNFC], &bytesCountToNFC, sizeof(uint32_t));
+		memcpy(&message[MSGPOS_ReportServoMode_bytesCountFromNFC], &bytesCountFromNFC, sizeof(uint32_t));
+
+
+	}
 
 }
 //==================================================================================================================

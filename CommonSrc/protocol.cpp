@@ -35,6 +35,7 @@ void Protocol::init(
 		this->rxValueLen = rxValueLen;
 
 		this->rxByteCounter = 0;
+		this->txByteCounter = 0;
 		
 		stuffState = STUFF_Waiting;
 		protocolState = PROTOCOL_Error;
@@ -281,7 +282,8 @@ void Protocol::pushByte(uint8_t byte,bool pushStuffed,uint32_t *crc){
 	}else{
 		
 		txBuffer[txPtrPending] = byte;
-		txPtrPending = (txPtrPending+1) & txBufferLenMinus1;		
+		txPtrPending = (txPtrPending+1) & txBufferLenMinus1;
+		txByteCounter++;		
 	}
 }
 void Protocol::pushWord(uint16_t word,bool pushStuffed,uint32_t *crc){
@@ -313,6 +315,14 @@ void Protocol::sendPacket(uint8_t tag,uint8_t *data,uint32_t dataLen){
 	}
 	pushDword(crc,true,0);
 	
+}
+//===============================================================================================
+uint32_t Protocol::getRxBytesCount(){
+	return rxByteCounter;
+}
+//===============================================================================================
+uint32_t Protocol::getTxBytesCount(){
+	return txByteCounter;
 }
 //===============================================================================================
 

@@ -66,9 +66,18 @@ WidgetServoMode::WidgetServoMode(
 
 
 	{
-		lblServoCommand = new QLabel("");
+		lblServoCommand = new QLabel("lblServoCommand");
 		lblServoCommand->setFont(QFont("Verdana",10,QFont::Bold,false));
 	}
+
+	{
+		lblBytesCountHMI = new QLabel("lblBytesCountHMI");
+		lblBytesCountNFC = new QLabel("lblBytesCountNFC");
+		lblBytesCountHMI->setFont(QFont("Verdana",10,QFont::Normal,false));
+		lblBytesCountNFC->setFont(QFont("Verdana",10,QFont::Normal,false));
+
+	}
+
 
 	{
 		plotPositionVsTime = new QCustomPlot;
@@ -103,6 +112,12 @@ WidgetServoMode::WidgetServoMode(
 	loMain->addWidget(lblTemperature);
 
 	loMain->addWidget(lblServoCommand);
+
+	loMain->addWidget(lblBytesCountHMI);
+	loMain->addWidget(lblBytesCountNFC);
+
+
+
 	loMain->addWidget(plotPositionVsTime);
 	loMain->addStretch(1);
 
@@ -267,9 +282,7 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
 		}
 
 
-		if (value.length()==38){
-			lblServoCommand->setText("");
-		}else if (value.length()==42){
+		{
 			qint32 servoCommand = TLV::getInt32(value,38);
 			QString servoCommandStr;
 			switch(servoCommand){
@@ -288,8 +301,29 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
 			}
 			lblServoCommand->setText("COMMAND:"+servoCommandStr);
 			(reportLogger->stream) << "COMMAND:" << servoCommandStr <<";";
-		}else{
-			lblServoCommand->setText("");
+		}
+
+		{
+			quint32 bytesCountToHMI = TLV::getUint32(value,42);;
+			quint32 bytesCountFromHMI = TLV::getUint32(value,46);;
+			quint32 bytesCountToNFC = TLV::getUint32(value,50);;
+			quint32 bytesCountFromNFC = TLV::getUint32(value,54);;
+
+			QString bytesCountHMIStr = 
+				" >" + QString::number(bytesCountToHMI) +
+				" <" + QString::number(bytesCountFromHMI) +
+				"";
+			QString bytesCountNFCStr = 
+				" >" + QString::number(bytesCountToNFC) +
+				" <" + QString::number(bytesCountFromNFC) +
+				"";
+
+			lblBytesCountHMI->setText("HMI bytes count:" + bytesCountHMIStr);
+			lblBytesCountNFC->setText("NFC bytes count:" + bytesCountNFCStr);
+			(reportLogger->stream) << "HMI:" << bytesCountHMIStr <<";";
+			(reportLogger->stream) << "NFC:" << bytesCountNFCStr <<";";
+
+
 		}
 
 
