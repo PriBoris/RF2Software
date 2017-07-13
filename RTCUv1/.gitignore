@@ -1,0 +1,7 @@
+
+**/Obj/*
+*.chw
+*.bak
+*.dep
+*.Administrator
+JLinkSettings.ini
