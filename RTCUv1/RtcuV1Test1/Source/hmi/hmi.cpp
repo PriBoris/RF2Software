@@ -67,21 +67,6 @@ void HMI::process(){
 		USART2->DR = protocol.popTxByte();
 	}
 
-/*	if (protocol.processRx()==true){
-		
-		HmiRxMessage *message = (HmiRxMessage*)&hmiRxMessageQueue[hmiRxMessageQueuePtrReceived];
-		if (protocol.getRxDataLen()<=RX_MAX_VALUE_LENGTH){
-			
-				message->id = protocol.getRxID();
-				message->tag = protocol.getRxTag();
-				message->valueLen = protocol.getRxDataLen();
-				protocol.getRxValue((uint8_t*)&message->value);
-				hmiRxMessageQueuePtrReceived = (hmiRxMessageQueuePtrReceived+1)&(HMI_RX_MESSAGE_QUEUE_LEN-1);
-		}
-	}
-*/	
-
-
 	if (protocol.processRx()==true){	
 		RxMessageQueue::push(
 			protocol.rxTag,

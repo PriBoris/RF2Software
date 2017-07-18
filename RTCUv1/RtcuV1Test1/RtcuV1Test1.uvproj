@@ -460,6 +460,16 @@
               <FileType>5</FileType>
               <FilePath>.\Source\hmi\RxMessageQueue.h</FilePath>
             </File>
+            <File>
+              <FileName>broadcast.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Source\hmi\broadcast.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>broadcast.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\hmi\broadcast.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

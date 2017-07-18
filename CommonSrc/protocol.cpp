@@ -19,28 +19,29 @@ void Protocol::init(
 	uint8_t *rxValue,
 	uint32_t rxValueLen
 	){
-		this->txBuffer = txBuffer;
-		this->txBufferLen = txBufferLen;
-		txBufferLenMinus1 = txBufferLen-1;
-		txPtrPending = txPtrTransmitted = 0;
-		//memset(txBuffer,0,txBufferLen);
 	
-		this->rxBuffer = rxBuffer;
-		this->rxBufferLen = rxBufferLen;
-		rxBufferLenMinus1 = rxBufferLen-1;
-		rxPtrReceived = rxPtrProcessed = 0;
-		//memset(rxBuffer,0,rxBufferLen);
+	this->txBuffer = txBuffer;
+	this->txBufferLen = txBufferLen;
+	txBufferLenMinus1 = txBufferLen-1;
+	txPtrPending = txPtrTransmitted = 0;
+	//memset(txBuffer,0,txBufferLen);
 
-		this->rxValue = rxValue;
-		this->rxValueLen = rxValueLen;
+	this->rxBuffer = rxBuffer;
+	this->rxBufferLen = rxBufferLen;
+	rxBufferLenMinus1 = rxBufferLen-1;
+	rxPtrReceived = rxPtrProcessed = 0;
+	//memset(rxBuffer,0,rxBufferLen);
 
-		this->rxByteCounter = 0;
-		this->txByteCounter = 0;
-		
-		stuffState = STUFF_Waiting;
-		protocolState = PROTOCOL_Error;
+	this->rxValue = rxValue;
+	this->rxValueLen = rxValueLen;
 
-		txID = 0;
+	this->rxByteCounter = 0;
+	this->txByteCounter = 0;
+	
+	stuffState = STUFF_Waiting;
+	protocolState = PROTOCOL_Error;
+
+	txID = 0;
 	
 }
 

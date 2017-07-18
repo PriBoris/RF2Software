@@ -36,28 +36,4 @@ public:
 };
 
 
-/*class HmiRxMessage{
-
-public:	
-	uint8_t tag;
-	uint16_t valueLen;
-	uint32_t id;
-	uint8_t value[HMI::RX_MAX_VALUE_LENGTH];
-};
-
-#define HMI_RX_MESSAGE_QUEUE_LEN	(32)
-extern HmiRxMessage hmiRxMessageQueue[HMI_RX_MESSAGE_QUEUE_LEN];
-extern uint16_t hmiRxMessageQueuePtrReceived;
-extern uint16_t hmiRxMessageQueuePtrProcessed;
-
-extern void flushHmiRxMessageQueue(void);
-extern bool isHmiRxMessageQueueNotEmpty(void);
-extern HmiRxMessage* popHmiRxMessage(void);
-
-*/
-
-
-
-
-
 #endif //HMI_HMI_H
