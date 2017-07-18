@@ -128,6 +128,7 @@
             <RestoreFunctions>1</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
+            <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
             <UseTarget>1</UseTarget>
@@ -139,9 +140,11 @@
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>1</RestoreTracepoints>
+            <RestoreSysVw>1</RestoreSysVw>
+            <UsePdscDebugDescription>0</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>7</TargetSelection>
+          <TargetSelection>11</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -155,7 +158,7 @@
             <PeripheralDll></PeripheralDll>
             <PeripheralDllArguments></PeripheralDllArguments>
             <InitializationFile></InitializationFile>
-            <Driver>Segger\JL2CM3.dll</Driver>
+            <Driver>STLink\ST-LINKIII-KEIL_SWO.dll</Driver>
           </TargetDlls>
         </DebugOption>
         <Utilities>
@@ -353,11 +356,13 @@
             <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
+            <uC99>0</uC99>
+            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Source;..\STM32F2xx;..\STM32F2xx_StdPeriph_Driver\inc</IncludePath>
+              <IncludePath>.\Source;..\STM32F2xx;..\STM32F2xx_StdPeriph_Driver\inc;.\Source\CommonSrc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -369,6 +374,7 @@
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
+            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -385,6 +391,7 @@
             <useFile>0</useFile>
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
+            <pXoBase></pXoBase>
             <ScatterFile></ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
@@ -421,52 +428,27 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>BlackBox</GroupName>
-          <Files>
-            <File>
-              <FileName>crc32.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Source\crc32.h</FilePath>
-            </File>
-            <File>
-              <FileName>crc32.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\Source\crc32.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>BlackBox.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\Source\BlackBox.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>BlackBox.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Source\BlackBox.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>HMI</GroupName>
           <Files>
             <File>
-              <FileName>Hmi.cpp</FileName>
+              <FileName>diagnostics.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\Source\Hmi.cpp</FilePath>
+              <FilePath>.\Source\hmi\diagnostics.cpp</FilePath>
             </File>
             <File>
-              <FileName>Hmi.h</FileName>
+              <FileName>diagnostics.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Source\Hmi.h</FilePath>
+              <FilePath>.\Source\hmi\diagnostics.h</FilePath>
             </File>
             <File>
-              <FileName>Protocol.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Source\Protocol.h</FilePath>
-            </File>
-            <File>
-              <FileName>Protocol.cpp</FileName>
+              <FileName>hmi.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\Source\Protocol.cpp</FilePath>
+              <FilePath>.\Source\hmi\hmi.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>hmi.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\hmi\hmi.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -619,26 +601,6 @@
               <FilePath>..\STM32F2xx_StdPeriph_Driver\src\stm32f2xx_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f2xx_hash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\STM32F2xx_StdPeriph_Driver\src\stm32f2xx_hash.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f2xx_hash_md5.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\STM32F2xx_StdPeriph_Driver\src\stm32f2xx_hash_md5.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f2xx_hash_sha1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\STM32F2xx_StdPeriph_Driver\src\stm32f2xx_hash_sha1.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f2xx_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\STM32F2xx_StdPeriph_Driver\src\stm32f2xx_i2c.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f2xx_iwdg.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\STM32F2xx_StdPeriph_Driver\src\stm32f2xx_iwdg.c</FilePath>
@@ -722,6 +684,31 @@
               <FileName>system_stm32f2xx.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\STM32F2xx\system_stm32f2xx.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>CommonSrc</GroupName>
+          <Files>
+            <File>
+              <FileName>crc32.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Source\CommonSrc\crc32.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Protocol.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Source\CommonSrc\Protocol.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>crc32.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\CommonSrc\crc32.h</FilePath>
+            </File>
+            <File>
+              <FileName>Protocol.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\CommonSrc\Protocol.h</FilePath>
             </File>
           </Files>
         </Group>

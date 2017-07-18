@@ -61,7 +61,7 @@ void nfcInit(void)
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 
-	hmiTxEnableAssert();
+	//hmiTxEnableAssert();
 
 	USART_Cmd(USART6, ENABLE);
 	USART_ITConfig(USART6, USART_IT_RXNE, ENABLE); //Received Data Ready to be Read

@@ -1,13 +1,15 @@
 
 #include "mode.h"
 
+#include "hmi/hmi.h"
+
+
 
 Mode mode;
 Submode submode;
 extern void modeProcess();
 
 
-extern Protocol hmiProtocol;
 uint16_t modbusTxTransactionIdentifier = 0;
 
 
@@ -156,7 +158,7 @@ void modeProcess()
 		int32_t uidLength = (int32_t)nfcUIDLength;
 		memcpy(&messageToHmi[0],&uidLength,sizeof(uidLength));
 		memcpy(&messageToHmi[4],&nfcUID[0],uidLength);
-		hmiProtocol.sendPacket(Protocol::TAG_RfidProximity,messageToHmi,4+uidLength);										
+		HMI::protocol.sendPacket(Protocol::TAG_RfidProximity,messageToHmi,4+uidLength);										
 	}
 		
 	
@@ -235,7 +237,7 @@ void modeProcess()
 				uint32_t odometerDistanceMeters = OdometerRTC::getOdometerDistanceMeters();
 				memcpy(&messageToHmi[1+sizeof(TCurrentDateTime)+sizeof(uint32_t)],&odometerDistanceMeters,sizeof(odometerDistanceMeters));
 
-				hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+				HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 			}
 		
 		
@@ -257,7 +259,7 @@ void modeProcess()
 				uint32_t odometerDistanceMeters = OdometerRTC::getOdometerDistanceMeters();
 				memcpy(&messageToHmi[1+sizeof(TCurrentDateTime)+sizeof(uint32_t)],&odometerDistanceMeters,sizeof(odometerDistanceMeters));
 
-				hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+				HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 			}
 
 		
@@ -326,7 +328,7 @@ void modeProcess()
 				uint32_t odometerDistanceMeters = OdometerRTC::getOdometerDistanceMeters();
 				memcpy(&messageToHmi[1+sizeof(TCurrentDateTime)+sizeof(uint32_t)],&odometerDistanceMeters,sizeof(odometerDistanceMeters));
 
-				hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+				HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 			}
 
 		
@@ -392,7 +394,7 @@ void modeProcess()
 									sizeof(fhppInputData.actualValue2)
 									); //position
 							memset(&messageToHmi[1+sizeof(TCurrentDateTime)+8+4],0,12);
-							hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+							HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 						}
 
 						while (isHmiRxMessageQueueNotEmpty()==true)
@@ -502,7 +504,7 @@ void modeProcess()
 							sizeof(fhppInputData.actualValue2)
 							); //position
 					memset(&messageToHmi[1+sizeof(TCurrentDateTime)+8+4],0,12);
-					hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+					HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 				}
 				
 				{
@@ -514,22 +516,22 @@ void modeProcess()
 						settingsReportTimeout=0;
 						if (personalSettingsOk==false)
 						{
-							hmiProtocol.sendPacket(Protocol::TAG_ReportPersonalSettings,0,0);										
+							HMI::protocol.sendPacket(Protocol::TAG_ReportPersonalSettings,0,0);										
 						}
 						else
 						{
-							hmiProtocol.sendPacket(Protocol::TAG_ReportPersonalSettings,(uint8_t*)&personalSettings,sizeof(PersonalSettings));										
+							HMI::protocol.sendPacket(Protocol::TAG_ReportPersonalSettings,(uint8_t*)&personalSettings,sizeof(PersonalSettings));										
 						}
 						
-						hmiProtocol.sendPacket(Protocol::TAG_ReportMachineSettings,(uint8_t*)&machineSettings,sizeof(MachineSettings));										
+						HMI::protocol.sendPacket(Protocol::TAG_ReportMachineSettings,(uint8_t*)&machineSettings,sizeof(MachineSettings));										
 						
 						if (excerciseSettingsOk==false)
 						{
-							hmiProtocol.sendPacket(Protocol::TAG_ReportIsokineticExcerciseSettings,0,0);										
+							HMI::protocol.sendPacket(Protocol::TAG_ReportIsokineticExcerciseSettings,0,0);										
 						}
 						else
 						{
-							hmiProtocol.sendPacket(Protocol::TAG_ReportIsokineticExcerciseSettings,(uint8_t*)&isokineticSetSettings[0],sizeof(IsokineticSetSettings)*isokineticSetCount);										
+							HMI::protocol.sendPacket(Protocol::TAG_ReportIsokineticExcerciseSettings,(uint8_t*)&isokineticSetSettings[0],sizeof(IsokineticSetSettings)*isokineticSetCount);										
 						}
 					}
 				}
@@ -888,7 +890,7 @@ void modeProcess()
 								sizeof(fhppInputData.actualValue2)
 								); //position
 						memset(&messageToHmi[1+sizeof(TCurrentDateTime)+8+4],0,12);
-						hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+						HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 					}
 				
 					
@@ -954,7 +956,7 @@ void modeProcess()
 							sizeof(fhppInputData.actualValue2)
 							); //position
 					memset(&messageToHmi[1+sizeof(TCurrentDateTime)+8+4],0,12);
-					hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+					HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 				}
 
 				while (isHmiRxMessageQueueNotEmpty()==true)
@@ -1101,7 +1103,7 @@ void modeProcess()
 							sizeof(fhppInputData.actualValue2)
 							); //position
 					memset(&messageToHmi[1+sizeof(TCurrentDateTime)+8+4],0,12);
-					hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+					HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 				}
 				while (isHmiRxMessageQueueNotEmpty()==true)
 				{
@@ -1266,7 +1268,7 @@ void modeProcess()
 						int32_t phase = PHASE_HOMING;
 						memcpy(&messageToHmi[23+8],&phase,4); //phase
 
-						hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+						HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 					}
 				
 					motionCompletePause++;
@@ -1335,7 +1337,7 @@ void modeProcess()
 								&timeToTest,
 								4
 								); 
-						hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+						HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 					}
 					servoReadHoldingRegisters();			
 							
@@ -1418,7 +1420,7 @@ void modeProcess()
 								&force,
 								4
 								);
-						hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+						HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 					}
 				
 					servoReadHoldingRegisters();
@@ -1489,7 +1491,7 @@ void modeProcess()
 								&force,
 								4
 								);
-						hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+						HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 
 
 
@@ -1578,7 +1580,7 @@ void modeProcess()
 					int32_t phase = PHASE_HOMING;
 					memcpy(&messageToHmi[23+8],&phase,4); //phase
 					memcpy(&messageToHmi[27+8],&isokineticSetIndex,sizeof(isokineticSetIndex));
-					hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+					HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 				}
 
 
@@ -1683,7 +1685,7 @@ void modeProcess()
 					int32_t phase = PHASE_HOMING;
 					memcpy(&messageToHmi[23+8],&phase,4); //phase
 					memcpy(&messageToHmi[27+8],&isokineticSetIndex,sizeof(isokineticSetIndex));
-					hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+					HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 				}
 
 				if (fhppInputData.spos & SPOS_MC)
@@ -1753,7 +1755,7 @@ void modeProcess()
 						memcpy(&messageToHmi[23+8],&phase,4); //phase
 						memcpy(&messageToHmi[27+8],&isokineticSetIndex,sizeof(isokineticSetIndex));
 						memcpy(&messageToHmi[31+8],&timeToSet,sizeof(timeToSet));
-						hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+						HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 					}
 
 
@@ -1908,7 +1910,7 @@ void modeProcess()
 					int32_t force = getStrainGaugeFilteredResult();
 					memcpy(&messageToHmi[43+8],&force,sizeof(force));
 
-					hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+					HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 				}
 
 
@@ -2005,7 +2007,7 @@ void modeProcess()
 						memcpy(&messageToHmi[23+8],&phase,sizeof(phase)); //phase
 						memcpy(&messageToHmi[27+8],&isokineticSetIndex,sizeof(isokineticSetIndex));
 						memcpy(&messageToHmi[31+8],&timeFirstInterruption,sizeof(timeFirstInterruption));
-						hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+						HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 					}
 					
 					servoReadHoldingRegisters();
@@ -2129,7 +2131,7 @@ void modeProcess()
 					int32_t force = getStrainGaugeFilteredResult();
 					memcpy(&messageToHmi[43+8],&force,sizeof(force));
 
-					hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+					HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 				}
 
 				motionCompletePause++;
@@ -2245,7 +2247,7 @@ void modeProcess()
 						memcpy(&messageToHmi[23+8],&phase,sizeof(phase)); //phase
 						memcpy(&messageToHmi[27+8],&isokineticSetIndex,sizeof(isokineticSetIndex));
 						memcpy(&messageToHmi[31+8],&timeFirstInterruption,sizeof(timeFirstInterruption));
-						hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+						HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 					}
 					
 					servoReadHoldingRegisters();
@@ -2367,7 +2369,7 @@ void modeProcess()
 					memcpy(&messageToHmi[1+sizeof(TCurrentDateTime)+sizeof(uint32_t)],&odometerDistanceMeters,sizeof(odometerDistanceMeters));
 
 					messageToHmi[1+sizeof(TCurrentDateTime)+8] = errorType;
-					hmiProtocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
+					HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 					break;
 				
 			}

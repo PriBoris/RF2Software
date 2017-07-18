@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 #include <string.h>
+
 #include "crc32.h"
 
 
@@ -75,6 +76,11 @@ class Protocol
 		static const uint8_t SLIP_ESC_END = 0xDC;
 		static const uint8_t SLIP_ESC_ESC = 0xDD;	
 	
+		uint32_t rxCrc;
+		uint32_t calculatedRxCrc;
+
+
+
 	public:
 	
 		void init(

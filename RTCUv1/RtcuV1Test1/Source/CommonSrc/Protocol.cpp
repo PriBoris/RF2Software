@@ -98,8 +98,6 @@ bool Protocol::processRx(void)
 					stuffState = STUFF_Waiting;
 				
 					static uint32_t lengthReceived;
-					static uint32_t crcExpected;
-					static uint32_t crcCalculated;
 				
 				
 				
@@ -111,44 +109,50 @@ bool Protocol::processRx(void)
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_TagExpected:
-							crcCalculated = 0;
-							crc32(&crcCalculated,newByte);
+
+							Crc32::appendByte(newByte,calculatedRxCrc = Crc32::getInitValue());
 							rxTag = newByte;
 							protocolState = PROTOCOL_IDByte1Expected;
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_IDByte1Expected:
-							crc32(&crcCalculated,newByte);
+							Crc32::appendByte(newByte,calculatedRxCrc);
+
 							rxID = (uint32_t)newByte;
 							protocolState = PROTOCOL_IDByte2Expected;
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_IDByte2Expected:
-							crc32(&crcCalculated,newByte);
+							Crc32::appendByte(newByte,calculatedRxCrc);
+
 							rxID |= ((uint32_t)newByte)<<8;
 							protocolState = PROTOCOL_IDByte3Expected;
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_IDByte3Expected:
-							crc32(&crcCalculated,newByte);
+							Crc32::appendByte(newByte,calculatedRxCrc);
+
 							rxID |= ((uint32_t)newByte)<<16;
 							protocolState = PROTOCOL_IDByte4Expected;
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_IDByte4Expected:
-							crc32(&crcCalculated,newByte);
+							Crc32::appendByte(newByte,calculatedRxCrc);
+
 							rxID |= ((uint32_t)newByte)<<24;
 							protocolState = PROTOCOL_LenByte1Expected;
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_LenByte1Expected:
-							crc32(&crcCalculated,newByte);
+							Crc32::appendByte(newByte,calculatedRxCrc);
+
 							rxDataLen = (uint16_t)newByte;
 							protocolState = PROTOCOL_LenByte2Expected;
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_LenByte2Expected:
-							crc32(&crcCalculated,newByte);
+							Crc32::appendByte(newByte,calculatedRxCrc);
+
 							rxDataLen |= ((uint16_t)newByte)<<8;
 						
 						
@@ -169,66 +173,53 @@ bool Protocol::processRx(void)
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_ValueByteExpected:
 								
-								crc32(&crcCalculated,newByte);
-								rxValue[lengthReceived++] = newByte;
-								if (lengthReceived==rxDataLen)
-								{
-									protocolState = PROTOCOL_CrcByte1Expected;
-								}
+							Crc32::appendByte(newByte,calculatedRxCrc);
+
+							rxValue[lengthReceived++] = newByte;
+							if (lengthReceived==rxDataLen)
+							{
+								protocolState = PROTOCOL_CrcByte1Expected;
+							}
 							
 						
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_CrcByte1Expected:
 							
-								crcExpected = (uint32_t)newByte;
-								protocolState = PROTOCOL_CrcByte2Expected;
+							rxCrc = (uint32_t)newByte;
+
+							protocolState = PROTOCOL_CrcByte2Expected;
 						
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_CrcByte2Expected:
-								crcExpected |= ((uint32_t)newByte)<<8;
-								protocolState = PROTOCOL_CrcByte3Expected;
+							rxCrc |= ((uint32_t)newByte)<<8;
+
+							protocolState = PROTOCOL_CrcByte3Expected;
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_CrcByte3Expected:
-								crcExpected |= ((uint32_t)newByte)<<16;
-								protocolState = PROTOCOL_CrcByte4Expected;
+							rxCrc |= ((uint32_t)newByte)<<16;
+
+							protocolState = PROTOCOL_CrcByte4Expected;
 							break;
 						//---protocolState---------------------------------------------------------------
 						case PROTOCOL_CrcByte4Expected:						
-								crcExpected |= ((uint32_t)newByte)<<24;
+							rxCrc |= ((uint32_t)newByte)<<24;
+
+							protocolState = PROTOCOL_TagExpected;
+					
+							if (rxCrc==calculatedRxCrc)
+							{
+								stuffState = STUFF_Waiting;
 								protocolState = PROTOCOL_TagExpected;
-						
-								if (crcExpected==crcCalculated)
-								{
-									stuffState = STUFF_Waiting;
-									protocolState = PROTOCOL_TagExpected;
-									return true;
-									
-/*									
-									switch(tag)
-									{
-										//--------------------------------------------------------------------------------------
-										case TAG_BB_ReadStrainGauge:
-										
-											blackBoxResponse(TAG_BB_ReadStrainGauge,(uint8_t*)&blackBoxStrainGauge,sizeof(blackBoxStrainGauge));
-										
-											break;
-										//--------------------------------------------------------------------------------------
-										case TAG_BB_ReadDateTime:
-										
-											blackBoxResponse(TAG_BB_ReadDateTime,(uint8_t*)&currentDateTime,sizeof(currentDateTime));
-										
-											break;
-										//--------------------------------------------------------------------------------------
-											
-										
-									}
-*/									
-									
-									
-								}
+								return true;
+								
+								
+								
+							}else{
+									//...
+							}
 						
 						
 						
@@ -290,7 +281,7 @@ void Protocol::pushByte(uint8_t byte,bool pushStuffed,uint32_t *crc)
 {
 	if (crc!=0)
 	{
-		crc32(crc,byte);		
+		Crc32::appendByte(byte,*crc);
 	}
 	
 	
@@ -336,7 +327,8 @@ void Protocol::pushDword(uint32_t dword,bool pushStuffed,uint32_t *crc)
 //===============================================================================================
 void Protocol::sendPacket(uint8_t tag,uint8_t *data,uint16_t dataLen)
 {
-	uint32_t crc = CRC32_SEED;
+	uint32_t crc = Crc32::getInitValue();
+
 	
 	pushByte(SLIP_END,false,0);
 	pushByte(SLIP_END,false,0);

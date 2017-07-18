@@ -3,6 +3,9 @@
 #include "RtcuV1Test1.h"
 
 
+#include "hmi/hmi.h"
+#include "hmi/diagnostics.h"
+
 
 
 
@@ -19,8 +22,10 @@ int main()
 	gpioInit();
 	OdometerRTC::init();
 	
-	hmiInit();
-	blackBoxInit();
+	
+	Crc32::init();
+	HMI::init();
+	Diagnostics::init();
 
 
 	servoInit();
@@ -30,10 +35,11 @@ int main()
 	
 	modeInit();
 	
-	while(1)
-	{
-		hmiProcess();
-		blackBoxProcess();
+	while(true){
+
+		HMI::process();
+		Diagnostics::process();
+		
 		servoProcess();
 		//rtcProcess();
 		nfcTxProcess();
