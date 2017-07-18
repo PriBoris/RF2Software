@@ -2,7 +2,7 @@
 #include "mode.h"
 
 #include "hmi/hmi.h"
-
+#include "hmi/RxMessageQueue.h"
 
 
 Mode mode;
@@ -190,20 +190,17 @@ void modeProcess()
 	case SUBMODE_EXCERCISE_ISOKINETIC_KeepSecondMovement:
 	case SUBMODE_EXCERCISE_ISOKINETIC_SecondInterruption:		
 
-		while (isHmiRxMessageQueueNotEmpty()==true)
-		{
-			HmiRxMessage* message = popHmiRxMessage();
-			if (message->tag==Protocol::TAG_Cancel)
-			{
-				flushServoRx();
-				
-				fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE/* + CCON_STOP*/;
-				fhppOutputData.cpos = CPOS_HALT;
-				servoPresetMultipleRegisters(fhppOutputData);
-				submode = SUBMODE_CANCEL_1;
-				return;
-			}
+		if (true==RxMessageQueue::cancelMessageReceived()){
+			
+			flushServoRx();
+			
+			fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE/* + CCON_STOP*/;
+			fhppOutputData.cpos = CPOS_HALT;
+			servoPresetMultipleRegisters(fhppOutputData);
+			submode = SUBMODE_CANCEL_1;
+			return;
 		}
+
 		break;
 		
 	}
@@ -222,7 +219,7 @@ void modeProcess()
 		case SUBMODE_INITIALIZING_Start:
 			
 			servoDisable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 		
 			submode = SUBMODE_INITIALIZING_WaitingServoConnection;
 		
@@ -246,7 +243,7 @@ void modeProcess()
 		case SUBMODE_INITIALIZING_WaitingServoConnection:
 			
 			servoDisable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 
 			{
 				uint8_t messageToHmi[1+sizeof(TCurrentDateTime)+8];
@@ -314,7 +311,7 @@ void modeProcess()
 		case SUBMODE_INITIALIZING_DisablingSoftwareAccess:
 			
 			servoDisable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 
 			{
 				uint8_t messageToHmi[1+sizeof(TCurrentDateTime)+8];
@@ -397,15 +394,16 @@ void modeProcess()
 							HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 						}
 
-						while (isHmiRxMessageQueueNotEmpty()==true)
 						{
-								HmiRxMessage* message = popHmiRxMessage();
-								if (message->tag==Protocol::TAG_EnableServo)
-								{
-										
+							RxMessage *message = RxMessageQueue::pop();
+							if (message!=NULL){
+								if (
+									(message->tag==Protocol::TAG_EnableServo)&&
+									(message->valueLen==0)
+									){
 									mode = MODE_WAITING;
 									submode = SUBMODE_WAITING_HaltingServo;
-									flushHmiRxMessageQueue();
+									RxMessageQueue::flush();
 									
 									servoEnable();
 									memset(&fhppOutputData,0,sizeof(fhppOutputData));
@@ -414,13 +412,18 @@ void modeProcess()
 									servoPresetMultipleRegisters(fhppOutputData);
 									
 									return;
+
+
+								}else{
+									__asm("	nop");
 								}
-								
-							
-							
+							}
 							
 							
 						}
+						
+						
+
 						
 						
 						
@@ -443,7 +446,7 @@ void modeProcess()
 		case SUBMODE_WAITING_HaltingServo:	
 
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 				
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
@@ -527,18 +530,18 @@ void modeProcess()
 						
 						if (excerciseSettingsOk==false)
 						{
-							HMI::protocol.sendPacket(Protocol::TAG_ReportIsokineticExcerciseSettings,0,0);										
+							HMI::protocol.sendPacket(Protocol::TAG_ReportExcerciseSettings,0,0);										
 						}
 						else
 						{
-							HMI::protocol.sendPacket(Protocol::TAG_ReportIsokineticExcerciseSettings,(uint8_t*)&isokineticSetSettings[0],sizeof(IsokineticSetSettings)*isokineticSetCount);										
+							HMI::protocol.sendPacket(Protocol::TAG_ReportExcerciseSettings,(uint8_t*)&isokineticSetSettings[0],sizeof(IsokineticSetSettings)*isokineticSetCount);										
 						}
 					}
 				}
 
-				while (isHmiRxMessageQueueNotEmpty()==true)
-				{
-						HmiRxMessage* message = popHmiRxMessage();
+				RxMessage *message = RxMessageQueue::pop();
+				if (message!=NULL){
+					
 						//-------------------------------------------------------------------------------
 						if (
 							(message->tag==Protocol::TAG_LoadPersonalSettings)&&
@@ -721,7 +724,7 @@ void modeProcess()
 						//-------------------------------------------------------------------------------
 						else if (
 							(personalSettingsOk==true) &&
-							(message->tag==Protocol::TAG_LoadIsokineticExcerciseSettings)&&
+							(message->tag==Protocol::TAG_LoadExcerciseSettings)&&
 							(message->valueLen!=0)&&
 							((message->valueLen%sizeof(IsokineticSetSettings))==0)
 						)
@@ -816,7 +819,7 @@ void modeProcess()
 		case SUBMODE_PARKING_Running1:
 						
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
 					servoRxPointerProcessed = servoRxPointerReceived;
@@ -841,7 +844,7 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_PARKING_Running2:
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 					
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
@@ -861,7 +864,7 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_PARKING_Running3:
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 					
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
@@ -959,9 +962,9 @@ void modeProcess()
 					HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 				}
 
-				while (isHmiRxMessageQueueNotEmpty()==true)
-				{
-					HmiRxMessage* message = popHmiRxMessage();
+				RxMessage *message = RxMessageQueue::pop();
+				if (message!=NULL){
+
 					if (
 						(message->tag==Protocol::TAG_PersonalExit)&&
 						(message->valueLen==0)
@@ -1105,9 +1108,10 @@ void modeProcess()
 					memset(&messageToHmi[1+sizeof(TCurrentDateTime)+8+4],0,12);
 					HMI::protocol.sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 				}
-				while (isHmiRxMessageQueueNotEmpty()==true)
-				{
-					HmiRxMessage* message = popHmiRxMessage();
+				
+				RxMessage *message = RxMessageQueue::pop();
+				if (message!=NULL){
+					
 					if (
 						(message->tag==Protocol::TAG_PersonalButtonReleased)&&
 						(message->valueLen==1)&&
@@ -1194,7 +1198,7 @@ void modeProcess()
 		case SUBMODE_TEST_Parking1:
 
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
 					servoRxPointerProcessed = servoRxPointerReceived;
@@ -1216,7 +1220,7 @@ void modeProcess()
 		case SUBMODE_TEST_Parking2:	
 			
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 					
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
@@ -1377,7 +1381,7 @@ void modeProcess()
 		case SUBMODE_TEST_Running1:
 			
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
 					servoRxPointerProcessed = servoRxPointerReceived;
@@ -1442,7 +1446,7 @@ void modeProcess()
 		case SUBMODE_TEST_Running2:
 			
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
 				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
@@ -1528,7 +1532,7 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_TEST_Running3:
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
 				servoRxPointerProcessed = servoRxPointerReceived;
@@ -1549,7 +1553,7 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_Start:
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
 				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
@@ -1610,7 +1614,7 @@ void modeProcess()
 		case SUBMODE_EXCERCISE_ISOKINETIC_Parking1:
 
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
 				servoRxPointerProcessed = servoRxPointerReceived;
@@ -1633,7 +1637,7 @@ void modeProcess()
 		case SUBMODE_EXCERCISE_ISOKINETIC_Parking2:
 
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
 					servoRxPointerProcessed = servoRxPointerReceived;
@@ -1654,7 +1658,7 @@ void modeProcess()
 		case SUBMODE_EXCERCISE_ISOKINETIC_Parking3:
 
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
 				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
@@ -1823,7 +1827,7 @@ void modeProcess()
 		case SUBMODE_EXCERCISE_ISOKINETIC_StartFirstMovement1:
 
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
 				servoRxPointerProcessed = servoRxPointerReceived;
@@ -1847,7 +1851,7 @@ void modeProcess()
 		case SUBMODE_EXCERCISE_ISOKINETIC_StartFirstMovement2:
 
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
 				servoRxPointerProcessed = servoRxPointerReceived;
@@ -1870,7 +1874,7 @@ void modeProcess()
 		case SUBMODE_EXCERCISE_ISOKINETIC_KeepFirstMovement:
 
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
 				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
@@ -1972,7 +1976,7 @@ void modeProcess()
 		case SUBMODE_EXCERCISE_ISOKINETIC_FirstInterruption:
 			
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 		
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
@@ -2046,7 +2050,7 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_StartSecondMovement1:
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
 				servoRxPointerProcessed = servoRxPointerReceived;
@@ -2070,7 +2074,7 @@ void modeProcess()
 		case SUBMODE_EXCERCISE_ISOKINETIC_StartSecondMovement2:
 
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
 				servoRxPointerProcessed = servoRxPointerReceived;
@@ -2092,7 +2096,7 @@ void modeProcess()
 		case SUBMODE_EXCERCISE_ISOKINETIC_KeepSecondMovement:
 
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
 				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
@@ -2211,7 +2215,7 @@ void modeProcess()
 		case SUBMODE_EXCERCISE_ISOKINETIC_SecondInterruption:
 			
 			servoEnable();
-			flushHmiRxMessageQueue();
+			RxMessageQueue::flush();
 		
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
@@ -2311,7 +2315,7 @@ void modeProcess()
 		case SUBMODE_CANCEL_1:
 
 			servoEnable();
-			//flushHmiRxMessageQueue();
+			//RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
 				
@@ -2333,7 +2337,7 @@ void modeProcess()
 			break;
 		case SUBMODE_CANCEL_2:
 			servoEnable();
-			//flushHmiRxMessageQueue();
+			//RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
 				flushServoRx();;
@@ -2375,9 +2379,9 @@ void modeProcess()
 			}
 			
 			
-			while (isHmiRxMessageQueueNotEmpty()==true)
-			{
-				HmiRxMessage* message = popHmiRxMessage();
+			RxMessage *message = RxMessageQueue::pop();
+			if (message!=NULL){
+				
 				if (message->tag==Protocol::TAG_ResetError)
 				{
 					modeInit();

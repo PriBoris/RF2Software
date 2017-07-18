@@ -1,7 +1,7 @@
 
 
-#ifndef HMI_H
-#define HMI_H
+#ifndef HMI_HMI_H
+#define HMI_HMI_H
 
 #include <stdint.h>
 
@@ -24,6 +24,7 @@ private:
 	static uint8_t rxBuffer[RX_BUFFER_LENGTH];
 	static uint8_t txBuffer[TX_BUFFER_LENGTH];
 
+	static uint8_t rxValue[RX_MAX_VALUE_LENGTH];
 
 public:	
 	static void init();	
@@ -35,7 +36,7 @@ public:
 };
 
 
-class HmiRxMessage{
+/*class HmiRxMessage{
 
 public:	
 	uint8_t tag;
@@ -53,10 +54,10 @@ extern void flushHmiRxMessageQueue(void);
 extern bool isHmiRxMessageQueueNotEmpty(void);
 extern HmiRxMessage* popHmiRxMessage(void);
 
+*/
 
 
 
 
 
-
-#endif
+#endif //HMI_HMI_H

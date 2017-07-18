@@ -129,7 +129,7 @@ public:
 	static const uint8_t TAG_EnableServo = 0x40;
 	static const uint8_t TAG_LoadPersonalSettings = 0x41;
 	static const uint8_t TAG_LoadExcerciseSettings = 0x42;
-	//static const uint8_t TAG_LoadMachineSettings = 0x43;
+	static const uint8_t TAG_LoadMachineSettings = 0x43;
 	static const uint8_t TAG_Parking = 0x44;
 	static const uint8_t TAG_Personal = 0x45;
 	static const uint8_t TAG_PersonalExit = 0x46;

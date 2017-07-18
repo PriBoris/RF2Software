@@ -1,5 +1,6 @@
 
-
+#ifndef HMI_DIAGNOSTICS_H
+#define HMI_DIAGNOSTICS_H
 
 #include <stdint.h>
 
@@ -15,3 +16,7 @@ public:
 	static void process();	
 	
 };
+
+
+
+#endif //HMI_DIAGNOSTICS_H

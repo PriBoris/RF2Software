@@ -3,11 +3,14 @@
 #include "hmi.h"
 
 #include "stm32f2xx_conf.h"
+#include "RxMessageQueue.h"
+
 
 Protocol HMI::protocol;
 
 uint8_t HMI::rxBuffer[HMI::RX_BUFFER_LENGTH];
 uint8_t HMI::txBuffer[HMI::TX_BUFFER_LENGTH];
+uint8_t HMI::rxValue[HMI::RX_MAX_VALUE_LENGTH];
 
 
 
@@ -17,10 +20,12 @@ void HMI::init(){
 	RCC_APB1PeriphClockCmd (RCC_APB1Periph_USART2, ENABLE);
 
 	protocol.init(
-		HMI::txBuffer,
-		HMI::TX_BUFFER_LENGTH,
-		HMI::rxBuffer,
-		HMI::RX_BUFFER_LENGTH
+		txBuffer,
+		TX_BUFFER_LENGTH,
+		rxBuffer,
+		RX_BUFFER_LENGTH,
+		rxValue,
+		RX_MAX_VALUE_LENGTH
 		);	
 
 
@@ -58,12 +63,11 @@ void HMI::process(){
 	if (
 		(protocol.bytesPending()==true) && 
 		(USART2->SR & USART_FLAG_TXE)
-	)
-	{
-			USART2->DR = protocol.popTxByte();
+	){
+		USART2->DR = protocol.popTxByte();
 	}
 
-	if (protocol.processRx()==true){
+/*	if (protocol.processRx()==true){
 		
 		HmiRxMessage *message = (HmiRxMessage*)&hmiRxMessageQueue[hmiRxMessageQueuePtrReceived];
 		if (protocol.getRxDataLen()<=RX_MAX_VALUE_LENGTH){
@@ -74,11 +78,19 @@ void HMI::process(){
 				protocol.getRxValue((uint8_t*)&message->value);
 				hmiRxMessageQueuePtrReceived = (hmiRxMessageQueuePtrReceived+1)&(HMI_RX_MESSAGE_QUEUE_LEN-1);
 		}
-
-		
-		
 	}
-	
+*/	
+
+
+	if (protocol.processRx()==true){	
+		RxMessageQueue::push(
+			protocol.rxTag,
+			protocol.rxDataLen,
+			protocol.rxID,
+			true,
+			rxValue
+		);	
+	}	
 }
 //=================================================================================================
 void HMI::txEnableAssert(){
@@ -99,7 +111,7 @@ extern "C" {void USART2_IRQHandler(){
 
 
 
-
+/*
 
 HmiRxMessage hmiRxMessageQueue[HMI_RX_MESSAGE_QUEUE_LEN];
 uint16_t hmiRxMessageQueuePtrReceived;
@@ -129,3 +141,4 @@ HmiRxMessage* popHmiRxMessage(void)
 
 
 
+*/

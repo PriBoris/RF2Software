@@ -362,7 +362,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Source;..\STM32F2xx;..\STM32F2xx_StdPeriph_Driver\inc;.\Source\CommonSrc</IncludePath>
+              <IncludePath>.\Source;..\STM32F2xx;..\STM32F2xx_StdPeriph_Driver\inc;..\..\CommonSrc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -449,6 +449,16 @@
               <FileName>hmi.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Source\hmi\hmi.h</FilePath>
+            </File>
+            <File>
+              <FileName>RxMessageQueue.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Source\hmi\RxMessageQueue.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>RxMessageQueue.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\hmi\RxMessageQueue.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -693,22 +703,22 @@
             <File>
               <FileName>crc32.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\Source\CommonSrc\crc32.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Protocol.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\Source\CommonSrc\Protocol.cpp</FilePath>
+              <FilePath>..\..\CommonSrc\crc32.cpp</FilePath>
             </File>
             <File>
               <FileName>crc32.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Source\CommonSrc\crc32.h</FilePath>
+              <FilePath>..\..\CommonSrc\crc32.h</FilePath>
             </File>
             <File>
-              <FileName>Protocol.h</FileName>
+              <FileName>protocol.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\CommonSrc\protocol.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>protocol.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Source\CommonSrc\Protocol.h</FilePath>
+              <FilePath>..\..\CommonSrc\protocol.h</FilePath>
             </File>
           </Files>
         </Group>
