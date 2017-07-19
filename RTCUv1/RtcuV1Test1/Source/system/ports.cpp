@@ -1,4 +1,6 @@
 
+#include "ports.h"
+
 #include "stm32f2xx_conf.h"
 
 
@@ -6,8 +8,7 @@
 #define GPIO_AF_DontCare (uint8_t)0
 #define GPIO_Speed_DontCare (GPIOSpeed_TypeDef)0
 
-typedef struct
-{
+typedef struct {
 		GPIOMode_TypeDef GPIO_Mode; //GPIO_Mode_IN,GPIO_Mode_OUT,GPIO_Mode_AF,GPIO_Mode_AN
 		GPIOOType_TypeDef GPIO_OType; //GPIO_OType_PP,GPIO_OType_OD  
 		uint16_t GPIO_PinSource;
@@ -382,7 +383,7 @@ pd15 MEM_CS
 	
 };
 //==============================================================================================
-void gpioInit(void)
+void Ports::init(void)
 {
 	int gpioCount = sizeof(axGpioConfig)/sizeof(axGpioConfig[0]);
 		
@@ -416,16 +417,9 @@ void gpioInit(void)
 	
 
 
-/*	
-	if (SystemCoreClock==120000000)
-	{
-	}
-	else
-	{
-	}
-*/
 	
 }
+//==============================================================================================
 
 
 

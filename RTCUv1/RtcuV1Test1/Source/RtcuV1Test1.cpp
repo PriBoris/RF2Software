@@ -6,6 +6,8 @@
 #include "hmi/hmi.h"
 #include "hmi/diagnostics.h"
 #include "nfc/nfc.h"
+#include "system/heartbeat.h"
+#include "system/ports.h"
 
 
 
@@ -19,8 +21,9 @@ int main()
 	
 	
 	
- 	SysTickInit();
-	gpioInit();
+ 	Heartbeat::init();
+	Ports::init();
+	
 	OdometerRTC::init();
 	
 	

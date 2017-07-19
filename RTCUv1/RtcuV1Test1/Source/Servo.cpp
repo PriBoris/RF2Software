@@ -1,6 +1,9 @@
 
 #include "Servo.h"
 
+#include "system/heartbeat.h"
+
+
 uint8_t ipAddressClient[4] = {10,0,0,2};
 uint8_t ipAddressServer[4] = {10,0,0,10};
 uint8_t ipAddressSubnet[4] = {255,0,0,0};
@@ -50,7 +53,7 @@ uint32_t servoRxPointerProcessed;
 
 uint32_t servoTxHeartbeat;
 uint32_t servoRxHeartbeat;
-extern uint32_t heartbeatCounter;
+
 //==============================================================================================
 void servoInit()
 {
@@ -557,7 +560,7 @@ void servoProcess()
 								socketEstablishedSubstate = SES_Idle;
 								waitCounter++;
 							
-								servoTxHeartbeat = heartbeatCounter;
+								servoTxHeartbeat = Heartbeat::getCounterValue();
 							
 								break;
 							//--socketEstablishedSubstate-----------------------------------------------
@@ -659,7 +662,7 @@ void servoProcess()
 								socketEstablishedSubstate = SES_Idle;
 								waitCounter++;
 
-								servoRxHeartbeat = heartbeatCounter;
+								servoRxHeartbeat = Heartbeat::getCounterValue();
 								
 								break;
 							//--socketEstablishedSubstate-----------------------------------------------

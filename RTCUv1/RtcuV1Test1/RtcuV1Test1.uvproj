@@ -415,16 +415,6 @@
               <FileType>5</FileType>
               <FilePath>.\Source\RtcuV1Test1.h</FilePath>
             </File>
-            <File>
-              <FileName>SysTick.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\Source\SysTick.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>gpio.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\Source\gpio.cpp</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -528,12 +518,12 @@
             <File>
               <FileName>Nfc.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\Source\Nfc.cpp</FilePath>
+              <FilePath>.\Source\nfc\Nfc.cpp</FilePath>
             </File>
             <File>
               <FileName>Nfc.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Source\Nfc.h</FilePath>
+              <FilePath>.\Source\nfc\Nfc.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -704,6 +694,26 @@
               <FileName>system_stm32f2xx.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\STM32F2xx\system_stm32f2xx.h</FilePath>
+            </File>
+            <File>
+              <FileName>heartbeat.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Source\system\heartbeat.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>ports.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Source\system\ports.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>heartbeat.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\system\heartbeat.h</FilePath>
+            </File>
+            <File>
+              <FileName>ports.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\system\ports.h</FilePath>
             </File>
           </Files>
         </Group>
