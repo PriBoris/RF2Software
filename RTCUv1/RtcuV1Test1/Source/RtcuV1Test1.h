@@ -7,7 +7,6 @@
 #include "Servo.h"
 #include "Protocol.h"
 #include "crc32.h"
-#include "Nfc.h"
 #include "OdometerRTC.h"
 
 #include "mode.h"

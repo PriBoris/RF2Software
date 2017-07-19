@@ -5,6 +5,7 @@
 
 #include "hmi/hmi.h"
 #include "hmi/diagnostics.h"
+#include "nfc/nfc.h"
 
 
 

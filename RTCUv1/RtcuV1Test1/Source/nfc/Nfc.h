@@ -2,6 +2,8 @@
 #ifndef NFC_H
 #define NFC_H
 
+#include <stdint.h>
+
 
 extern void nfcInit(void);
 extern void nfcTxProcess(void);
@@ -15,14 +17,7 @@ extern uint8_t nfcTxBuffer[NFC_TX_BUFFER_LENGTH];
 
 
 
-inline void nfcTxEnableAssert()
-{
-		GPIOB->BSRRL = (1<<7);
-};
-inline void nfcTxEnableDeassert()
-{
-		GPIOB->BSRRH = (1<<7);
-};
+
 
 extern uint8_t nfcUIDLength;
 extern uint8_t nfcUID[16];

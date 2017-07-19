@@ -1,4 +1,21 @@
-#include "RtcuV1Test1.h"
+
+
+
+#include "nfc.h"
+
+#include <string.h>
+
+#include "stm32f2xx_conf.h"
+
+inline void nfcTxEnableAssert()
+{
+		GPIOB->BSRRL = (1<<7);
+};
+inline void nfcTxEnableDeassert()
+{
+		GPIOB->BSRRH = (1<<7);
+};
+
 
 uint8_t nfcRxBuffer[NFC_RX_BUFFER_LENGTH];
 uint8_t nfcTxBuffer[NFC_TX_BUFFER_LENGTH];

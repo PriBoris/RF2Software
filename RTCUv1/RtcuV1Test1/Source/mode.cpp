@@ -3,6 +3,7 @@
 
 #include "hmi/RxMessageQueue.h"
 #include "hmi/broadcast.h"
+#include "nfc/nfc.h"
 
 
 Mode mode;
