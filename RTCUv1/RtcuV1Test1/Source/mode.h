@@ -7,22 +7,6 @@
 extern void modeInit();
 extern void modeProcess();
 
-struct FhppInputData
-{
-	uint8_t scon;
-	uint8_t spos;
-	uint8_t sdir;
-	uint8_t actualValue1;
-	int32_t actualValue2;
-};
-struct FhppOutputData
-{
-	uint8_t ccon;
-	uint8_t cpos;
-	uint8_t cdir;
-	uint8_t setpointValue1;
-	uint32_t setpointValue2;
-};
 
 
 enum Mode
@@ -143,10 +127,6 @@ extern ErrorType errorType;
 
 extern uint16_t modbusTxTransactionIdentifier;
 
-extern void servoReadHoldingRegisters();
-extern void servoPresetMultipleRegisters(FhppOutputData &data);
-extern void servoGetFhppInputData(FhppInputData *data,uint8_t *rxMessage);
-extern bool servoCheckFhppInputData(FhppInputData *data);
 
 extern void setErrorMode(ErrorType type);
 

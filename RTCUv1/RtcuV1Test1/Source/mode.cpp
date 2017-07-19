@@ -4,6 +4,7 @@
 #include "hmi/RxMessageQueue.h"
 #include "hmi/broadcast.h"
 #include "nfc/nfc.h"
+#include "servo/servo.h"
 
 
 Mode mode;
@@ -15,9 +16,8 @@ uint16_t modbusTxTransactionIdentifier = 0;
 
 
 
-FhppInputData fhppInputData;
-
-FhppOutputData fhppOutputData;
+Servo::FhppInputData fhppInputData;
+Servo::FhppOutputData fhppOutputData;
 
 
 
@@ -193,11 +193,11 @@ void modeProcess()
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 			
-			flushServoRx();
+			Servo::flushRx();
 			
 			fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE/* + CCON_STOP*/;
 			fhppOutputData.cpos = CPOS_HALT;
-			servoPresetMultipleRegisters(fhppOutputData);
+			Servo::presetMultipleRegisters(fhppOutputData);
 			submode = SUBMODE_CANCEL_1;
 			return;
 		}
@@ -209,7 +209,7 @@ void modeProcess()
 	
 	
 	
-	uint16_t servoResponseLength = getServoRxLenght();
+	uint16_t servoResponseLength = Servo::getRxLenght();
 	switch(submode)
 	{
 		//----submode----------------------------------------------------------
@@ -219,7 +219,7 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_INITIALIZING_Start:
 			
-			servoDisable();
+			Servo::disable();
 			RxMessageQueue::flush();
 		
 			submode = SUBMODE_INITIALIZING_WaitingServoConnection;
@@ -243,7 +243,7 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_INITIALIZING_WaitingServoConnection:
 			
-			servoDisable();
+			Servo::disable();
 			RxMessageQueue::flush();
 
 			{
@@ -265,13 +265,13 @@ void modeProcess()
 				if (servoResponseLength!=MODBUS_READ_RESPONSE_LENGTH)
 				{
 					// continue waiting
-					servoRxPointerProcessed = servoRxPointerReceived;
-					servoReadHoldingRegisters();
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
+					Servo::readHoldingRegisters();
 				}
 				else
 				{
-					servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-					servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);
+					Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+					Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);
 					
 					//check fault
 					if (fhppInputData.scon & SCON_FAULT)
@@ -288,13 +288,13 @@ void modeProcess()
 					{
 							memset(&fhppOutputData,0,sizeof(fhppOutputData));
 							fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK;
-							servoPresetMultipleRegisters(fhppOutputData);
+							Servo::presetMultipleRegisters(fhppOutputData);
 							submode = SUBMODE_INITIALIZING_DisablingSoftwareAccess;
 							return;
 					}
 					
 					// continue waiting
-					servoReadHoldingRegisters();
+					Servo::readHoldingRegisters();
 					
 					
 					
@@ -311,7 +311,7 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_INITIALIZING_DisablingSoftwareAccess:
 			
-			servoDisable();
+			Servo::disable();
 			RxMessageQueue::flush();
 
 			{
@@ -333,14 +333,14 @@ void modeProcess()
 			{
 				if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 				{
-						servoRxPointerProcessed = servoRxPointerReceived;
+						Servo::rxPointerProcessed = Servo::rxPointerReceived;
 						mode = MODE_IDLE;
 						submode = SUBMODE_IDLE;
-						servoReadHoldingRegisters();
+						Servo::readHoldingRegisters();
 				}
 				else
 				{
-						servoRxPointerProcessed = servoRxPointerReceived;
+						Servo::rxPointerProcessed = Servo::rxPointerReceived;
 						setErrorMode(ERROR_ServoConnectionLost);
 				}
 			}
@@ -350,13 +350,13 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_IDLE:
 			
-			servoDisable();
+			Servo::disable();
 		
 			{
 				if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 				{
-						servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-						servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+						Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+						Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
 
 						
 						if (fhppInputData.scon & SCON_FAULT)//check fault
@@ -406,11 +406,11 @@ void modeProcess()
 									submode = SUBMODE_WAITING_HaltingServo;
 									RxMessageQueue::flush();
 									
-									servoEnable();
+									Servo::enable();
 									memset(&fhppOutputData,0,sizeof(fhppOutputData));
 									fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE + CCON_STOP;
 									fhppOutputData.cpos = CPOS_HALT;
-									servoPresetMultipleRegisters(fhppOutputData);
+									Servo::presetMultipleRegisters(fhppOutputData);
 									
 									return;
 
@@ -429,14 +429,14 @@ void modeProcess()
 						
 						
 						mode = MODE_IDLE;
-						servoReadHoldingRegisters();
+						Servo::readHoldingRegisters();
 						
 						
 						
 				}
 				else
 				{
-						servoRxPointerProcessed = servoRxPointerReceived;
+						Servo::rxPointerProcessed = Servo::rxPointerReceived;
 						setErrorMode(ERROR_ServoConnectionLost);
 				}
 			}
@@ -446,13 +446,13 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_WAITING_HaltingServo:	
 
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 				
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
-					servoReadHoldingRegisters();
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
+					Servo::readHoldingRegisters();
 
 					mode = MODE_WAITING;
 					submode = SUBMODE_WAITING_ReceivingSettings;
@@ -460,7 +460,7 @@ void modeProcess()
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -470,11 +470,11 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_WAITING_ReceivingSettings:
 			
-			servoEnable();
+			Servo::enable();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-				servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+				Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+				Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
 				if (fhppInputData.scon & SCON_FAULT)//check fault
 				{
 						setErrorMode(ERROR_ServoInternal);
@@ -666,7 +666,7 @@ void modeProcess()
 							fhppOutputData.cpos = CPOS_HALT+CPOS_START;
 							fhppOutputData.setpointValue1 = getParkingSpeed();
 							fhppOutputData.setpointValue2 = int32Reversed(personalSettings.positionMainParking);
-							servoPresetMultipleRegisters(fhppOutputData);
+							Servo::presetMultipleRegisters(fhppOutputData);
 						
 							mode = MODE_PARKING;
 							submode = SUBMODE_PARKING_Running1;
@@ -680,7 +680,7 @@ void modeProcess()
 						{
 							mode = MODE_PERSONAL;
 							submode = SUBMODE_PERSONAL_Waiting;
-							servoReadHoldingRegisters();
+							Servo::readHoldingRegisters();
 							return;
 						}
 						//-------------------------------------------------------------------------------
@@ -696,7 +696,7 @@ void modeProcess()
 							fhppOutputData.cpos = CPOS_HALT+CPOS_START;
 							fhppOutputData.setpointValue1 = getParkingSpeed();
 							fhppOutputData.setpointValue2 = int32Reversed(personalSettings.positionMainB);
-							servoPresetMultipleRegisters(fhppOutputData);
+							Servo::presetMultipleRegisters(fhppOutputData);
 							
 							testIsConcentric = true;
 							mode = MODE_TEST_CONCENTRIC;
@@ -716,7 +716,7 @@ void modeProcess()
 							fhppOutputData.cpos = CPOS_HALT+CPOS_START;
 							fhppOutputData.setpointValue1 = getParkingSpeed();
 							fhppOutputData.setpointValue2 = int32Reversed(personalSettings.positionMainA);
-							servoPresetMultipleRegisters(fhppOutputData);
+							Servo::presetMultipleRegisters(fhppOutputData);
 							
 							testIsConcentric = false;
 							mode = MODE_TEST_ECCENTRIC;
@@ -795,7 +795,7 @@ void modeProcess()
 							isokineticSetIndex=0;
 							mode = MODE_EXCERCISE_ISOKINETIC;
 							submode = SUBMODE_EXCERCISE_ISOKINETIC_Start;
-							servoReadHoldingRegisters();
+							Servo::readHoldingRegisters();
 							return;
 							
 						}
@@ -805,12 +805,12 @@ void modeProcess()
 										
 				mode = MODE_WAITING;
 				submode = SUBMODE_WAITING_ReceivingSettings;
-				servoReadHoldingRegisters();
+				Servo::readHoldingRegisters();
 				
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 				
 			}
@@ -819,17 +819,17 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_PARKING_Running1:
 						
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				
 					fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE + CCON_STOP;
 					fhppOutputData.cpos = CPOS_HALT;
 					//fhppOutputData.setpointValue1 = DEFAULT_PARKING_SPEED;
 					//fhppOutputData.setpointValue2 = int32Reversed(DEFAULT_PARKING_POSITION);
-					servoPresetMultipleRegisters(fhppOutputData);
+					Servo::presetMultipleRegisters(fhppOutputData);
 				
 					mode = MODE_PARKING;
 					submode = SUBMODE_PARKING_Running2;
@@ -837,41 +837,41 @@ void modeProcess()
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 
 			break;
 		//----submode----------------------------------------------------------
 		case SUBMODE_PARKING_Running2:
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 					
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
-					servoReadHoldingRegisters();
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
+					Servo::readHoldingRegisters();
 					mode = MODE_PARKING;
 					submode = SUBMODE_PARKING_Running3;
 					motionCompletePause = 0;
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 	
 			break;
 		//----submode----------------------------------------------------------
 		case SUBMODE_PARKING_Running3:
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 					
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-					servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-					servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
-					if (false==servoCheckFhppInputData(&fhppInputData))
+					Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+					Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+					if (false==Servo::checkFhppInputData(&fhppInputData))
 					{
 						setErrorMode(ERROR_ServoInternal);
 						return;
@@ -915,11 +915,11 @@ void modeProcess()
 					}
 
 					
-					servoReadHoldingRegisters();
+					Servo::readHoldingRegisters();
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 	
@@ -931,12 +931,12 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_PERSONAL_Waiting:
 
-			servoEnable();
+			Servo::enable();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-				servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
-				if (false==servoCheckFhppInputData(&fhppInputData))
+				Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+				Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+				if (false==Servo::checkFhppInputData(&fhppInputData))
 				{
 					setErrorMode(ERROR_ServoInternal);
 					return;
@@ -971,7 +971,7 @@ void modeProcess()
 						(message->valueLen==0)
 					)
 					{
-						servoReadHoldingRegisters();
+						Servo::readHoldingRegisters();
 						mode = MODE_WAITING;
 						submode = SUBMODE_WAITING_ReceivingSettings;
 						return;
@@ -990,7 +990,7 @@ void modeProcess()
 								fhppOutputData.cpos = CPOS_HALT+CPOS_START;
 								fhppOutputData.setpointValue1 = getPersonalSpeed();
 								fhppOutputData.setpointValue2 = int32Reversed(machineSettings.positionMainMax);
-								servoPresetMultipleRegisters(fhppOutputData);
+								Servo::presetMultipleRegisters(fhppOutputData);
 							
 								personalIncrement = true;
 								submode = SUBMODE_PERSONAL_StartMovement1;
@@ -1003,7 +1003,7 @@ void modeProcess()
 								fhppOutputData.cpos = CPOS_HALT+CPOS_START;
 								fhppOutputData.setpointValue1 = getPersonalSpeed();
 								fhppOutputData.setpointValue2 = int32Reversed(machineSettings.positionMainMin);
-								servoPresetMultipleRegisters(fhppOutputData);
+								Servo::presetMultipleRegisters(fhppOutputData);
 							
 								personalIncrement = false;
 								submode = SUBMODE_PERSONAL_StartMovement1;
@@ -1029,11 +1029,11 @@ void modeProcess()
 				
 				
 				
-				servoReadHoldingRegisters();
+				Servo::readHoldingRegisters();
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 			break;
@@ -1041,20 +1041,20 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_PERSONAL_StartMovement1:
 
-			servoEnable();
+			Servo::enable();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				
 				fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE + CCON_STOP;
 				fhppOutputData.cpos = CPOS_HALT;
-				servoPresetMultipleRegisters(fhppOutputData);
+				Servo::presetMultipleRegisters(fhppOutputData);
 				submode = SUBMODE_PERSONAL_StartMovement2;
 				
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -1063,29 +1063,29 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_PERSONAL_StartMovement2:	
 
-			servoEnable();
+			Servo::enable();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				submode = SUBMODE_PERSONAL_KeepMovement;
 				personalPause = 2;
-				servoReadHoldingRegisters();
+				Servo::readHoldingRegisters();
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 			break;
 		//----submode----------------------------------------------------------
 		case SUBMODE_PERSONAL_KeepMovement:	
 
-			servoEnable();
+			Servo::enable();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-				servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);		
-				if (false==servoCheckFhppInputData(&fhppInputData))
+				Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+				Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);		
+				if (false==Servo::checkFhppInputData(&fhppInputData))
 				{
 					setErrorMode(ERROR_ServoInternal);
 					return;
@@ -1121,7 +1121,7 @@ void modeProcess()
 					{
 						fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE/* + CCON_STOP*/;
 						fhppOutputData.cpos = CPOS_HALT;
-						servoPresetMultipleRegisters(fhppOutputData);
+						Servo::presetMultipleRegisters(fhppOutputData);
 						submode = SUBMODE_PERSONAL_StopMovement1;
 						return;
 
@@ -1143,36 +1143,36 @@ void modeProcess()
 					fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE/* + CCON_STOP*/;
 					fhppOutputData.cpos = CPOS_HALT;
 
-					servoPresetMultipleRegisters(fhppOutputData);
+					Servo::presetMultipleRegisters(fhppOutputData);
 					submode = SUBMODE_PERSONAL_StopMovement1;
 					return;
 				}
-				servoReadHoldingRegisters();
+				Servo::readHoldingRegisters();
 				
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 			break;
 		//----submode----------------------------------------------------------
 		case SUBMODE_PERSONAL_StopMovement1:
 
-			servoEnable();
+			Servo::enable();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE + CCON_STOP;
 				fhppOutputData.cpos = CPOS_HALT;
 
-				servoPresetMultipleRegisters(fhppOutputData);
+				Servo::presetMultipleRegisters(fhppOutputData);
 				submode = SUBMODE_PERSONAL_StopMovement2;
 				
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 		
@@ -1180,16 +1180,16 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_PERSONAL_StopMovement2:
 
-			servoEnable();
+			Servo::enable();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				submode = SUBMODE_PERSONAL_Waiting;
-				servoReadHoldingRegisters();
+				Servo::readHoldingRegisters();
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 		
@@ -1198,21 +1198,21 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_TEST_Parking1:
 
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE + CCON_STOP;
 					fhppOutputData.cpos = CPOS_HALT;
-					servoPresetMultipleRegisters(fhppOutputData);
+					Servo::presetMultipleRegisters(fhppOutputData);
 				
 					submode = SUBMODE_TEST_Parking2;
 				
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -1220,19 +1220,19 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_TEST_Parking2:	
 			
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 					
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
-				servoReadHoldingRegisters();
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
+				Servo::readHoldingRegisters();
 				submode = SUBMODE_TEST_Parking3;
 				motionCompletePause = 0;
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 			
@@ -1240,12 +1240,12 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_TEST_Parking3:
 
-			servoEnable();
+			Servo::enable();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-					servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-					servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
-					if (false==servoCheckFhppInputData(&fhppInputData))
+					Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+					Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+					if (false==Servo::checkFhppInputData(&fhppInputData))
 					{
 						setErrorMode(ERROR_ServoInternal);
 						return;
@@ -1283,17 +1283,17 @@ void modeProcess()
 					)
 					{
 						submode = SUBMODE_TEST_Pause;
-						servoReadHoldingRegisters();
+						Servo::readHoldingRegisters();
 						return;
 					}
 					else
 					{
-						servoReadHoldingRegisters();
+						Servo::readHoldingRegisters();
 					}
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 	
@@ -1302,12 +1302,12 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_TEST_Pause:
 			
-			servoEnable();
+			Servo::enable();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-				servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
-				if (false==servoCheckFhppInputData(&fhppInputData))
+				Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+				Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+				if (false==Servo::checkFhppInputData(&fhppInputData))
 				{
 					setErrorMode(ERROR_ServoInternal);
 					return;
@@ -1344,7 +1344,7 @@ void modeProcess()
 								); 
 						Broadcast::sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 					}
-					servoReadHoldingRegisters();			
+					Servo::readHoldingRegisters();			
 							
 				}
 				else
@@ -1363,7 +1363,7 @@ void modeProcess()
 						fhppOutputData.setpointValue1 = getSpeedRel(personalSettings.speedRelMainTestEccentric);
 						fhppOutputData.setpointValue2 = int32Reversed(personalSettings.positionMainB);
 					}
-					servoPresetMultipleRegisters(fhppOutputData);
+					Servo::presetMultipleRegisters(fhppOutputData);
 					
 					submode = SUBMODE_TEST_Running1;
 				
@@ -1372,7 +1372,7 @@ void modeProcess()
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -1381,11 +1381,11 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_TEST_Running1:
 			
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				
 					{
 						uint8_t messageToHmi[35+8];
@@ -1428,7 +1428,7 @@ void modeProcess()
 						Broadcast::sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 					}
 				
-					servoReadHoldingRegisters();
+					Servo::readHoldingRegisters();
 				
 					motionCompletePause = 0;
 					submode = SUBMODE_TEST_Running2;
@@ -1436,7 +1436,7 @@ void modeProcess()
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -1446,13 +1446,13 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_TEST_Running2:
 			
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-				servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
-				if (false==servoCheckFhppInputData(&fhppInputData))
+				Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+				Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+				if (false==Servo::checkFhppInputData(&fhppInputData))
 				{
 					setErrorMode(ERROR_ServoInternal);
 					return;
@@ -1511,20 +1511,20 @@ void modeProcess()
 				{
 					fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE + CCON_STOP;
 					fhppOutputData.cpos = CPOS_HALT;
-					servoPresetMultipleRegisters(fhppOutputData);
+					Servo::presetMultipleRegisters(fhppOutputData);
 					
 					submode = SUBMODE_TEST_Running3;
 				}
 				else
 				{
-					servoReadHoldingRegisters();
+					Servo::readHoldingRegisters();
 				}				
 				
 				
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -1532,20 +1532,20 @@ void modeProcess()
 			break;
 		//----submode----------------------------------------------------------
 		case SUBMODE_TEST_Running3:
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 
 				mode = MODE_WAITING;
 				submode = SUBMODE_WAITING_ReceivingSettings;
-				servoReadHoldingRegisters();
+				Servo::readHoldingRegisters();
 
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -1553,13 +1553,13 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_Start:
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-				servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
-				if (false==servoCheckFhppInputData(&fhppInputData))
+				Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+				Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+				if (false==Servo::checkFhppInputData(&fhppInputData))
 				{
 					setErrorMode(ERROR_ServoInternal);
 					return;
@@ -1600,35 +1600,35 @@ void modeProcess()
 				{
 					fhppOutputData.setpointValue2 = int32Reversed(personalSettings.positionMainB);
 				}
-				servoPresetMultipleRegisters(fhppOutputData);
+				Servo::presetMultipleRegisters(fhppOutputData);
 				mode = MODE_EXCERCISE_ISOKINETIC;
 				submode = SUBMODE_EXCERCISE_ISOKINETIC_Parking1;
 
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 			break;
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_Parking1:
 
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE + CCON_STOP;
 				fhppOutputData.cpos = CPOS_HALT;
-				servoPresetMultipleRegisters(fhppOutputData);
+				Servo::presetMultipleRegisters(fhppOutputData);
 				mode = MODE_EXCERCISE_ISOKINETIC;
 				submode = SUBMODE_EXCERCISE_ISOKINETIC_Parking2;
 				
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -1637,19 +1637,19 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_Parking2:
 
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
-					servoReadHoldingRegisters();
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
+					Servo::readHoldingRegisters();
 					mode = MODE_EXCERCISE_ISOKINETIC;
 					submode = SUBMODE_EXCERCISE_ISOKINETIC_Parking3;
 					motionCompletePause = 0;
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -1658,13 +1658,13 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_Parking3:
 
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-				servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
-				if (false==servoCheckFhppInputData(&fhppInputData))
+				Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+				Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+				if (false==Servo::checkFhppInputData(&fhppInputData))
 				{
 					setErrorMode(ERROR_ServoInternal);
 					return;
@@ -1712,11 +1712,11 @@ void modeProcess()
 
 
 
-				servoReadHoldingRegisters();
+				Servo::readHoldingRegisters();
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -1725,12 +1725,12 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_Pause:
 
-			servoEnable();
+			Servo::enable();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-				servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
-				if (false==servoCheckFhppInputData(&fhppInputData))
+				Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+				Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+				if (false==Servo::checkFhppInputData(&fhppInputData))
 				{
 					setErrorMode(ERROR_ServoInternal);
 					return;
@@ -1772,12 +1772,12 @@ void modeProcess()
 					repsIndex = 0;
 				}
 
-				servoReadHoldingRegisters();			
+				Servo::readHoldingRegisters();			
 
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -1789,12 +1789,12 @@ void modeProcess()
 		case SUBMODE_EXCERCISE_ISOKINETIC_PrepareFirstMovement:
 
 
-			servoEnable();
+			Servo::enable();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-				servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
-				if (false==servoCheckFhppInputData(&fhppInputData))
+				Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+				Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+				if (false==Servo::checkFhppInputData(&fhppInputData))
 				{
 					setErrorMode(ERROR_ServoInternal);
 					return;
@@ -1812,13 +1812,13 @@ void modeProcess()
 					fhppOutputData.setpointValue1 = getSpeedRel(isokineticSetSettings[isokineticSetIndex].speedBA);
 					fhppOutputData.setpointValue2 = int32Reversed(personalSettings.positionMainA);
 				}
-				servoPresetMultipleRegisters(fhppOutputData);
+				Servo::presetMultipleRegisters(fhppOutputData);
 				submode = SUBMODE_EXCERCISE_ISOKINETIC_StartFirstMovement1;
 
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -1827,15 +1827,15 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_StartFirstMovement1:
 
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 
 				fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE + CCON_STOP;
 				fhppOutputData.cpos = CPOS_HALT;
-				servoPresetMultipleRegisters(fhppOutputData);
+				Servo::presetMultipleRegisters(fhppOutputData);
 
 				submode = SUBMODE_EXCERCISE_ISOKINETIC_StartFirstMovement2;
 				motionCompletePause = 0;
@@ -1843,7 +1843,7 @@ void modeProcess()
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 			break;
@@ -1851,13 +1851,13 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_StartFirstMovement2:
 
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 
-				servoReadHoldingRegisters();
+				Servo::readHoldingRegisters();
 
 				submode = SUBMODE_EXCERCISE_ISOKINETIC_KeepFirstMovement;
 				motionCompletePause = 0;
@@ -1865,7 +1865,7 @@ void modeProcess()
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -1874,13 +1874,13 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_KeepFirstMovement:
 
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-				servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
-				if (false==servoCheckFhppInputData(&fhppInputData))
+				Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+				Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+				if (false==Servo::checkFhppInputData(&fhppInputData))
 				{
 					setErrorMode(ERROR_ServoInternal);
 					return;
@@ -1929,7 +1929,7 @@ void modeProcess()
 					timeFirstInterruption = isokineticSetSettings[isokineticSetIndex].firstInterruptionTime;
 					if (timeFirstInterruption>0){
 						
-						servoReadHoldingRegisters();
+						Servo::readHoldingRegisters();
 						submode = SUBMODE_EXCERCISE_ISOKINETIC_FirstInterruption;
 						
 						
@@ -1947,7 +1947,7 @@ void modeProcess()
 							fhppOutputData.setpointValue1 = getSpeedRel(isokineticSetSettings[isokineticSetIndex].speedAB);
 							fhppOutputData.setpointValue2 = int32Reversed(personalSettings.positionMainB);
 						}
-						servoPresetMultipleRegisters(fhppOutputData);
+						Servo::presetMultipleRegisters(fhppOutputData);
 						submode = SUBMODE_EXCERCISE_ISOKINETIC_StartSecondMovement1;
 						
 					}
@@ -1958,7 +1958,7 @@ void modeProcess()
 				}
 				else
 				{
-					servoReadHoldingRegisters();
+					Servo::readHoldingRegisters();
 				}				
 
 
@@ -1966,7 +1966,7 @@ void modeProcess()
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -1976,14 +1976,14 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_FirstInterruption:
 			
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 		
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-				servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
-				if (false==servoCheckFhppInputData(&fhppInputData))
+				Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+				Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+				if (false==Servo::checkFhppInputData(&fhppInputData))
 				{
 					setErrorMode(ERROR_ServoInternal);
 					return;
@@ -2015,7 +2015,7 @@ void modeProcess()
 						Broadcast::sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 					}
 					
-					servoReadHoldingRegisters();
+					Servo::readHoldingRegisters();
 					
 
 				}
@@ -2034,7 +2034,7 @@ void modeProcess()
 						fhppOutputData.setpointValue1 = getSpeedRel(isokineticSetSettings[isokineticSetIndex].speedAB);
 						fhppOutputData.setpointValue2 = int32Reversed(personalSettings.positionMainB);
 					}
-					servoPresetMultipleRegisters(fhppOutputData);
+					Servo::presetMultipleRegisters(fhppOutputData);
 					submode = SUBMODE_EXCERCISE_ISOKINETIC_StartSecondMovement1;
 						
 				}
@@ -2042,7 +2042,7 @@ void modeProcess()
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -2050,15 +2050,15 @@ void modeProcess()
 			break;
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_StartSecondMovement1:
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 
 				fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE + CCON_STOP;
 				fhppOutputData.cpos = CPOS_HALT;
-				servoPresetMultipleRegisters(fhppOutputData);
+				Servo::presetMultipleRegisters(fhppOutputData);
 
 				submode = SUBMODE_EXCERCISE_ISOKINETIC_StartSecondMovement2;
 				motionCompletePause = 0;
@@ -2066,7 +2066,7 @@ void modeProcess()
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -2074,13 +2074,13 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_StartSecondMovement2:
 
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 
-				servoReadHoldingRegisters();
+				Servo::readHoldingRegisters();
 
 				submode = SUBMODE_EXCERCISE_ISOKINETIC_KeepSecondMovement;
 				motionCompletePause = 0;
@@ -2088,7 +2088,7 @@ void modeProcess()
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 		
@@ -2096,13 +2096,13 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_KeepSecondMovement:
 
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-				servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
-				if (false==servoCheckFhppInputData(&fhppInputData))
+				Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+				Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+				if (false==Servo::checkFhppInputData(&fhppInputData))
 				{
 					setErrorMode(ERROR_ServoInternal);
 					return;
@@ -2150,7 +2150,7 @@ void modeProcess()
 					
 					if (timeSecondInterruption>0){
 						
-						servoReadHoldingRegisters();
+						Servo::readHoldingRegisters();
 						submode = SUBMODE_EXCERCISE_ISOKINETIC_SecondInterruption;
 						
 						
@@ -2171,7 +2171,7 @@ void modeProcess()
 								fhppOutputData.setpointValue1 = getSpeedRel(isokineticSetSettings[isokineticSetIndex].speedBA);
 								fhppOutputData.setpointValue2 = int32Reversed(personalSettings.positionMainA);
 							}
-							servoPresetMultipleRegisters(fhppOutputData);
+							Servo::presetMultipleRegisters(fhppOutputData);
 							submode = SUBMODE_EXCERCISE_ISOKINETIC_StartFirstMovement1;
 
 						}
@@ -2181,13 +2181,13 @@ void modeProcess()
 							if (isokineticSetIndex!=isokineticSetCount)
 							{
 								submode = SUBMODE_EXCERCISE_ISOKINETIC_Start;
-								servoReadHoldingRegisters();
+								Servo::readHoldingRegisters();
 							}
 							else
 							{
 								mode = MODE_WAITING;
 								submode = SUBMODE_WAITING_ReceivingSettings;
-								servoReadHoldingRegisters();
+								Servo::readHoldingRegisters();
 							}
 
 						}
@@ -2200,14 +2200,14 @@ void modeProcess()
 				}
 				else
 				{
-					servoReadHoldingRegisters();
+					Servo::readHoldingRegisters();
 				}				
 
 
 			}
 			else
 			{
-					servoRxPointerProcessed = servoRxPointerReceived;
+					Servo::rxPointerProcessed = Servo::rxPointerReceived;
 					setErrorMode(ERROR_ServoConnectionLost);
 			}
 
@@ -2215,14 +2215,14 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_EXCERCISE_ISOKINETIC_SecondInterruption:
 			
-			servoEnable();
+			Servo::enable();
 			RxMessageQueue::flush();
 		
 			if (servoResponseLength==MODBUS_READ_RESPONSE_LENGTH)
 			{
-				servoPopBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
-				servoGetFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
-				if (false==servoCheckFhppInputData(&fhppInputData))
+				Servo::popBytes(modbusRxMessage,MODBUS_READ_RESPONSE_LENGTH);
+				Servo::getFhppInputData(&fhppInputData,&modbusRxMessage[0]);								
+				if (false==Servo::checkFhppInputData(&fhppInputData))
 				{
 					setErrorMode(ERROR_ServoInternal);
 					return;
@@ -2255,7 +2255,7 @@ void modeProcess()
 						Broadcast::sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
 					}
 					
-					servoReadHoldingRegisters();
+					Servo::readHoldingRegisters();
 					
 
 				}
@@ -2277,7 +2277,7 @@ void modeProcess()
 							fhppOutputData.setpointValue1 = getSpeedRel(isokineticSetSettings[isokineticSetIndex].speedBA);
 							fhppOutputData.setpointValue2 = int32Reversed(personalSettings.positionMainA);
 						}
-						servoPresetMultipleRegisters(fhppOutputData);
+						Servo::presetMultipleRegisters(fhppOutputData);
 						submode = SUBMODE_EXCERCISE_ISOKINETIC_StartFirstMovement1;
 
 					}
@@ -2287,13 +2287,13 @@ void modeProcess()
 						if (isokineticSetIndex!=isokineticSetCount)
 						{
 							submode = SUBMODE_EXCERCISE_ISOKINETIC_Start;
-							servoReadHoldingRegisters();
+							Servo::readHoldingRegisters();
 						}
 						else
 						{
 							mode = MODE_WAITING;
 							submode = SUBMODE_WAITING_ReceivingSettings;
-							servoReadHoldingRegisters();
+							Servo::readHoldingRegisters();
 						}
 
 					}
@@ -2306,7 +2306,7 @@ void modeProcess()
 			}
 			else
 			{
-				servoRxPointerProcessed = servoRxPointerReceived;
+				Servo::rxPointerProcessed = Servo::rxPointerReceived;
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 		
@@ -2315,15 +2315,15 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_CANCEL_1:
 
-			servoEnable();
+			Servo::enable();
 			//RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
 				
-				flushServoRx();;
+				Servo::flushRx();;
 				fhppOutputData.ccon = CCON_OPM_DIRECT + CCON_LOCK + CCON_ENABLE + CCON_STOP;
 				fhppOutputData.cpos = CPOS_HALT;
-				servoPresetMultipleRegisters(fhppOutputData);
+				Servo::presetMultipleRegisters(fhppOutputData);
 				submode = SUBMODE_CANCEL_2;
 				
 				
@@ -2332,24 +2332,24 @@ void modeProcess()
 			}
 			else
 			{
-				flushServoRx();
+				Servo::flushRx();
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 			break;
 		case SUBMODE_CANCEL_2:
-			servoEnable();
+			Servo::enable();
 			//RxMessageQueue::flush();
 			if (servoResponseLength==MODBUS_WRITE_RESPONSE_LENGTH)
 			{
-				flushServoRx();;
-				servoReadHoldingRegisters();
+				Servo::flushRx();;
+				Servo::readHoldingRegisters();
 				mode = MODE_WAITING;
 				submode = SUBMODE_WAITING_ReceivingSettings;
 
 			}
 			else
 			{
-				flushServoRx();
+				Servo::flushRx();
 				setErrorMode(ERROR_ServoConnectionLost);
 			}
 			break;
@@ -2357,7 +2357,7 @@ void modeProcess()
 		//----submode----------------------------------------------------------
 		case SUBMODE_ERROR:
 
-			servoDisable();
+			Servo::disable();
 		
 			switch(errorType)
 			{
@@ -2400,7 +2400,7 @@ void modeProcess()
 //=================================================================================================================
 void setErrorMode(ErrorType type)
 {
-	servoDisable();
+	Servo::disable();
 	mode = MODE_ERROR;
 	submode = SUBMODE_ERROR;
 	errorType = type;

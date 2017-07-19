@@ -4,7 +4,6 @@
 
 #include "stm32f2xx_conf.h"
 #include <string.h>
-#include "Servo.h"
 #include "Protocol.h"
 #include "crc32.h"
 #include "OdometerRTC.h"
@@ -12,10 +11,7 @@
 #include "mode.h"
 
 
-extern void SysTickInit(void);
-extern void gpioInit(void);
 
-extern bool modeProcessFlag;
 
 
 //====================<StrainGauge.cpp>==============================================

@@ -463,27 +463,27 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>ControlLoop</GroupName>
-          <Files>
-            <File>
-              <FileName>StrainGauge.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\Source\StrainGauge.cpp</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>Servo</GroupName>
           <Files>
             <File>
               <FileName>Servo.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\Source\Servo.cpp</FilePath>
+              <FilePath>.\Source\servo\Servo.cpp</FilePath>
             </File>
             <File>
               <FileName>Servo.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Source\Servo.h</FilePath>
+              <FilePath>.\Source\servo\Servo.h</FilePath>
+            </File>
+            <File>
+              <FileName>StrainGauge.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Source\servo\StrainGauge.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>StrainGauge.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\servo\StrainGauge.h</FilePath>
             </File>
           </Files>
         </Group>

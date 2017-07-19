@@ -1,63 +1,45 @@
 
-#include "Servo.h"
+#include "servo.h"
+
+#include "stm32f2xx_conf.h"
+#include <string.h>
+#include "mode.h"
 
 #include "system/heartbeat.h"
 
 
-uint8_t ipAddressClient[4] = {10,0,0,2};
-uint8_t ipAddressServer[4] = {10,0,0,10};
-uint8_t ipAddressSubnet[4] = {255,0,0,0};
-uint8_t ipAddressGateway[4] = {10,0,0,0};
-uint8_t macAddressClient[6] = {0x00,0x01,0x02,0x03,0x04,0x05};
-uint8_t macAddressServer[6];
+Servo::TState Servo::state;
 
-uint16_t portClient = 501;
-uint16_t portServer = 502;
+uint8_t Servo::ipAddressClient[4] = {10,0,0,2};
+uint8_t Servo::ipAddressServer[4] = {10,0,0,10};
+uint8_t Servo::ipAddressSubnet[4] = {255,0,0,0};
+uint8_t Servo::ipAddressGateway[4] = {10,0,0,0};
+uint8_t Servo::macAddressClient[6] = {0x00,0x01,0x02,0x03,0x04,0x05};
+uint8_t Servo::macAddressServer[6];
 
-uint8_t spi2TxData[SERVO_SPI_MAX_LENGTH];
-uint8_t spi2RxData[SERVO_SPI_MAX_LENGTH];
-uint32_t spi2RxTxLength;
-uint32_t spi2RxTxCounter;
-bool spi2RxTxActive;
 
-enum TServoState{
-	
-	SRV_Idle=0,
-	SRV_BootWait,
-	SRV_SetUpAddresses,
-	SRV_SetUpSockets1to7Memory,
-	SRV_SetUpSocket0Memory,
-	SRV_SetUpRetryParameters,
-	SRV_SetTcpMode,
-	SRV_SetClientPort,
-	SRV_SetServerAddressPort,
-	SRV_SocketInitCommand,
-	SRV_SocketInitWait,
-	SRV_SocketConnectCommand,
-	SRV_SocketConnectWait,
-	SRV_SocketEstablished,
-	SRV_SocketDisconnectCommand,
-	SRV_SocketDisconnectWait,
-	
-};
+uint8_t Servo::spi2TxData[Servo::SPI_MAX_LENGTH];
+uint8_t Servo::spi2RxData[Servo::SPI_MAX_LENGTH];
+uint32_t Servo::spi2RxTxLength;
+uint32_t Servo::spi2RxTxCounter;
+bool Servo::spi2RxTxActive;
 
-TServoState servoState;
-uint32_t servoConnectEstablishedCounter;
+uint32_t Servo::connectEstablishedCounter;
 
-uint8_t servoTxBuffer[SERVO_TX_BUFFER_LENGTH];
-uint8_t servoRxBuffer[SERVO_RX_BUFFER_LENGTH];
-uint32_t servoTxPointerPending;
-uint32_t servoTxPointerTransmitted;
-uint32_t servoRxPointerReceived;
-uint32_t servoRxPointerProcessed;
+uint8_t Servo::txBuffer[Servo::TX_BUFFER_LENGTH];
+uint8_t Servo::rxBuffer[Servo::RX_BUFFER_LENGTH];
+uint32_t Servo::txPointerPending;
+uint32_t Servo::txPointerTransmitted;
+uint32_t Servo::rxPointerReceived;
+uint32_t Servo::rxPointerProcessed;
 
-uint32_t servoTxHeartbeat;
-uint32_t servoRxHeartbeat;
+uint32_t Servo::txHeartbeat;
+uint32_t Servo::rxHeartbeat;
 
-//==============================================================================================
-void servoInit()
-{
-	servoDisable();
+//===============================================================================================
+void Servo::init(){
+
+	disable();
 	
 	wizCsDeassert();
 
@@ -89,24 +71,23 @@ void servoInit()
 	SPI_I2S_ITConfig(SPI2, SPI_I2S_IT_RXNE, ENABLE);
 
 
-	servoState = SRV_Idle;
+	state = SRV_Idle;
 	spi2RxTxActive = false;
-	servoConnectEstablishedCounter = 0;
+	connectEstablishedCounter = 0;
 	
 	
-	servoTxPointerPending = 0;
-	servoTxPointerTransmitted = 0;
-	servoRxPointerReceived = 0;
-	servoRxPointerProcessed = 0;
+	txPointerPending = 0;
+	txPointerTransmitted = 0;
+	rxPointerReceived = 0;
+	rxPointerProcessed = 0;
 	
 	
-	servoEnable();
-	servoDisable();
+	enable();
+	disable();
 		
 }
 //==============================================================================================
-void spi2StartRxTx()
-{
+void Servo::spi2StartRxTx(){
 		wizCsAssert();
 		spi2RxTxActive = true;
 		spi2RxTxCounter = 0;
@@ -114,37 +95,37 @@ void spi2StartRxTx()
 }
 //==============================================================================================
 extern "C" {void SPI2_IRQHandler(void){
+	Servo::spiInterruptHandler();
+}}
+void Servo::spiInterruptHandler(){
 
 	spi2RxData[spi2RxTxCounter++] = SPI2->DR;
-	if (spi2RxTxCounter<spi2RxTxLength)
-	{
+	if (spi2RxTxCounter<spi2RxTxLength){
 			SPI2->DR = spi2TxData[spi2RxTxCounter];
-	}
-	else
-	{
+	}else{
 			spi2RxTxActive = false;
 			wizCsDeassert();
 	}
 	
-}}
+}
 //==============================================================================================
-void servoProcess()
-{
+void Servo::process(){
+
 	static uint8_t socketIndex;
 	static uint32_t waitCounter;
 	
 	
-	switch(servoState)
+	switch(state)
 	{
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_Idle:
 				
 				wizResetAssert();
-				servoState = SRV_BootWait;
+				state = SRV_BootWait;
 				waitCounter = 0;
 			
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_BootWait:
 
 				if (spi2RxTxActive==false)
@@ -157,12 +138,12 @@ void servoProcess()
 						{
 							if (spi2RxData[3] == 0x04) //version OK
 							{
-								servoState =SRV_SetUpAddresses;
+								state =SRV_SetUpAddresses;
 								break;
 							}
 							else
 							{
-								servoState =SRV_BootWait;
+								state =SRV_BootWait;
 								
 							}
 						}
@@ -176,12 +157,12 @@ void servoProcess()
 						waitCounter++;
 				}
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SetUpAddresses:
 
 				if (spi2RxTxActive==false)
 				{
-						servoTxPointerTransmitted = servoTxPointerPending;
+						txPointerTransmitted = txPointerPending;
 						spi2TxData[0] = (uint8_t)(COMREG_GAR0 >> 8); // offset high byte
 						spi2TxData[1] = (uint8_t)(COMREG_GAR0); // offset low byte
 						spi2TxData[2] = ACCESS_WRITE + BSB_CommonRegister + OM_VDM;//command
@@ -192,17 +173,17 @@ void servoProcess()
 						memcpy(&spi2TxData[3+4+4+6],ipAddressClient,4);
 						spi2RxTxLength = 3+3+4+4+6+4;
 						spi2StartRxTx();
-						servoState = SRV_SetUpSockets1to7Memory;socketIndex = 1;
+						state = SRV_SetUpSockets1to7Memory;socketIndex = 1;
 				}
 			
 			
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SetUpSockets1to7Memory: // setting all other sockets  Receive &Transmit Buffer Size to 0
 
 				if (spi2RxTxActive==false)
 				{
-					servoTxPointerTransmitted = servoTxPointerPending;
+					txPointerTransmitted = txPointerPending;
 					spi2TxData[0] = (uint8_t)(Sn_RXBUF_SIZE >> 8); // offset high byte
 					spi2TxData[1] = (uint8_t)(Sn_RXBUF_SIZE); // offset low byte
 					
@@ -238,17 +219,17 @@ void servoProcess()
 					spi2StartRxTx();
 					if ((++socketIndex)==8)
 					{
-						servoState = SRV_SetUpSocket0Memory;
+						state = SRV_SetUpSocket0Memory;
 					}
 				}
 
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SetUpSocket0Memory: // setting first socket  Receive &Transmit  Buffer Size to 16
 
 				if (spi2RxTxActive==false)
 				{
-					servoTxPointerTransmitted = servoTxPointerPending;
+					txPointerTransmitted = txPointerPending;
 					spi2TxData[0] = (uint8_t)(Sn_RXBUF_SIZE >> 8); // offset high byte
 					spi2TxData[1] = (uint8_t)(Sn_RXBUF_SIZE); // offset low byte
 					spi2TxData[2] = ACCESS_WRITE + BSB_Socket0Register + OM_VDM;//command
@@ -256,16 +237,16 @@ void servoProcess()
 					spi2TxData[4] = 16;
 					spi2RxTxLength = 3+2;
 					spi2StartRxTx();
-					servoState = SRV_SetUpRetryParameters;
+					state = SRV_SetUpRetryParameters;
 				}
 
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SetUpRetryParameters:	
 
 				if (spi2RxTxActive==false)
 				{
-					servoTxPointerTransmitted = servoTxPointerPending;
+					txPointerTransmitted = txPointerPending;
 						uint16_t retryTime = 0x07D1;
 						uint8_t retryCount = 0x03;
 					
@@ -277,34 +258,34 @@ void servoProcess()
 						spi2TxData[5] = retryCount;
 						spi2RxTxLength = 3+3;
 						spi2StartRxTx();
-						servoState = SRV_SetTcpMode;
+						state = SRV_SetTcpMode;
 
 
 				}
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SetTcpMode:
 
 				if (spi2RxTxActive==false)
 				{
-					servoTxPointerTransmitted = servoTxPointerPending;
+					txPointerTransmitted = txPointerPending;
 					spi2TxData[0] = (uint8_t)(Sn_MR >> 8); // offset high byte
 					spi2TxData[1] = (uint8_t)(Sn_MR); // offset low byte
 					spi2TxData[2] = ACCESS_WRITE + BSB_Socket0Register + OM_VDM;//command
 					spi2TxData[3] = (0<<5)+(1<<0); // TCP mode
 					spi2RxTxLength = 3+1;
 					spi2StartRxTx();
-					servoState = SRV_SetClientPort;
+					state = SRV_SetClientPort;
 
 					
 				}
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SetClientPort:
 				
 				if (spi2RxTxActive==false)
 				{
-					servoTxPointerTransmitted = servoTxPointerPending;
+					txPointerTransmitted = txPointerPending;
 					spi2TxData[0] = (uint8_t)(Sn_PORT0 >> 8); // offset high byte
 					spi2TxData[1] = (uint8_t)(Sn_PORT0); // offset low byte
 					spi2TxData[2] = ACCESS_WRITE + BSB_Socket0Register + OM_VDM;//command
@@ -312,16 +293,16 @@ void servoProcess()
 					spi2TxData[4] = (uint8_t)(portClient); // port low byte
 					spi2RxTxLength = 3+2;
 					spi2StartRxTx();
-					servoState = SRV_SetServerAddressPort;
+					state = SRV_SetServerAddressPort;
 				}
 				
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SetServerAddressPort:
 				
 				if (spi2RxTxActive==false)
 				{
-					servoTxPointerTransmitted = servoTxPointerPending;
+					txPointerTransmitted = txPointerPending;
 					
 					spi2TxData[0] = (uint8_t)(Sn_DIPR0 >> 8); // offset high byte
 					spi2TxData[1] = (uint8_t)(Sn_DIPR0); // offset low byte
@@ -331,16 +312,16 @@ void servoProcess()
 					spi2TxData[3+4+1] = (uint8_t)(portServer); // port low byte
 					spi2RxTxLength = 3+4+2;
 					spi2StartRxTx();
-					servoState = SRV_SocketInitCommand;
+					state = SRV_SocketInitCommand;
 				}
 			
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SocketInitCommand:
 
 				if (spi2RxTxActive==false)
 				{
-					servoTxPointerTransmitted = servoTxPointerPending;
+					txPointerTransmitted = txPointerPending;
 					
 					spi2TxData[0] = (uint8_t)(Sn_CR >> 8); // offset high byte
 					spi2TxData[1] = (uint8_t)(Sn_CR); // offset low byte
@@ -348,18 +329,18 @@ void servoProcess()
 					spi2TxData[3] = COMMAND_OPEN;
 					spi2RxTxLength = 3+1;
 					spi2StartRxTx();
-					servoState = SRV_SocketInitWait;
+					state = SRV_SocketInitWait;
 					waitCounter = 0;
 					
 				}
 				
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SocketInitWait:
 				
 				if (spi2RxTxActive==false)
 				{
-					servoTxPointerTransmitted = servoTxPointerPending;
+					txPointerTransmitted = txPointerPending;
 					if (waitCounter==0)
 					{
 						
@@ -368,7 +349,7 @@ void servoProcess()
 					{
 							if (spi2RxData[3] == STATUS_SOCK_INIT)
 							{
-								servoState = SRV_SocketConnectCommand;
+								state = SRV_SocketConnectCommand;
 								break;
 							}
 					}
@@ -379,35 +360,35 @@ void servoProcess()
 					spi2TxData[3] = 0x00;
 					spi2RxTxLength = 3+1;
 					spi2StartRxTx();
-					servoState = SRV_SocketInitWait;
+					state = SRV_SocketInitWait;
 					waitCounter++;
 					
 				}
 
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SocketConnectCommand:
 				if (spi2RxTxActive==false)
 				{
-					servoTxPointerTransmitted = servoTxPointerPending;
+					txPointerTransmitted = txPointerPending;
 					spi2TxData[0] = (uint8_t)(Sn_CR >> 8); // offset high byte
 					spi2TxData[1] = (uint8_t)(Sn_CR); // offset low byte
 					spi2TxData[2] = ACCESS_WRITE + BSB_Socket0Register + OM_VDM;//command
 					spi2TxData[3] = COMMAND_CONNECT;
 					spi2RxTxLength = 3+1;
 					spi2StartRxTx();
-					servoState = SRV_SocketConnectWait;
+					state = SRV_SocketConnectWait;
 					waitCounter = 0;
 	
 					
 					
 				}
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SocketConnectWait:
 				if (spi2RxTxActive==false)
 				{
-					servoTxPointerTransmitted = servoTxPointerPending;
+					txPointerTransmitted = txPointerPending;
 
 					
 					
@@ -419,19 +400,19 @@ void servoProcess()
 					{
 							if (spi2RxData[3]==STATUS_SOCK_ESTABLISHED)
 							{
-								servoState = SRV_SocketEstablished;
+								state = SRV_SocketEstablished;
 								waitCounter = 0;
-								servoConnectEstablishedCounter++;
+								connectEstablishedCounter++;
 								break;
 							}
 							if (spi2RxData[3]==STATUS_SOCK_CLOSED)
 							{
-								servoState = SRV_SocketInitCommand;
+								state = SRV_SocketInitCommand;
 								break;
 							}
 							if (spi2RxData[3]==STATUS_SOCK_CLOSE_WAIT)
 							{
-								servoState = SRV_SocketDisconnectCommand;
+								state = SRV_SocketDisconnectCommand;
 								
 							}
 							
@@ -444,14 +425,14 @@ void servoProcess()
 					spi2TxData[3] = 0x00;
 					spi2RxTxLength = 3+1;
 					spi2StartRxTx();
-					servoState = SRV_SocketConnectWait;
+					state = SRV_SocketConnectWait;
 					waitCounter++;
 	
 					
 					
 				}
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SocketEstablished:
 
 				if (spi2RxTxActive==false)
@@ -487,7 +468,7 @@ void servoProcess()
 							//--socketEstablishedSubstate-----------------------------------------------
 							default:
 							case SES_Idle:
-								if (servoTxPointerPending!=servoTxPointerTransmitted)
+								if (txPointerPending!=txPointerTransmitted)
 								{
 
 									spi2TxData[0] = (uint8_t)(Sn_TX_WR0 >> 8); // offset high byte
@@ -520,11 +501,11 @@ void servoProcess()
 								spi2TxData[0] = (uint8_t)(txPointer >> 8); // offset high byte
 								spi2TxData[1] = (uint8_t)(txPointer); // offset low byte
 								spi2TxData[2] = ACCESS_WRITE + BSB_Socket0TxBuffer + OM_VDM;//command
-								txLength = (servoTxPointerPending-servoTxPointerTransmitted)&(SERVO_TX_BUFFER_LENGTH-1);
+								txLength = (txPointerPending-txPointerTransmitted)&(TX_BUFFER_LENGTH-1);
 								for(uint16_t i=0;i<txLength;i++)
 								{
-										spi2TxData[3+i] = servoTxBuffer[servoTxPointerTransmitted];
-										servoTxPointerTransmitted = (servoTxPointerTransmitted+1)&(SERVO_TX_BUFFER_LENGTH-1);
+										spi2TxData[3+i] = txBuffer[txPointerTransmitted];
+										txPointerTransmitted = (txPointerTransmitted+1)&(TX_BUFFER_LENGTH-1);
 								}
 								spi2RxTxLength = 3+txLength;
 								spi2StartRxTx();
@@ -560,14 +541,14 @@ void servoProcess()
 								socketEstablishedSubstate = SES_Idle;
 								waitCounter++;
 							
-								servoTxHeartbeat = Heartbeat::getCounterValue();
+								txHeartbeat = Heartbeat::getCounterValue();
 							
 								break;
 							//--socketEstablishedSubstate-----------------------------------------------
 							case SES_ReadingStatus:
 								if (spi2RxData[3]==STATUS_SOCK_CLOSE_WAIT)
 								{
-									servoState = SRV_SocketDisconnectCommand;
+									state = SRV_SocketDisconnectCommand;
 								}
 								else if (spi2RxData[3]==STATUS_SOCK_ESTABLISHED)
 								{
@@ -584,7 +565,7 @@ void servoProcess()
 								else
 								{
 									__asm("	nop");
-									servoState = SRV_SocketInitCommand;
+									state = SRV_SocketInitCommand;
 								}
 						
 								break;
@@ -633,8 +614,8 @@ void servoProcess()
 
 								for(uint16_t i=0;i<rxLength;i++)
 								{
-										servoRxBuffer[servoRxPointerReceived] = spi2RxData[3+i];
-										servoRxPointerReceived = (servoRxPointerReceived+1)&(SERVO_RX_BUFFER_LENGTH-1);
+										rxBuffer[rxPointerReceived] = spi2RxData[3+i];
+										rxPointerReceived = (rxPointerReceived+1)&(RX_BUFFER_LENGTH-1);
 								}
 
 								rxPointer+=rxLength;
@@ -662,7 +643,7 @@ void servoProcess()
 								socketEstablishedSubstate = SES_Idle;
 								waitCounter++;
 
-								servoRxHeartbeat = Heartbeat::getCounterValue();
+								rxHeartbeat = Heartbeat::getCounterValue();
 								
 								break;
 							//--socketEstablishedSubstate-----------------------------------------------
@@ -678,12 +659,12 @@ void servoProcess()
 				}
 			
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SocketDisconnectCommand:
 				
 				if (spi2RxTxActive==false)
 				{
-					servoTxPointerTransmitted = servoTxPointerPending;
+					txPointerTransmitted = txPointerPending;
 					
 					spi2TxData[0] = (uint8_t)(Sn_CR >> 8); // offset high byte
 					spi2TxData[1] = (uint8_t)(Sn_CR); // offset low byte
@@ -691,7 +672,7 @@ void servoProcess()
 					spi2TxData[3] = COMMAND_DISCON;
 					spi2RxTxLength = 3+1;
 					spi2StartRxTx();
-					servoState = SRV_SocketDisconnectWait;
+					state = SRV_SocketDisconnectWait;
 					waitCounter = 0;
 	
 					
@@ -700,7 +681,7 @@ void servoProcess()
 		
 			
 				break;
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 			case SRV_SocketDisconnectWait:
 	
 				if (spi2RxTxActive==false)
@@ -713,7 +694,7 @@ void servoProcess()
 					{
 							if (spi2RxData[3]==STATUS_SOCK_CLOSED)
 							{
-								servoState = SRV_SocketInitCommand;
+								state = SRV_SocketInitCommand;
 								break;
 							}
 					}
@@ -723,15 +704,15 @@ void servoProcess()
 					spi2TxData[3] = 0x00;
 					spi2RxTxLength = 3+1;
 					spi2StartRxTx();
-					servoState = SRV_SocketDisconnectWait;
+					state = SRV_SocketDisconnectWait;
 					waitCounter++;
 	
 					
 					
 				}			
 				break;
-			//-----servoState-----------------------------------------------------------------------
-			//-----servoState-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
+			//-----state-----------------------------------------------------------------------
 	}
 
 
@@ -739,61 +720,60 @@ void servoProcess()
 	
 }
 //==============================================================================================
-void servoPushByte(uint8_t byte)
-{
-		servoTxBuffer[servoTxPointerPending] = byte;
-		servoTxPointerPending = (servoTxPointerPending+1)&(SERVO_TX_BUFFER_LENGTH-1);
+void Servo::pushByte(uint8_t byte){
+
+	txBuffer[txPointerPending] = byte;
+	txPointerPending = (txPointerPending+1)&(TX_BUFFER_LENGTH-1);
 }
-void servoPushWordBigEndian(uint16_t word)
-{
-		servoPushByte((uint8_t)(word>>8));
-		servoPushByte((uint8_t)(word));
+void Servo::pushWordBigEndian(uint16_t word){
+
+	pushByte((uint8_t)(word>>8));
+	pushByte((uint8_t)(word));
 }
-void servoPopBytes(uint8_t *dst,uint16_t byteCount)
-{
-		for(uint16_t i=0;i<byteCount;i++)
-		{
-				*dst++ = servoRxBuffer[servoRxPointerProcessed++];
-				servoRxPointerProcessed &= (SERVO_RX_BUFFER_LENGTH-1);
-		}
+void Servo::popBytes(uint8_t *dst,uint16_t byteCount){
+
+	for(uint16_t i=0;i<byteCount;i++){
+
+		*dst++ = rxBuffer[rxPointerProcessed++];
+		rxPointerProcessed &= (RX_BUFFER_LENGTH-1);
+	}
 }
 
 
 
 //==============================================================================================
-void servoReadHoldingRegisters()
-{
-	servoPushWordBigEndian(++modbusTxTransactionIdentifier);
-	servoPushWordBigEndian(0);//protocol ID
-	servoPushWordBigEndian(1+1+2+2);//length
-	servoPushByte(0);//unit ID
-	servoPushByte(3);//Read Holding Registers
-	servoPushWordBigEndian(0);//The Data Address of the first register requested
-	servoPushWordBigEndian(4);//The total number of registers requested
+void Servo::readHoldingRegisters(){
+	
+	pushWordBigEndian(++modbusTxTransactionIdentifier);
+	pushWordBigEndian(0);//protocol ID
+	pushWordBigEndian(1+1+2+2);//length
+	pushByte(0);//unit ID
+	pushByte(3);//Read Holding Registers
+	pushWordBigEndian(0);//The Data Address of the first register requested
+	pushWordBigEndian(4);//The total number of registers requested
 }
+//===============================================================================================
+void Servo::presetMultipleRegisters(FhppOutputData &data){
 
-void servoPresetMultipleRegisters(FhppOutputData &data)
-{
-	servoPushWordBigEndian(++modbusTxTransactionIdentifier);
-	servoPushWordBigEndian(0);//protocol ID
-	servoPushWordBigEndian(1+1+2+2+1+8);//length
-	servoPushByte(0);//unit ID
-	servoPushByte(16);//command
-	servoPushWordBigEndian(0);//The Data Address of the first register requested
-	servoPushWordBigEndian(4);//The total number of registers to write
-	servoPushByte(8);//The number of data bytes to follow
+	pushWordBigEndian(++modbusTxTransactionIdentifier);
+	pushWordBigEndian(0);//protocol ID
+	pushWordBigEndian(1+1+2+2+1+8);//length
+	pushByte(0);//unit ID
+	pushByte(16);//command
+	pushWordBigEndian(0);//The Data Address of the first register requested
+	pushWordBigEndian(4);//The total number of registers to write
+	pushByte(8);//The number of data bytes to follow
 	
 	uint8_t *pb = (uint8_t*)&data;
-	for(uint16_t i = 0; i< 8;i++)
-	{
-		servoPushByte(*pb++);
+	for(uint16_t i = 0; i< 8;i++){
+		pushByte(*pb++);
 	}
 	
 	
 }
+//===============================================================================================
+void Servo::getFhppInputData(FhppInputData *data,uint8_t *rxMessage){
 
-void servoGetFhppInputData(FhppInputData *data,uint8_t *rxMessage)
-{
 	memcpy(&(*data),&rxMessage[9],4);
 	uint8_t *pbDst = (uint8_t*)&(data->actualValue2);
 	uint8_t *pbSrc = (uint8_t*)&(rxMessage[9+7]);
@@ -802,9 +782,9 @@ void servoGetFhppInputData(FhppInputData *data,uint8_t *rxMessage)
 			*pbDst++ = *pbSrc--;
 	}
 }
+//===============================================================================================
+bool Servo::checkFhppInputData(FhppInputData *data){
 
-bool servoCheckFhppInputData(FhppInputData *data)
-{
 	if (data->scon & SCON_FAULT)//check fault
 	{
 		return false;
@@ -819,7 +799,35 @@ bool servoCheckFhppInputData(FhppInputData *data)
 	}
 	return true;
 }
-
-
+//===============================================================================================
+uint16_t Servo::getRxLenght(){
+	return (uint16_t)((rxPointerReceived-rxPointerProcessed)&(RX_BUFFER_LENGTH-1));
+}
+//===============================================================================================
+void Servo::flushRx(){
+	rxPointerProcessed = rxPointerReceived;
+}
+//===============================================================================================
+void Servo::wizCsAssert(){
+	GPIOA->BSRRH = (1<<1);
+}
+void Servo::wizCsDeassert(){
+	GPIOA->BSRRL = (1<<1);
+}
+//===============================================================================================
+void Servo::wizResetAssert(){
+	GPIOC->BSRRH = (1<<5);
+}
+void Servo::wizResetDeassert(){
+	GPIOC->BSRRL = (1<<5);
+}
+//===============================================================================================
+void Servo::enable(){
+	GPIOB->BSRRL = (1<<12)+(1<<13)+(1<<14)+(1<<15);
+}
+void Servo::disable(){
+	GPIOB->BSRRH = (1<<12)+(1<<13)+(1<<14)+(1<<15);
+}
+//===============================================================================================
 
 

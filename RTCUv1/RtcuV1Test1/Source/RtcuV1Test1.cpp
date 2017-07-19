@@ -8,6 +8,7 @@
 #include "nfc/nfc.h"
 #include "system/heartbeat.h"
 #include "system/ports.h"
+#include "servo/servo.h"
 
 
 
@@ -32,7 +33,7 @@ int main()
 	Diagnostics::init();
 
 
-	servoInit();
+	Servo::init();
 	strainGaugeInit();
 	
 	nfcInit();
@@ -44,13 +45,13 @@ int main()
 		HMI::process();
 		Diagnostics::process();
 		
-		servoProcess();
+		Servo::process();
 		//rtcProcess();
 		nfcTxProcess();
 	
-		if (modeProcessFlag==true){
+		if (Heartbeat::mainTickReady==true){
 
-			modeProcessFlag = false;
+			Heartbeat::mainTickReady = false;
 			modeProcess();
 
 			OdometerRTC::readCurrentDateTime(true);

@@ -1,78 +1,134 @@
 
-#ifndef SERVO_H
-#define SERVO_H
+#ifndef SERVO_SERVO_H
+#define SERVO_SERVO_H
 
-#include "stm32f2xx_conf.h"
-#include <string.h>
-#include "mode.h"
-
-extern void servoInit();
-extern void servoProcess();
-
-#define SERVO_SPI_MAX_LENGTH	(256)
-extern uint8_t spi2TxData[SERVO_SPI_MAX_LENGTH];
-extern uint8_t spi2RxData[SERVO_SPI_MAX_LENGTH];
-extern uint32_t spi2RxTxLength;
-extern uint32_t spi2RxTxCounter;
-extern bool spi2RxTxActive;
-
-#define SERVO_TX_BUFFER_LENGTH (2048)
-#define SERVO_RX_BUFFER_LENGTH (2048)
-extern uint8_t servoTxBuffer[SERVO_TX_BUFFER_LENGTH];
-extern uint8_t servoRxBuffer[SERVO_RX_BUFFER_LENGTH];
-extern uint32_t servoTxPointerPending;
-extern uint32_t servoTxPointerTransmitted;
-extern uint32_t servoRxPointerReceived;
-extern uint32_t servoRxPointerProcessed;
+#include <stdint.h>
 
 
+class Servo{
+private:
+
+	static const uint32_t SPI_MAX_LENGTH = (256);
+	static uint8_t spi2TxData[SPI_MAX_LENGTH];
+	static uint8_t spi2RxData[SPI_MAX_LENGTH];
+	static uint32_t spi2RxTxLength;
+	static uint32_t spi2RxTxCounter;
+	static bool spi2RxTxActive;
+	static void spi2StartRxTx();
+
+	static const uint32_t RX_BUFFER_LENGTH = (2048);
+	static const uint32_t TX_BUFFER_LENGTH = (2048);
+	static uint8_t txBuffer[TX_BUFFER_LENGTH];
+	static uint8_t rxBuffer[RX_BUFFER_LENGTH];
+	static uint32_t txPointerPending;
+	static uint32_t txPointerTransmitted;
+
+	static void pushByte(uint8_t byte);
+	static void pushWordBigEndian(uint16_t word);
 
 
-extern void servoPushByte(uint8_t byte);
-extern void servoPushWordBigEndian(uint16_t word);
-extern void servoPopBytes(uint8_t *dst,uint16_t byteCount);
+	static void wizCsAssert();
+	static void wizCsDeassert();
+	static void wizResetAssert();
+	static void wizResetDeassert();
 
-inline uint16_t getServoRxLenght(){
-	return (uint16_t)((servoRxPointerReceived-servoRxPointerProcessed)&(SERVO_RX_BUFFER_LENGTH-1));
-}
-inline void flushServoRx(){
-	servoRxPointerProcessed = servoRxPointerReceived;
-}
+	enum TState{
+		
+		SRV_Idle=0,
+		SRV_BootWait,
+		SRV_SetUpAddresses,
+		SRV_SetUpSockets1to7Memory,
+		SRV_SetUpSocket0Memory,
+		SRV_SetUpRetryParameters,
+		SRV_SetTcpMode,
+		SRV_SetClientPort,
+		SRV_SetServerAddressPort,
+		SRV_SocketInitCommand,
+		SRV_SocketInitWait,
+		SRV_SocketConnectCommand,
+		SRV_SocketConnectWait,
+		SRV_SocketEstablished,
+		SRV_SocketDisconnectCommand,
+		SRV_SocketDisconnectWait,
+		
+	};
+
+	static TState state;
+
+	const static uint16_t portClient = 501;
+	const static uint16_t portServer = 502;
+
+	static uint8_t ipAddressClient[4];
+	static uint8_t ipAddressServer[4];
+	static uint8_t ipAddressSubnet[4];
+	static uint8_t ipAddressGateway[4];
+	static uint8_t macAddressClient[6];
+	static uint8_t macAddressServer[6];
+
+
+	static uint32_t connectEstablishedCounter;
+
+	static uint32_t txHeartbeat;
+	static uint32_t rxHeartbeat;
 	
 
-inline void wizCsAssert()
-{
-	GPIOA->BSRRH = (1<<1);
-}
-inline void wizCsDeassert()
-{
-	GPIOA->BSRRL = (1<<1);
-}
-inline void wizResetAssert()
-{
-	GPIOC->BSRRH = (1<<5);
-}
-inline void wizResetDeassert()
-{
-	GPIOC->BSRRL = (1<<5);
-}
+public:
 
-inline void servoEnable()
-{
-	GPIOB->BSRRL = (1<<12)+(1<<13)+(1<<14)+(1<<15);
-}
-inline void servoDisable()
-{
-	GPIOB->BSRRH = (1<<12)+(1<<13)+(1<<14)+(1<<15);
-}
+	static void init();
+
+	static void process();
+
+	static void spiInterruptHandler();
+
+	static void enable();
+	static void disable();
+
+	struct FhppInputData{
+		uint8_t scon;
+		uint8_t spos;
+		uint8_t sdir;
+		uint8_t actualValue1;
+		int32_t actualValue2;
+	};
+	struct FhppOutputData{
+		uint8_t ccon;
+		uint8_t cpos;
+		uint8_t cdir;
+		uint8_t setpointValue1;
+		uint32_t setpointValue2;
+	};
+
+	static void readHoldingRegisters();
+	static void presetMultipleRegisters(FhppOutputData &data);
+	static void getFhppInputData(FhppInputData *data,uint8_t *rxMessage);
+	static bool checkFhppInputData(FhppInputData *data);
+
+	static uint16_t getRxLenght();
+	static void flushRx();
+
+	static uint32_t rxPointerReceived;
+	static uint32_t rxPointerProcessed;
+
+	static void popBytes(uint8_t *dst,uint16_t byteCount);
+
+
+};
+
+
+
+
+
+
+
+
+
+
 
 
 
 //=====================================================================================
 /*
 W5500 has  one Common Register Block,  eight Socket Register Blocks, and TX/RX Buffer Blocks allocated to each Socket.
-
-
 */
 
 // Common Register Block
@@ -225,4 +281,4 @@ W5500 has  one Common Register Block,  eight Socket Register Blocks, and TX/RX B
 #define BSB_Socket7RxBuffer	(31<<3)
 
 
-#endif
+#endif //SERVO_SERVO_H

@@ -10,7 +10,6 @@ class Heartbeat{
 private:
 	static uint32_t counter;
 	static uint8_t mainTickCounter;
-	static bool mainTickReady;
 
 public:
 	
@@ -20,6 +19,7 @@ public:
 	static bool mainTick();
 	static uint32_t getCounterValue();
 
+	static bool mainTickReady;
 
 
 };
