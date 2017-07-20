@@ -173,8 +173,8 @@ void StrainGauge::init(void){
 	
 }
 //==============================================================================================
-uint8_t StrainGauge::spiPollByte(uint8_t txByte)
-{
+uint8_t StrainGauge::spiPollByte(uint8_t txByte){
+	
 		SPI1->DR = txByte;
 		while(1)
 		{
@@ -239,13 +239,13 @@ void StrainGauge::spiInterruptHandler(){
 		*pb++ = adcData[2];
 		*(uint32_t*)&(dataValue) -= 0x80000000; // offset
 		
-		strainGaugeResults[strainGaugeResultsPtr] = dataValue;
-		if (strainGaugeAdcData[4]&(1<<5))
+		results[resultsPtr] = dataValue;
+		if (adcData[4]&(1<<5))
 		{
-			strainGaugeFault = true;
+			fault = true;
 		}
 		/*
-		if (strainGaugeAdcData[4]&(1<<6))
+		if (adcData[4]&(1<<6))
 		{
 				blackBoxStrainGauge.overflow=1;
 		}
@@ -255,8 +255,8 @@ void StrainGauge::spiInterruptHandler(){
 		}
 		*/
 		
-		strainGaugeResultsCount++;
-		strainGaugeResultsPtr = (strainGaugeResultsPtr+1)&(STRAIN_GAUGE_BUFFER_LENGTH-1);
+		resultsCount++;
+		resultsPtr = (resultsPtr+1)&(BUFFER_LENGTH-1);
 		
 	}
 	
@@ -264,15 +264,15 @@ void StrainGauge::spiInterruptHandler(){
 
 }
 //==============================================================================================
-int32_t StrainGauge::getFilteredResult(void)
-{
-	uint32_t ptr = strainGaugeResultsPtr;
+int32_t StrainGauge::getFilteredResult(void){
+
+	uint32_t ptr = resultsPtr;
 	int32_t accu = 0;
 	
-	for(int i=0;i<16;i++)
-	{
-		ptr = (ptr-1)&(STRAIN_GAUGE_BUFFER_LENGTH-1);
-		accu += strainGaugeResults[ptr]/16;
+	for(int i=0;i<16;i++){
+
+		ptr = (ptr-1)&(BUFFER_LENGTH-1);
+		accu += results[ptr]/16;
 	}
 	
 //0,001149804
@@ -283,12 +283,16 @@ int32_t StrainGauge::getFilteredResult(void)
 }
 //==============================================================================================
 void StrainGauge::csAssert(){
-		GPIOB->BSRRH = (1<<6);
+	GPIOB->BSRRH = (1<<6);
 };
 //==============================================================================================
-void StrainGauge::sDeassert(){
-		GPIOB->BSRRL = (1<<6);
+void StrainGauge::csDeassert(){
+	GPIOB->BSRRL = (1<<6);
 };
+//==============================================================================================
+bool StrainGauge::isFaulty(){
+	return fault;
+}
 //==============================================================================================
 
 

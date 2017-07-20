@@ -9,11 +9,11 @@
 
 inline void nfcTxEnableAssert()
 {
-		GPIOB->BSRRL = (1<<7);
+	GPIOB->BSRRL = (1<<7);
 };
 inline void nfcTxEnableDeassert()
 {
-		GPIOB->BSRRH = (1<<7);
+	GPIOB->BSRRH = (1<<7);
 };
 
 

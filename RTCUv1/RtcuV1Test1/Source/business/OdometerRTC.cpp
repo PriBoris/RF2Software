@@ -190,8 +190,8 @@ void OdometerRTC::startRxTx(){
 	SPI3->DR = txData[0];
 }
 //======================================================================================================
-uint8_t OdometerRTC::bcdByteToDec(uint8_t bcd)
-{
+uint8_t OdometerRTC::bcdByteToDec(uint8_t bcd){
+
 	return ((bcd>>4)&0x0F)*10+(bcd&0x0F);
 }
 //======================================================================================================
@@ -302,8 +302,8 @@ bool OdometerRTC::checkRecord(bool oddRecord){
 	return (memcmp(recordData,&checksum,sizeof(checksum))==0);
 }
 //======================================================================================================
-void OdometerRTC::checksumTableCreate(void)
-{
+void OdometerRTC::checksumTableCreate(void){
+
     uint32_t c;
     int32_t n, k;
     for (n = 0; n < 256; n++)    {
@@ -319,8 +319,9 @@ void OdometerRTC::checksumTableCreate(void)
     }
     checksumTableValid = true;
 }
-void OdometerRTC::checksumAppendByte(uint8_t newByte,uint32_t &checksum)
-{
+//======================================================================================================
+void OdometerRTC::checksumAppendByte(uint8_t newByte,uint32_t &checksum){
+	
     uint32_t c = checksum ^ 0xffffffffL;
     if (checksumTableValid==false){
         checksumTableCreate();

@@ -2,6 +2,7 @@
 #ifndef MODE_H
 #define MODE_H
 
+#include <stdint.h>
 
 extern void modeInit();
 extern void modeProcess();

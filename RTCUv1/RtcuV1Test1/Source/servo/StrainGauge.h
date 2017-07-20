@@ -27,6 +27,7 @@ private:
 
 public:
 	static void init();
+	static bool isFaulty();
 
 	static void readyInterruptHandler();
 	static void spiInterruptHandler();

@@ -1,10 +1,15 @@
 
 #include "mode.h"
 
+#include <string.h>
+
 #include "hmi/RxMessageQueue.h"
 #include "hmi/broadcast.h"
 #include "nfc/nfc.h"
 #include "servo/servo.h"
+#include "servo/StrainGauge.h"
+#include "stm32f2xx_conf.h"
+#include "business/OdometerRTC.h"
 
 
 Mode mode;
@@ -55,21 +60,18 @@ Phase phase;
 
 
 
+//=================================================================================================================
+int32_t int32Abs(int32_t arg){
 
-int32_t int32Abs(int32_t arg)
-{
-	if (arg>=0)
-	{
+	if (arg>=0){
 		return arg;
-	}
-	else
-	{
+	}else{
 		return -arg;
 	}
 }
+//=================================================================================================================
+int32_t int32Reversed(int32_t arg){
 
-int32_t int32Reversed(int32_t arg)
-{
 	int32_t result;
 	uint8_t *pSrc = (uint8_t*)&arg;
 	uint8_t *pDst = (uint8_t*)&result;
@@ -84,8 +86,8 @@ int32_t int32Reversed(int32_t arg)
 
 
 //=================================================================================================================
-void modeInit()
-{
+void modeInit(){
+
 	mode = MODE_INITIALIZING;
 	submode = SUBMODE_INITIALIZING_Start;
 	
@@ -102,8 +104,7 @@ void modeInit()
 	
 	{
 		memset(&machineSettings,0,sizeof(machineSettings));
-//		machineSettings.positionMainMin = 100;//steps
-//		machineSettings.positionMainMax = 20000;//steps
+
 		machineSettings.positionMainMin = 11000;//steps
 		machineSettings.positionMainMax = 20000;//steps
 
@@ -135,7 +136,7 @@ void modeInit()
 void modeProcess()
 {
 	
-	if (strainGaugeFault==true)
+	if (StrainGauge::isFaulty()==true)
 	{
 		mode = MODE_ERROR;
 		submode = SUBMODE_ERROR;
@@ -1419,7 +1420,7 @@ void modeProcess()
 								&positionRel,
 								4
 								);
-						int32_t force = getStrainGaugeFilteredResult();
+						int32_t force = StrainGauge::getFilteredResult();
 						memcpy(
 								&messageToHmi[31+8],
 								&force,
@@ -1490,7 +1491,7 @@ void modeProcess()
 								&positionRel,
 								4
 								);
-						int32_t force = getStrainGaugeFilteredResult();
+						int32_t force = StrainGauge::getFilteredResult();
 						memcpy(
 								&messageToHmi[31+8],
 								&force,
@@ -1912,7 +1913,7 @@ void modeProcess()
 					memcpy(&messageToHmi[35+8],&repDirection,sizeof(repDirection));
 					int32_t positionRel = getRelativePosition(fhppInputData.actualValue2);
 					memcpy(&messageToHmi[39+8],&positionRel,sizeof(positionRel));
-					int32_t force = getStrainGaugeFilteredResult();
+					int32_t force = StrainGauge::getFilteredResult();
 					memcpy(&messageToHmi[43+8],&force,sizeof(force));
 
 					Broadcast::sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
@@ -2133,7 +2134,7 @@ void modeProcess()
 					memcpy(&messageToHmi[35+8],&repDirection,sizeof(repDirection));
 					int32_t positionRel = getRelativePosition(fhppInputData.actualValue2);
 					memcpy(&messageToHmi[39+8],&positionRel,sizeof(positionRel));
-					int32_t force = getStrainGaugeFilteredResult();
+					int32_t force = StrainGauge::getFilteredResult();
 					memcpy(&messageToHmi[43+8],&force,sizeof(force));
 
 					Broadcast::sendPacket(Protocol::TAG_ReportCurrentMode,messageToHmi,sizeof(messageToHmi));										
@@ -2398,16 +2399,15 @@ void modeProcess()
 	
 }
 //=================================================================================================================
-void setErrorMode(ErrorType type)
-{
+void setErrorMode(ErrorType type){
+	
 	Servo::disable();
 	mode = MODE_ERROR;
 	submode = SUBMODE_ERROR;
 	errorType = type;
 }
 //=================================================================================================================
-uint8_t convertSpeedHmiToServo(uint32_t hmiSpeed)
-{
+uint8_t convertSpeedHmiToServo(uint32_t hmiSpeed){
 		uint8_t servoSpeed;
 		if (hmiSpeed>100)
 		{
@@ -2419,14 +2419,14 @@ uint8_t convertSpeedHmiToServo(uint32_t hmiSpeed)
 		}
 		return servoSpeed;
 }
-uint32_t convertSpeedServoToHmi(uint8_t servoSpeed)
-{
+uint32_t convertSpeedServoToHmi(uint8_t servoSpeed){
+
 		return (uint32_t)servoSpeed;
 }
 
 //=================================================================================================================
-int32_t getRelativePosition(int32_t absolutePosition)
-{
+int32_t getRelativePosition(int32_t absolutePosition){
+
 	int32_t temp = (absolutePosition-personalSettings.positionMainA)*10000;
 	return temp/(personalSettings.positionMainB-personalSettings.positionMainA);
 }
