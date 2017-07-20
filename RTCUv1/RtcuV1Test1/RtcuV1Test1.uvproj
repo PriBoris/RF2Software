@@ -406,14 +406,9 @@
           <GroupName>main</GroupName>
           <Files>
             <File>
-              <FileName>RtcuV1Test1.cpp</FileName>
+              <FileName>main.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\Source\RtcuV1Test1.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>RtcuV1Test1.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Source\RtcuV1Test1.h</FilePath>
+              <FilePath>.\Source\main.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -493,22 +488,22 @@
             <File>
               <FileName>mode.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\Source\mode.cpp</FilePath>
+              <FilePath>.\Source\business\mode.cpp</FilePath>
             </File>
             <File>
               <FileName>mode.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Source\mode.h</FilePath>
+              <FilePath>.\Source\business\mode.h</FilePath>
             </File>
             <File>
               <FileName>OdometerRTC.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\Source\OdometerRTC.cpp</FilePath>
+              <FilePath>.\Source\business\OdometerRTC.cpp</FilePath>
             </File>
             <File>
               <FileName>OdometerRTC.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Source\OdometerRTC.h</FilePath>
+              <FilePath>.\Source\business\OdometerRTC.h</FilePath>
             </File>
           </Files>
         </Group>

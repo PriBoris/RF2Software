@@ -2,7 +2,6 @@
 #ifndef MODE_H
 #define MODE_H
 
-#include "RtcuV1Test1.h"
 
 extern void modeInit();
 extern void modeProcess();

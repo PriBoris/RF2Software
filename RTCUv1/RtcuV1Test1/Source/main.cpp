@@ -1,6 +1,5 @@
 
 
-#include "RtcuV1Test1.h"
 
 
 #include "hmi/hmi.h"
@@ -9,7 +8,11 @@
 #include "system/heartbeat.h"
 #include "system/ports.h"
 #include "servo/servo.h"
+#include "servo/StrainGauge.h"
+#include "business/OdometerRTC.h"
+#include "business/mode.h"
 
+#include "crc32.h"
 
 
 
@@ -34,7 +37,7 @@ int main()
 
 
 	Servo::init();
-	strainGaugeInit();
+	StrainGauge::init();
 	
 	nfcInit();
 	

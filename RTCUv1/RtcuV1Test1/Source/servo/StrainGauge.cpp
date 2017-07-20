@@ -1,34 +1,38 @@
 
-#include "RtcuV1Test1.h"
+#include "StrainGauge.h"
+
+#include <string.h>
+
+#include "stm32f2xx_conf.h"
 
 
+int32_t StrainGauge::results[StrainGauge::BUFFER_LENGTH];
+uint32_t StrainGauge::resultsPtr;
+uint32_t StrainGauge::resultsCount;
+bool StrainGauge::fault;
 
-uint32_t strainGaugeCounterExti = 0;
-uint8_t strainGaugeByteCounter;
-uint8_t strainGaugeAdcData[5];
+uint32_t StrainGauge::counterExti = 0;
+uint8_t StrainGauge::byteCounter;
+uint8_t StrainGauge::adcData[5];
 
-int32_t strainGaugeResults[STRAIN_GAUGE_BUFFER_LENGTH];
-uint32_t strainGaugeResultsPtr;
-uint32_t strainGaugeResultsCount;
-bool strainGaugeFault;
 
 
 
 
 
 //==============================================================================================
-void strainGaugeInit(void)
-{
-	strainGaugeResultsCount = 0;
-	strainGaugeResultsPtr = 0;
-	memset(&strainGaugeResults[0],0,sizeof(strainGaugeResults));
-	strainGaugeFault = false;
+void StrainGauge::init(void){
+
+	resultsCount = 0;
+	resultsPtr = 0;
+	memset(&results[0],0,sizeof(results));
+	fault = false;
 	
 	
 	RCC_APB2PeriphClockCmd (RCC_APB2Periph_SPI1, ENABLE); //60MHz
 	
 	
-	srainGaugeCsDeassert();
+	csDeassert();
 
 	SPI_InitTypeDef  SPI_InitStructure;
 	SPI_I2S_DeInit(SPI1);
@@ -50,13 +54,13 @@ void strainGaugeInit(void)
 	while(1)
 	{
 		//read ID register
-		srainGaugeCsAssert();
+		csAssert();
 		
-		strainGaugeSpiPollByte(0xFF);		
-		strainGaugeSpiPollByte(0xFF);		
-		strainGaugeSpiPollByte(0xFF);		
-		strainGaugeSpiPollByte(0xFF);		
-		strainGaugeSpiPollByte(0xFF);		
+		spiPollByte(0xFF);		
+		spiPollByte(0xFF);		
+		spiPollByte(0xFF);		
+		spiPollByte(0xFF);		
+		spiPollByte(0xFF);		
 		
 		uint8_t idRegisterComm = 
 			(0<<7)+ //~WEN
@@ -64,9 +68,9 @@ void strainGaugeInit(void)
 			(4<<3)+ //id register
 			(0<<2)+ //single read
 			0;
-		strainGaugeSpiPollByte(idRegisterComm);		
-		uint8_t idRegister = strainGaugeSpiPollByte(0xFF);
-		srainGaugeCsDeassert();
+		spiPollByte(idRegisterComm);		
+		uint8_t idRegister = spiPollByte(0xFF);
+		csDeassert();
 		
 		if (idRegister==0xA0)
 		{
@@ -77,7 +81,7 @@ void strainGaugeInit(void)
 
 		{
 		// write CONFIGURATION register
-			srainGaugeCsAssert();
+			csAssert();
 	
 			uint8_t confRegisterComm = 
 				(0<<7)+ //~WEN
@@ -85,7 +89,7 @@ void strainGaugeInit(void)
 				(2<<3)+ //conf register
 				(0<<2)+ //single write
 				0;
-			strainGaugeSpiPollByte(confRegisterComm);		
+			spiPollByte(confRegisterComm);		
 		
 			uint32_t confRegister = 
 				(0<<23)+ //chop disabled
@@ -96,15 +100,15 @@ void strainGaugeInit(void)
 				(0<<3)+ //bipolar operation
 				(7<<0)+ // Gain=128
 				0;
-			strainGaugeSpiPollByte((confRegister>>16)&0xFF);		
-			strainGaugeSpiPollByte((confRegister>>8)&0xFF);		
-			strainGaugeSpiPollByte((confRegister>>0)&0xFF);		
-			srainGaugeCsDeassert();
+			spiPollByte((confRegister>>16)&0xFF);		
+			spiPollByte((confRegister>>8)&0xFF);		
+			spiPollByte((confRegister>>0)&0xFF);		
+			csDeassert();
 		}
 		
 		{
 		// write MODE register
-			srainGaugeCsAssert();
+			csAssert();
 	
 			uint8_t modeRegisterComm = 
 				(0<<7)+ //~WEN
@@ -112,7 +116,7 @@ void strainGaugeInit(void)
 				(1<<3)+ //conf register
 				(0<<2)+ //single write
 				0;
-			strainGaugeSpiPollByte(modeRegisterComm);		
+			spiPollByte(modeRegisterComm);		
 	
 			uint32_t modeRegister = 
 				(0<<21)+ //Continuous conversion mode
@@ -122,11 +126,11 @@ void strainGaugeInit(void)
 				(1<<13)+//Enable parity bit
 				(8<<0)+//rate select [Output Data Rate = (4.92MHz/1024)/FS ]
 				0;
-			strainGaugeSpiPollByte((modeRegister>>16)&0xFF);		
-			strainGaugeSpiPollByte((modeRegister>>8)&0xFF);		
-			strainGaugeSpiPollByte((modeRegister>>0)&0xFF);		
+			spiPollByte((modeRegister>>16)&0xFF);		
+			spiPollByte((modeRegister>>8)&0xFF);		
+			spiPollByte((modeRegister>>0)&0xFF);		
 
-			srainGaugeCsDeassert();
+			csDeassert();
 
 		}
 
@@ -164,12 +168,12 @@ void strainGaugeInit(void)
 
 		}
 	
-		srainGaugeCsAssert();
+		csAssert();
 
 	
 }
 //==============================================================================================
-uint8_t strainGaugeSpiPollByte(uint8_t txByte)
+uint8_t StrainGauge::spiPollByte(uint8_t txByte)
 {
 		SPI1->DR = txByte;
 		while(1)
@@ -184,28 +188,35 @@ uint8_t strainGaugeSpiPollByte(uint8_t txByte)
 }
 //==============================================================================================
 extern "C" {void EXTI9_5_IRQHandler(void){
-	
-		//disable gpio interrupt
-		EXTI_ClearITPendingBit(EXTI_Line6);
-		strainGaugeCounterExti++;
-		EXTI->IMR = 0;
-	
-		// set MISO/PA6 as MISO
-    GPIOA->MODER |= (uint32_t)(2<<(2*6));
-	
-
-//		SPI1->DR = 0xFF;
-		SPI1->DR = 0x58;
-		strainGaugeByteCounter = 0;
-		
-
-	
+	StrainGauge::readyInterruptHandler();
 }}
 //==============================================================================================
 extern "C" {void SPI1_IRQHandler(void){
+	StrainGauge::spiInterruptHandler();
+}}
+//==============================================================================================
+void StrainGauge::readyInterruptHandler(){
 
-	strainGaugeAdcData[strainGaugeByteCounter++] = SPI1->DR;
-	if (strainGaugeByteCounter!=5)
+	//disable gpio interrupt
+	EXTI_ClearITPendingBit(EXTI_Line6);
+	counterExti++;
+	EXTI->IMR = 0;
+
+	// set MISO/PA6 as MISO
+	GPIOA->MODER |= (uint32_t)(2<<(2*6));
+
+
+	//		SPI1->DR = 0xFF;
+	SPI1->DR = 0x58;
+	byteCounter = 0;
+		
+
+}
+//==============================================================================================
+void StrainGauge::spiInterruptHandler(){
+
+	adcData[byteCounter++] = SPI1->DR;
+	if (byteCounter!=5)
 	{
 		SPI1->DR = 0xFF;
 	}
@@ -223,9 +234,9 @@ extern "C" {void SPI1_IRQHandler(void){
 		int32_t dataValue;
 		uint8_t *pb = (uint8_t*)&(dataValue);
 		*pb++ = 0;
-		*pb++ = strainGaugeAdcData[3];
-		*pb++ = strainGaugeAdcData[2];
-		*pb++ = strainGaugeAdcData[1];
+		*pb++ = adcData[1];
+		*pb++ = adcData[3];
+		*pb++ = adcData[2];
 		*(uint32_t*)&(dataValue) -= 0x80000000; // offset
 		
 		strainGaugeResults[strainGaugeResultsPtr] = dataValue;
@@ -250,13 +261,10 @@ extern "C" {void SPI1_IRQHandler(void){
 	}
 	
 	//TODO: add 5 extra dummy reads for reliability
-	
-	
-	
 
-}}
+}
 //==============================================================================================
-int32_t getStrainGaugeFilteredResult(void)
+int32_t StrainGauge::getFilteredResult(void)
 {
 	uint32_t ptr = strainGaugeResultsPtr;
 	int32_t accu = 0;
@@ -273,6 +281,14 @@ int32_t getStrainGaugeFilteredResult(void)
 	return (int32_t)accuGramms;
 //	return accu;
 }
+//==============================================================================================
+void StrainGauge::csAssert(){
+		GPIOB->BSRRH = (1<<6);
+};
+//==============================================================================================
+void StrainGauge::sDeassert(){
+		GPIOB->BSRRL = (1<<6);
+};
 //==============================================================================================
 
 
