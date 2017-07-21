@@ -234,9 +234,9 @@ void StrainGauge::spiInterruptHandler(){
 		int32_t dataValue;
 		uint8_t *pb = (uint8_t*)&(dataValue);
 		*pb++ = 0;
-		*pb++ = adcData[1];
 		*pb++ = adcData[3];
 		*pb++ = adcData[2];
+		*pb++ = adcData[1];
 		*(uint32_t*)&(dataValue) -= 0x80000000; // offset
 		
 		results[resultsPtr] = dataValue;
