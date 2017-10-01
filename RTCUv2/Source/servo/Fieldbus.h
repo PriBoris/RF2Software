@@ -66,6 +66,10 @@ private:
 
 
 	static bool responseReceived;
+	
+	static uint32_t errorCounter;
+	static uint32_t errorCounterMax;	
+	static const uint32_t FAULT_TRESHOLD = 4;
 
 public:
 
@@ -81,6 +85,8 @@ public:
 
 	static bool responseIsValid();
 
+
+	static void check();
 };
 
 

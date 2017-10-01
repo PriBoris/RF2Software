@@ -85,16 +85,10 @@ USS::Request* USS::makeSetFrequencyRequest(bool direction,float frequencyValueHe
 
 	//TODO: check if frequencyIndex<=1
 
+	uint16_t PKE = (PARAMETER_FixedFrequency1) + AK_Order_ChangeParameterValueWithoutEeprom16;
 
-	uint16_t PKE;
-	if (direction!=false){
-		PKE = (PARAMETER_FixedFrequency1) + AK_Order_ChangeParameterValueWithoutEeprom16;
-	}else{
-		PKE = (PARAMETER_FixedFrequency2) + AK_Order_ChangeParameterValueWithoutEeprom16;
-	}
 	setFrequencyRequestBytes[PKE_HI_OFFSET] = (PKE>>8);
 	setFrequencyRequestBytes[PKE_LO_OFFSET] = (PKE>>0);
-
 
     if (frequencyValueHertz>400.0f){
         frequencyValueHertz = 400.0f;
@@ -121,5 +115,28 @@ USS::Request* USS::makeSetFrequencyRequest(bool direction,float frequencyValueHe
 	return &setFrequencyRequest;
 }
 //===========================================================================================================
+USS::Request* USS::makeSetZeroFrequencyRequest(void){
+
+
+	uint16_t PKE = (PARAMETER_FixedFrequency1) + AK_Order_ChangeParameterValueWithoutEeprom16;
+
+	setFrequencyRequestBytes[PKE_HI_OFFSET] = (PKE>>8);
+	setFrequencyRequestBytes[PKE_LO_OFFSET] = (PKE>>0);
+
+    uint16_t PWE = 0;
+	setFrequencyRequestBytes[PWE_HI_OFFSET] = (PWE>>8);
+	setFrequencyRequestBytes[PWE_LO_OFFSET] = (PWE>>0);
+
+
+	uint16_t BCC = 0;
+	for(uint8_t j=STX_OFFSET;j<=SW1_LO_OFFSET;j++){
+		BCC ^= setFrequencyRequestBytes[j];
+	}
+	setFrequencyRequestBytes[BCC_OFFSET] = BCC;
+
+	return &setFrequencyRequest;
+}
+//===========================================================================================================
+
 
 

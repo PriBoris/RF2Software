@@ -50,8 +50,7 @@ uint32_t MainTick::tickID;
 float MainTick::servoFrequencyPositive = 0.0f;
 float MainTick::servoFrequencyNegative = 0.0f;
 
-uint32_t MainTick::fieldbusErrorCounter;
-uint32_t MainTick::fieldbusErrorCounterMax;
+
 
 FrequencyModulation MainTick::fmTest;
 FrequencyModulation MainTick::fmHoming;
@@ -68,9 +67,6 @@ void MainTick::init(){
 	submodePrev = submode;
 	tickID = 0;
 
-	fieldbusErrorCounter = 0;
-	fieldbusErrorCounterMax = 0;
-
 }
 //==================================================================================================================
 void MainTick::process(){ //called every 100ms
@@ -82,7 +78,7 @@ void MainTick::process(){ //called every 100ms
 
 	if (EmergencyStop::pressed()){
 
-		Servo::brake();
+		Servo::disable();
 		Actuators::emergencyStop();
 		
 		Errors::setFlag(Errors::FLAG_EMERGENCY_STOP);
@@ -211,7 +207,7 @@ void MainTick::process(){ //called every 100ms
 			}else{
 			}
 		}
-		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
+		Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		break;
 	//------------------------------------------------------------IDLE------------------------
@@ -226,7 +222,7 @@ void MainTick::process(){ //called every 100ms
 					){
 					setSubmode(WAITING_Waiting);
 					Servo::parkingBrake(false);
-					Servo::brake();
+					Servo::enable();
 					DebugConsole::pushMessage(" #Servo enabled\0");
 
 
@@ -237,18 +233,14 @@ void MainTick::process(){ //called every 100ms
 		}
 
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 
 		break;
 	//--------------------------------------------------WAITING----------------------------------
 	case WAITING_Waiting:
 
-		{
-			Servo::brake();
-			//TODO: aux
-
-		}
 
 
 
@@ -358,27 +350,29 @@ void MainTick::process(){ //called every 100ms
 			}			
 		}
 
-		processFieldbus();
-
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 		break;
 	//--------------------------------------------------PERSONAL----------------------------------
 	//--------------------------------------------------PERSONAL----------------------------------
 	case PERSONAL_Waiting:
 
 		{
-			Servo::brake();
+			//Servo::brake();
 
 			RxMessage *message = RxMessageQueue::pop();
 			if (message!=NULL){
 				switch(message->tag){
 				//---message----------------------------------------------------------------------------
 				default:
-					processFieldbus();
+					Fieldbus::check(); 
+					Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 					break;
 				//---message----------------------------------------------------------------------------
 				case Protocol::TAG_PersonalExit:
 					setSubmode(WAITING_Waiting);
-					processFieldbus();
+					Fieldbus::check(); 
+					Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 					break;
 				//---message----------------------------------------------------------------------------
 				case Protocol::TAG_PersonalButtonPressed:
@@ -410,6 +404,7 @@ void MainTick::process(){ //called every 100ms
 									FM_PERSONAL_MIN_RANGE
 									);
 
+								Fieldbus::check();
 								Fieldbus::pushUSSRequest(
 									USS::makeSetFrequencyRequest(
 										fmPersonal.getDirection(),
@@ -453,7 +448,7 @@ void MainTick::process(){ //called every 100ms
 									FM_PERSONAL_LAW,
 									FM_PERSONAL_MIN_RANGE
 									);
-
+								Fieldbus::check();
 								Fieldbus::pushUSSRequest(
 									USS::makeSetFrequencyRequest(
 										fmPersonal.getDirection(),
@@ -483,7 +478,9 @@ void MainTick::process(){ //called every 100ms
 							MachineSettings::protocolStructExtended.positionAux1Max
 						);	
 						setSubmode(PERSONAL_MovingAux);
-						processFieldbus();
+					
+						Fieldbus::check(); 
+						Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 						break;
 					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_AUX1_PLUS:
@@ -495,7 +492,9 @@ void MainTick::process(){ //called every 100ms
 							MachineSettings::protocolStructExtended.positionAux1Max
 						);	
 						setSubmode(PERSONAL_MovingAux);
-						processFieldbus();
+					
+						Fieldbus::check(); 
+						Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 						break;
 					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_AUX2_MINUS:
@@ -507,7 +506,9 @@ void MainTick::process(){ //called every 100ms
 							MachineSettings::protocolStructExtended.positionAux2Max
 						);	
 						setSubmode(PERSONAL_MovingAux);
-						processFieldbus();
+					
+						Fieldbus::check(); 
+						Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 						break;
 					//-----button------------------------------------------------------------------------
 					case RangeAdjustment::BUTTONID_AUX2_PLUS:
@@ -519,7 +520,9 @@ void MainTick::process(){ //called every 100ms
 							MachineSettings::protocolStructExtended.positionAux2Max
 						);	
 						setSubmode(PERSONAL_MovingAux);
-						processFieldbus();
+					
+						Fieldbus::check(); 
+						Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 						break;
 					//-----button------------------------------------------------------------------------
 					}
@@ -527,7 +530,9 @@ void MainTick::process(){ //called every 100ms
 				//---message----------------------------------------------------------------------------
 				}
 			}else{
-				processFieldbus();
+				
+				Fieldbus::check(); 
+				Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 			}			
 		}
 
@@ -544,10 +549,12 @@ void MainTick::process(){ //called every 100ms
 									)==true)
 		){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(PERSONAL_Waiting);
 			reportServoModeStop();
-			processFieldbus();
+			
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		}else if (
 			(RangeAdjustment::BUTTONID_MAIN_MINUS==RangeAdjustment::actualButtonID)&&
@@ -556,17 +563,21 @@ void MainTick::process(){ //called every 100ms
 									)==true)
 		){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(PERSONAL_Waiting);
 			reportServoModeStop();
-			processFieldbus();
+			
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		}else if ((rangeAdjustmentTimeoutCounter--)==0){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(PERSONAL_Waiting);
 			reportServoModeStop();
-			processFieldbus();
+			
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		}else{
 
@@ -575,16 +586,18 @@ void MainTick::process(){ //called every 100ms
 				switch(message->tag){
 				//---------------------------------------------------------------------------------------
 				default:
-					processFieldbus();
+					Fieldbus::check(); 
+					Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 					break;
 				//---------------------------------------------------------------------------------------
 				case Protocol::TAG_PersonalExit:
 
-					Servo::brake();
+					//Servo::brake();
 					setSubmode(WAITING_Waiting);
 					reportServoModeStop();
 
-					processFieldbus();
+					Fieldbus::check(); 
+					Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 					break;
 				//---------------------------------------------------------------------------------------
 				case Protocol::TAG_PersonalButtonHold:
@@ -614,25 +627,29 @@ void MainTick::process(){ //called every 100ms
 
 					}else{
 
-						Servo::brake();
+						//Servo::brake();
 						setSubmode(PERSONAL_Waiting);
 						reportServoModeStop();
-						processFieldbus();
+						Fieldbus::check(); 
+						Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 					}
 					break;
 				//---------------------------------------------------------------------------------------
 				case Protocol::TAG_PersonalButtonReleased:
 				
-					Servo::brake();
+					//Servo::brake();
 					setSubmode(PERSONAL_Waiting);
 					reportServoModeStop();
-					processFieldbus();
+				
+					Fieldbus::check(); 
+					Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 					break;
 				//---------------------------------------------------------------------------------------
 				}
 			}else{
 				reportServoModeContinue();				
-				processFieldbus();
+				Fieldbus::check(); 
+				Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 			}			
 		}
 
@@ -681,7 +698,8 @@ void MainTick::process(){ //called every 100ms
 		}
 
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 		break;
 	//-------------------------------------------------PARKING-----------------------------------
 	//-------------------------------------------------PARKING-----------------------------------
@@ -692,7 +710,8 @@ void MainTick::process(){ //called every 100ms
 		//MessageQueue::flush();
 		setSubmode(PARKING_PreparingAux);
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		break;
 	//-------------------------------------------------PARKING-----------------------------------
@@ -712,7 +731,8 @@ void MainTick::process(){ //called every 100ms
 		);	
 		setSubmode(PARKING_MovingAux);
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 		break;
 	//-------------------------------------------------PARKING-----------------------------------
 	case PARKING_MovingAux:
@@ -731,7 +751,8 @@ void MainTick::process(){ //called every 100ms
 			setSubmode(PARKING_Preparing);
 		}
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		break;
 	//-------------------------------------------------PARKING-----------------------------------
@@ -748,11 +769,12 @@ void MainTick::process(){ //called every 100ms
 			if (positionTaskIsNotNeeded==true){
 
 				//skip moving
-				Servo::brake();				
+				//Servo::brake();				
 				setSubmode(WAITING_Waiting);
 				reportServoModeStop();
 
-				processFieldbus();				
+				Fieldbus::check(); 
+				Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());				
 
 			}else{
 
@@ -766,7 +788,7 @@ void MainTick::process(){ //called every 100ms
 						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 						);
-
+					Fieldbus::check(); 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
 							fmHoming.getDirection(),
@@ -789,6 +811,7 @@ void MainTick::process(){ //called every 100ms
 						FM_HOMING_MIN_RANGE
 						);
 
+					Fieldbus::check(); 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
 							fmHoming.getDirection(),
@@ -812,11 +835,12 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(WAITING_Waiting);	
 			reportServoModeStop();
 
-			processFieldbus();
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		}else{
 
@@ -828,11 +852,12 @@ void MainTick::process(){ //called every 100ms
 
 			if (positionTaskIsComplete==true){
 
-				Servo::brake();				
+				//Servo::brake();				
 				setSubmode(WAITING_Waiting);
 				reportServoModeStop();
 
-				processFieldbus();
+				Fieldbus::check(); 
+				Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 			}else{
 
@@ -867,7 +892,8 @@ void MainTick::process(){ //called every 100ms
 
 		setSubmode(FTEST_DYNAMIC_Homing_PreparingAux);
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
 	case FTEST_DYNAMIC_Homing_PreparingAux:
@@ -886,7 +912,8 @@ void MainTick::process(){ //called every 100ms
 		);	
 		setSubmode(FTEST_DYNAMIC_Homing_MovingAux);
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
@@ -906,7 +933,8 @@ void MainTick::process(){ //called every 100ms
 			setSubmode(FTEST_DYNAMIC_Homing_Preparing);
 		}
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		break;
 	//------------------------------------------------FTEST--DYNAMIC----------------------------------
@@ -920,11 +948,12 @@ void MainTick::process(){ //called every 100ms
 
 			if (positionTaskIsNotNeeded==true){
 				//skip homing
-				Servo::brake();				
+				//Servo::brake();				
 				setSubmode(FTEST_DYNAMIC_Pause);
 				reportServoModeStop();
 
-				processFieldbus();				
+				Fieldbus::check(); 
+				Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());				
 
 			}else{
 
@@ -938,7 +967,7 @@ void MainTick::process(){ //called every 100ms
 						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 					);
-
+					Fieldbus::check(); 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
 							fmHoming.getDirection(),
@@ -960,7 +989,7 @@ void MainTick::process(){ //called every 100ms
 						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 					);
-
+					Fieldbus::check(); 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
 							fmHoming.getDirection(),
@@ -985,11 +1014,12 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-			processFieldbus();			
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());			
 
 		}else{
 
@@ -1001,11 +1031,12 @@ void MainTick::process(){ //called every 100ms
 
 			if (positionTaskIsComplete==true){
 
-				Servo::brake();				
+				//Servo::brake();				
 				setSubmode(FTEST_DYNAMIC_Pause);
 				reportServoModeStop();
 
-				processFieldbus();			
+				Fieldbus::check(); 
+				Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());			
 
 			}else{
 
@@ -1041,7 +1072,7 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake();	
+			//Servo::brake();	
 			setSubmode(WAITING_Waiting);
 
 		}else{
@@ -1052,7 +1083,8 @@ void MainTick::process(){ //called every 100ms
 			}			
 		}
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 
 		break;
@@ -1069,7 +1101,7 @@ void MainTick::process(){ //called every 100ms
 				MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 				FM_TEST_MIN_RANGE
 			);
-
+			Fieldbus::check(); 
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
 					fmTest.getDirection(),
@@ -1090,7 +1122,7 @@ void MainTick::process(){ //called every 100ms
 				MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 				FM_TEST_MIN_RANGE
 			);
-
+			Fieldbus::check(); 
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
 					fmTest.getDirection(),
@@ -1108,11 +1140,12 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(WAITING_Waiting);	
 			reportServoModeStop();			
 
-			processFieldbus();
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		}else{
 
@@ -1124,11 +1157,12 @@ void MainTick::process(){ //called every 100ms
 
 			if (positionTaskIsComplete==true){
 
-				Servo::brake();				
+				//Servo::brake();				
 				setSubmode(WAITING_Waiting);
 				reportServoModeStop();
 
-				processFieldbus();
+				Fieldbus::check(); 
+				Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 			}else{
 
@@ -1165,7 +1199,8 @@ void MainTick::process(){ //called every 100ms
 		setSubmode(FTEST_STATIC_Homing_PreparingAux);
 
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 		break;
 	//------------------------------------------------FTEST--STATIC----------------------------------
 	case FTEST_STATIC_Homing_PreparingAux:
@@ -1184,7 +1219,8 @@ void MainTick::process(){ //called every 100ms
 		);	
 		setSubmode(FTEST_STATIC_Homing_MovingAux);
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		break;
 	//------------------------------------------------FTEST--STATIC----------------------------------
@@ -1204,7 +1240,8 @@ void MainTick::process(){ //called every 100ms
 			setSubmode(FTEST_STATIC_Homing_Preparing);
 		}
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		break;
 	//------------------------------------------------FTEST--STATIC----------------------------------
@@ -1219,11 +1256,12 @@ void MainTick::process(){ //called every 100ms
 
 			if (positionTaskIsNotNeeded==true){
 				//skip homing
-				Servo::brake();				
+				//Servo::brake();				
 				setSubmode(FTEST_STATIC_Pause);
 				reportServoModeStop();
 
-				processFieldbus();
+				Fieldbus::check(); 
+				Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 			}else{
 
@@ -1237,7 +1275,7 @@ void MainTick::process(){ //called every 100ms
 						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 					);
-
+					Fieldbus::check(); 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
 							fmHoming.getDirection(),
@@ -1259,7 +1297,7 @@ void MainTick::process(){ //called every 100ms
 						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 					);
-
+					Fieldbus::check(); 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
 							fmHoming.getDirection(),
@@ -1282,11 +1320,12 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-			processFieldbus();	
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());	
 
 		}else{
 
@@ -1298,11 +1337,12 @@ void MainTick::process(){ //called every 100ms
 
 			if (positionTaskIsComplete==true){
 
-				Servo::brake();				
+				//Servo::brake();				
 				setSubmode(FTEST_STATIC_Pause);
 				reportServoModeStop();
 
-				processFieldbus();
+				Fieldbus::check(); 
+				Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 			}else{
 
@@ -1343,7 +1383,8 @@ void MainTick::process(){ //called every 100ms
 			}
 		}
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 		break;
 	//------------------------------------------------FTEST--STATIC----------------------------------
 	case FTEST_STATIC_Testing:
@@ -1357,7 +1398,8 @@ void MainTick::process(){ //called every 100ms
 			}
 		}
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 		break;
 	//------------------------------------------------FTEST--STATIC----------------------------------
 	//------------------------------------------------FTEST--STATIC----------------------------------
@@ -1368,7 +1410,8 @@ void MainTick::process(){ //called every 100ms
 
 		setSubmode(EXERCISE_Homing_PreparingAux);
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
@@ -1388,7 +1431,8 @@ void MainTick::process(){ //called every 100ms
 		);	
 		setSubmode(EXERCISE_Homing_MovingAux);
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 
 		break;
@@ -1409,7 +1453,8 @@ void MainTick::process(){ //called every 100ms
 			setSubmode(EXERCISE_StartingSet);
 		}
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 
 		break;
@@ -1420,7 +1465,8 @@ void MainTick::process(){ //called every 100ms
 		setSubmode(EXERCISE_Homing_Preparing);
 
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
@@ -1434,7 +1480,7 @@ void MainTick::process(){ //called every 100ms
 
 			if (positionTaskIsNotNeeded==true){
 				//skip homing
-				Servo::brake();				
+				//Servo::brake();				
 				setSubmode(EXERCISE_Pause);
 				reportServoModeStop();
 
@@ -1451,7 +1497,7 @@ void MainTick::process(){ //called every 100ms
 						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE	
 					);
-
+					Fieldbus::check(); 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
 							fmHoming.getDirection(),
@@ -1473,7 +1519,7 @@ void MainTick::process(){ //called every 100ms
 						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 						);
-
+					Fieldbus::check(); 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
 							fmHoming.getDirection(),
@@ -1491,7 +1537,8 @@ void MainTick::process(){ //called every 100ms
 
 		}
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		break;
 	//------------------------------------------------EXCERCISE----------------------------------
@@ -1499,11 +1546,12 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-			processFieldbus();
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		}else{
 
@@ -1515,11 +1563,12 @@ void MainTick::process(){ //called every 100ms
 
 			if (positionTaskIsComplete==true){
 
-				Servo::brake();				
+				//Servo::brake();				
 				setSubmode(EXERCISE_Pause);
 				reportServoModeStop();
 
-				processFieldbus();
+				Fieldbus::check(); 
+				Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 			}else{
 
@@ -1555,7 +1604,8 @@ void MainTick::process(){ //called every 100ms
 
 			setSubmode(WAITING_Waiting);
 
-			processFieldbus();
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		}else if (Excercise::isSetPauseDone()==true){
 
@@ -1577,7 +1627,7 @@ void MainTick::process(){ //called every 100ms
 					MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 					FM_EXCERCISE_MIN_RANGE
 					);
-
+				Fieldbus::check(); 
 				Fieldbus::pushUSSRequest(
 					USS::makeSetFrequencyRequest(
 						fmExcercise.getDirection(),
@@ -1599,7 +1649,7 @@ void MainTick::process(){ //called every 100ms
 					MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 					FM_EXCERCISE_MIN_RANGE
 					);
-
+				Fieldbus::check(); 
 				Fieldbus::pushUSSRequest(
 					USS::makeSetFrequencyRequest(
 						fmExcercise.getDirection(),
@@ -1629,11 +1679,12 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-			processFieldbus();
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		}else{
 
@@ -1647,11 +1698,12 @@ void MainTick::process(){ //called every 100ms
 
 				if (Excercise::firstInterruptionEnabled()){
 
-					Servo::brake();
+					//Servo::brake();
 					setSubmode(EXERCISE_FirstInterruption);
 					reportServoModeStop();
 
-					processFieldbus();
+					Fieldbus::check(); 
+					Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 				}else{
 					//interruption disabled
@@ -1670,7 +1722,7 @@ void MainTick::process(){ //called every 100ms
 							MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 							FM_EXCERCISE_MIN_RANGE
 							);
-
+						Fieldbus::check(); 
 						Fieldbus::pushUSSRequest(
 							USS::makeSetFrequencyRequest(
 								fmExcercise.getDirection(),
@@ -1693,7 +1745,7 @@ void MainTick::process(){ //called every 100ms
 							MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 							FM_EXCERCISE_MIN_RANGE
 							);
-
+						Fieldbus::check(); 
 						Fieldbus::pushUSSRequest(
 							USS::makeSetFrequencyRequest(
 								fmExcercise.getDirection(),
@@ -1748,11 +1800,12 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-			processFieldbus();
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		}else if (Excercise::isFirstInterruptionDone()==true){
 
@@ -1771,7 +1824,7 @@ void MainTick::process(){ //called every 100ms
 					MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 					FM_EXCERCISE_MIN_RANGE
 					);
-
+				Fieldbus::check(); 
 				Fieldbus::pushUSSRequest(
 					USS::makeSetFrequencyRequest(
 						fmExcercise.getDirection(),
@@ -1793,7 +1846,7 @@ void MainTick::process(){ //called every 100ms
 					MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 					FM_EXCERCISE_MIN_RANGE
 					);
-
+				Fieldbus::check(); 
 				Fieldbus::pushUSSRequest(
 					USS::makeSetFrequencyRequest(
 						fmExcercise.getDirection(),
@@ -1822,11 +1875,12 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-			processFieldbus();
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		}else{
 
@@ -1840,11 +1894,12 @@ void MainTick::process(){ //called every 100ms
 
 				if (Excercise::secondInterruptionEnabled()){
 
-					Servo::brake();
+					//Servo::brake();
 					setSubmode(EXERCISE_SecondInterruption);
 					reportServoModeStop();
 
-					processFieldbus();
+					Fieldbus::check(); 
+					Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 				}else{
 					//interruption disabled
@@ -1852,7 +1907,7 @@ void MainTick::process(){ //called every 100ms
 					Excercise::repetitionDone();
 					if (Excercise::isSetDone()==true){
 
-						Servo::brake();
+						//Servo::brake();
 						if (Excercise::isExcerciseDone()==true){
 
 							setSubmode(WAITING_Waiting);
@@ -1861,6 +1916,10 @@ void MainTick::process(){ //called every 100ms
 							setSubmode(EXERCISE_StartingSet);
 						}
 						reportServoModeStop();
+						
+						Fieldbus::check(); 
+						Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
+						
 
 					}else{			
 
@@ -1881,7 +1940,7 @@ void MainTick::process(){ //called every 100ms
 								MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 								FM_EXCERCISE_MIN_RANGE
 								);
-
+							Fieldbus::check(); 
 							Fieldbus::pushUSSRequest(
 								USS::makeSetFrequencyRequest(
 									fmExcercise.getDirection(),
@@ -1903,7 +1962,7 @@ void MainTick::process(){ //called every 100ms
 								MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 								FM_EXCERCISE_MIN_RANGE							
 								);
-
+							Fieldbus::check(); 
 							Fieldbus::pushUSSRequest(
 								USS::makeSetFrequencyRequest(
 									fmExcercise.getDirection(),
@@ -1924,6 +1983,7 @@ void MainTick::process(){ //called every 100ms
 			}else{
 
 				float frequency;
+				Fieldbus::check(); 
 				Fieldbus::pushUSSRequest(
 					USS::makeSetFrequencyRequest(
 						fmExcercise.getDirection(),
@@ -1959,18 +2019,19 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-			processFieldbus();
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		}else if (Excercise::isSecondInterruptionDone()==true){
 
 			Excercise::repetitionDone();
 			if (Excercise::isSetDone()==true){
 
-				Servo::brake();
+				//Servo::brake();
 				if (Excercise::isExcerciseDone()==true){
 
 					setSubmode(WAITING_Waiting);
@@ -1980,7 +2041,8 @@ void MainTick::process(){ //called every 100ms
 				}
 				reportServoModeStop();
 
-				processFieldbus();				
+				Fieldbus::check(); 
+				Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());				
 
 			}else{			
 
@@ -2001,7 +2063,7 @@ void MainTick::process(){ //called every 100ms
 						MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 						FM_EXCERCISE_MIN_RANGE
 						);
-
+					Fieldbus::check(); 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
 							fmExcercise.getDirection(),
@@ -2023,7 +2085,7 @@ void MainTick::process(){ //called every 100ms
 						MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 						FM_EXCERCISE_MIN_RANGE
 						);
-
+					Fieldbus::check(); 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
 							fmExcercise.getDirection(),
@@ -2049,7 +2111,8 @@ void MainTick::process(){ //called every 100ms
 
 		setSubmode(GENERIC_SET_Homing_PreparingAux);
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
@@ -2069,7 +2132,8 @@ void MainTick::process(){ //called every 100ms
 		);	
 		setSubmode(GENERIC_SET_Homing_MovingAux);
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 
 		break;
@@ -2089,7 +2153,8 @@ void MainTick::process(){ //called every 100ms
 
 		}
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
@@ -2111,7 +2176,8 @@ void MainTick::process(){ //called every 100ms
 			__asm("	nop");
 		}
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
@@ -2151,14 +2217,15 @@ void MainTick::process(){ //called every 100ms
 			if (positionTaskIsNotNeeded==true){
 
 				//skip homing
-				Servo::brake();	
+				//Servo::brake();	
 
 				GenericSet::pause2Start();
 				setSubmode(GENERIC_SET_Pause2);
 
 				reportServoModeStop();
 
-				processFieldbus();				
+				Fieldbus::check(); 
+				Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());				
 
 
 			}else{
@@ -2173,7 +2240,7 @@ void MainTick::process(){ //called every 100ms
 						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 					);
-
+					Fieldbus::check(); 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
 							fmHoming.getDirection(),
@@ -2195,7 +2262,7 @@ void MainTick::process(){ //called every 100ms
 						FM_HOMING_LAW,
 						FM_HOMING_MIN_RANGE
 					);
-
+					Fieldbus::check(); 
 					Fieldbus::pushUSSRequest(
 						USS::makeSetFrequencyRequest(
 							fmHoming.getDirection(),
@@ -2219,11 +2286,12 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-			processFieldbus();
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		}else{
 
@@ -2235,13 +2303,14 @@ void MainTick::process(){ //called every 100ms
 
 			if (positionTaskIsComplete==true){
 
-				Servo::brake();
+				//Servo::brake();
 
 				GenericSet::pause2Start();
 				setSubmode(GENERIC_SET_Pause2);
 				reportServoModeStop();
 
-				processFieldbus();	
+				Fieldbus::check(); 
+				Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());	
 
 			}else{
 
@@ -2291,7 +2360,8 @@ void MainTick::process(){ //called every 100ms
 			__asm("	nop");
 		}
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 	
 	
 		break;
@@ -2310,7 +2380,7 @@ void MainTick::process(){ //called every 100ms
 				MachineSettings::protocolStructExtended.eccentricDecelerationLaw,
 				FM_GENERIC_SET_MIN_RANGE
 			);
-
+			Fieldbus::check(); 
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
 					fmGenericSet.getDirection(),
@@ -2334,7 +2404,7 @@ void MainTick::process(){ //called every 100ms
 				MachineSettings::protocolStructExtended.concentricDecelerationLaw,
 				FM_GENERIC_SET_MIN_RANGE
 			);
-
+			Fieldbus::check(); 
 			Fieldbus::pushUSSRequest(
 				USS::makeSetFrequencyRequest(
 					fmGenericSet.getDirection(),
@@ -2356,11 +2426,12 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
-			processFieldbus();
+			Fieldbus::check(); 
+			Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		}else{
 
@@ -2372,7 +2443,7 @@ void MainTick::process(){ //called every 100ms
 
 			if (positionTaskIsComplete==true){
 
-				Servo::brake();
+				//Servo::brake();
 
 				{
 					int32_t moveDistance = GenericSet::getMoveDestinationPosition() - GenericSet::getMoveStartPosition();
@@ -2388,13 +2459,15 @@ void MainTick::process(){ //called every 100ms
 						GenericSet::staticMoveStart();
 						setSubmode(GENERIC_SET_Move_Static);
 						reportServoModeStop();
-						processFieldbus();
+						Fieldbus::check(); 
+						Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 					}else{
 
 						setSubmode(GENERIC_SET_Move_Preparing);
 						reportServoModeStop();
-						processFieldbus();
+						Fieldbus::check(); 
+						Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 					}
 
@@ -2403,7 +2476,8 @@ void MainTick::process(){ //called every 100ms
 					//set complete
 					setSubmode(WAITING_Waiting);
 					reportServoModeStop();
-					processFieldbus();
+					Fieldbus::check(); 
+					Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 				}
 
@@ -2440,7 +2514,7 @@ void MainTick::process(){ //called every 100ms
 
 		if (true==RxMessageQueue::cancelMessageReceived()){
 
-			Servo::brake();
+			//Servo::brake();
 			setSubmode(WAITING_Waiting);
 			reportServoModeStop();
 
@@ -2472,7 +2546,8 @@ void MainTick::process(){ //called every 100ms
 		}
 		reportServoModeStop();
 
-		processFieldbus();
+		Fieldbus::check(); 
+		Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 
 		break;
 	//------------------------------------------------GENERIC-SET---------------------------------
@@ -2482,9 +2557,10 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------------------------------------------
 	case FAULT_Fault:
 
-		Servo::brake();
+		//Servo::brake();
 		Actuators::emergencyStop();
 		Servo::parkingBrake(true);
+		Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
 		
 
 		if (true==RxMessageQueue::resetErrorMessageReceived()){
@@ -2523,29 +2599,6 @@ void MainTick::profilerStop(){
 		profilerMaxValue = profilerLastValue;
 		profilerMaxValueSubmode = profilerStartSubmode;
 	}
-}
-//==================================================================================================================
-void MainTick::processFieldbus(){
-
-	if (Fieldbus::responseIsValid()==false){
-		fieldbusErrorCounter++;
-		if (fieldbusErrorCounter>fieldbusErrorCounterMax){
-			fieldbusErrorCounterMax = fieldbusErrorCounter;
-		}
-
-		DebugConsole::pushMessage(" #FieldbusResponseLost\0");
-		if (fieldbusErrorCounter>=FIELDBUS_FAULT_TRESHOLD){
-			Errors::setFlag(Errors::FLAG_USS_RESPONSE);	
-			fieldbusErrorCounterMax = 0;
-			//DebugConsole::pushMessage(" #FieldbusResponseLost FAULT\0");
-		}
-
-	}else{
-		fieldbusErrorCounter = 0;
-
-	}
-	Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
-
 }
 //==================================================================================================================
 

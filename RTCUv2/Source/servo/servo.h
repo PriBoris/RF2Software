@@ -11,9 +11,10 @@ private:
 
 	static bool actualMoveDirection;
 	
-	static void movePositive(bool move);
-	static void moveNegative(bool move);
-	static void brake(bool on);
+
+	// static void movePositive(bool move);
+	// static void moveNegative(bool move);
+	// static void brake(bool on);
 	
 
 public:
@@ -30,10 +31,12 @@ public:
 
 	static void parkingBrake(bool brake);	
 
+	static void enable();
+	static void disable();
 
 	static void movePositive(void);
 	static void moveNegative(void);
-	static void brake(void);
+	//static void brake(void);
 	static bool getMoveDirection();
 
 

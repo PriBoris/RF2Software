@@ -19,9 +19,8 @@ void Servo::init(){
 
 	parkingBrake(true);
 
-	brake(false);// !!! this is necessary for servo to start properly !!!
-	movePositive(false);
-	moveNegative(false);
+	disable(); // !!! this is necessary for servo to start properly !!!
+
 }
 //==================================================================================================================
 void Servo::parkingBrake(bool brake){
@@ -35,47 +34,55 @@ void Servo::parkingBrake(bool brake){
 	}
 }
 //==================================================================================================================
-void Servo::movePositive(bool move){
-	if (move==false){
-		GPIOE->BSRRH = (1<<3);
-	}else{
-		GPIOE->BSRRL = (1<<3);
-	}
+void Servo::enable(){
+	GPIOE->BSRRL = (1<<3);
 }
+//==================================================================================================================
+void Servo::disable(){
+	GPIOE->BSRRH = (1<<3);
+}
+//==================================================================================================================
+// void Servo::movePositive(bool move){
+// 	if (move==false){
+// 		GPIOE->BSRRH = (1<<3);
+// 	}else{
+// 		GPIOE->BSRRL = (1<<3);
+// 	}
+// }
 void Servo::movePositive(void){
-	moveNegative(false);
-	movePositive(true);
-	brake(false);
+	// moveNegative(false);
+	// movePositive(true);
+	// brake(false);
 	actualMoveDirection = POSITIVE_DIRECTION;
 }
-//==================================================================================================================
-void Servo::moveNegative(bool move){
-	if (move==false){
-		GPIOE->BSRRH = (1<<4);
-	}else{
-		GPIOE->BSRRL = (1<<4);
-	}
-}
+// //==================================================================================================================
+// void Servo::moveNegative(bool move){
+// 	if (move==false){
+// 		GPIOE->BSRRH = (1<<4);
+// 	}else{
+// 		GPIOE->BSRRL = (1<<4);
+// 	}
+// }
 void Servo::moveNegative(void){
-	movePositive(false);
-	moveNegative(true);
-	brake(false);
+	// movePositive(false);
+	// moveNegative(true);
+	// brake(false);
 	actualMoveDirection = NEGATIVE_DIRECTION;
 }
-//==================================================================================================================
-void Servo::brake(bool on){
-	if (on==false){
-		GPIOE->BSRRH = (1<<1);
-	}else{
-		GPIOE->BSRRL = (1<<1);
-	}
-}
-void Servo::brake(void){
-	brake(true);
-	movePositive(false);
-	moveNegative(false);
-}
-//==================================================================================================================
+// //==================================================================================================================
+// void Servo::brake(bool on){
+// 	if (on==false){
+// 		GPIOE->BSRRH = (1<<1);
+// 	}else{
+// 		GPIOE->BSRRL = (1<<1);
+// 	}
+// }
+// void Servo::brake(void){
+// 	brake(true);
+// 	movePositive(false);
+// 	moveNegative(false);
+// }
+// //==================================================================================================================
 bool Servo::getMoveDirection(){
 	return actualMoveDirection;
 }

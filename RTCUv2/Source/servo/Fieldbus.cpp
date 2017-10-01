@@ -10,6 +10,9 @@
 #include "stm32f4xx_conf.h"
 #include "servo/servo.h"
 
+#include "hmi/debugConsole.h"
+#include "business/Errors.h"
+
 
 uint8_t Fieldbus::rxBuffer[RX_BUFFER_LENGTH];
 uint8_t Fieldbus::txBuffer[TX_BUFFER_LENGTH];
@@ -34,6 +37,8 @@ uint32_t Fieldbus::rxBadPacketCounter;
 
 bool Fieldbus::responseReceived;
 
+uint32_t Fieldbus::errorCounter;
+uint32_t Fieldbus::errorCounterMax;
 
 
 //==============================================================================================
@@ -94,6 +99,9 @@ void Fieldbus::init(){
 	UART7->SR = 0;
 	USART_ITConfig(UART7, USART_IT_RXNE, ENABLE); //Received Data Ready to be Read
 
+
+	errorCounter = 0;
+	errorCounterMax = 0;
 }
 //==============================================================================================
 extern "C" {void UART7_IRQHandler()
@@ -297,14 +305,7 @@ void Fieldbus::indication(){
 //==============================================================================================
 bool Fieldbus::checkSetFrequencyResponse(bool direction,float frequencyValueHertz){
 
-	uint16_t expectedPKEValue;
-	//uint16_t expectedPWEValue;
-
-	if (direction!=false){
-		expectedPKEValue = (USS::PARAMETER_FixedFrequency1) + USS::AK_Response_TransferParameterValue16;
-	}else{
-		expectedPKEValue = (USS::PARAMETER_FixedFrequency2) + USS::AK_Response_TransferParameterValue16;
-	}
+	uint16_t expectedPKEValue = (USS::PARAMETER_FixedFrequency1) + USS::AK_Response_TransferParameterValue16;
 
 	if (rxPKEValue==expectedPKEValue){
 		return true;
@@ -321,7 +322,27 @@ bool Fieldbus::responseIsValid(){
 
 }
 //==============================================================================================
+void Fieldbus::check(){
+	
+	if (responseIsValid() == false){
+		errorCounter++;
+		if (errorCounter > errorCounterMax){
+			errorCounterMax = errorCounter;
+		}
 
+		DebugConsole::pushMessage(" #FieldbusResponseLost\0");
+		if (errorCounter >= FAULT_TRESHOLD){
+			Errors::setFlag(Errors::FLAG_USS_RESPONSE);	
+			errorCounterMax = 0;
+			DebugConsole::pushMessage(" #FieldbusResponseLost FAULT\0");
+		}
 
+	}else{
+		errorCounter = 0;
+
+	}
+	//pushUSSRequest(USS::makeHeatsinkTemperatureRequest());	
+}
+//==============================================================================================
 
 
