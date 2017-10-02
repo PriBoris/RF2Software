@@ -214,14 +214,14 @@ bool MachineSettings::checkProtocolStructExtended(ProtocolStructExtended *protoc
 
 		(protocolStructExtended->minPositiveServoFrequency < 2.0f)||
 		(protocolStructExtended->maxPositiveServoFrequency < 2.0f)||
-		(protocolStructExtended->minPositiveServoFrequency > 30.0f)||
-		(protocolStructExtended->maxPositiveServoFrequency > 30.0f)||
+		(protocolStructExtended->minPositiveServoFrequency > 60.0f)||
+		(protocolStructExtended->maxPositiveServoFrequency > 60.0f)||
 		(protocolStructExtended->minPositiveServoFrequency > protocolStructExtended->maxPositiveServoFrequency)||
 
 		(protocolStructExtended->minNegativeServoFrequency > -2.0f)||
 		(protocolStructExtended->maxNegativeServoFrequency > -2.0f)||
-		(protocolStructExtended->minNegativeServoFrequency < -30.0f)||
-		(protocolStructExtended->maxNegativeServoFrequency < -30.0f)||
+		(protocolStructExtended->minNegativeServoFrequency < -60.0f)||
+		(protocolStructExtended->maxNegativeServoFrequency < -60.0f)||
 		(protocolStructExtended->minNegativeServoFrequency < protocolStructExtended->maxNegativeServoFrequency)||
 
 

@@ -56,9 +56,10 @@ public:
 	static const int32_t LAW_POWER2 = 2;
 	static const int32_t LAW_POWER4 = 3;
 	static const int32_t LAW_QUARTER_POWER2 = 4;
+	static const int32_t LAW_POWER8 = 5;
 
 	static const int32_t MIN_LAW = 0;
-	static const int32_t MAX_LAW = 4;
+	static const int32_t MAX_LAW = 5;
 
 
 };

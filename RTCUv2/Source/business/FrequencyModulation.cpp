@@ -112,22 +112,28 @@ float FrequencyModulation::getFrequency(
 		this->y = 1.0f;
 		break;
 	case LAW_POWER2:
-		this->y = 1.0f - this->x1*this->x1;
+		this->y = 1.0f - this->x1 * this->x1;
 		break;
 	case LAW_POWER4:
 		{
-			float x2 = this->x1*this->x1;
-			this->y = 1.0f - x2*x2;
+			float x2 = this->x1 * this->x1;
+			this->y = 1.0f - x2 * x2;
+		}
+		break;
+	case LAW_POWER8:
+		{
+			float x2 = this->x1 * this->x1;
+			this->y = 1.0f - x2 * x2 * x2 * x2;
 		}
 		break;
 	case LAW_QUARTER_POWER2:
 		{
 			float k = 0.9f;
-			if (this->x1<k){
+			if (this->x1 < k){
 				this->y = 1.0f; 
 			}else{
-				float t = (this->x1-k)/(1.0f-k);
-				this->y = 1.0f - t*t; 
+				float t = (this->x1 - k) / (1.0f - k);
+				this->y = 1.0f - t * t; 
 			}
 		}
 		break;

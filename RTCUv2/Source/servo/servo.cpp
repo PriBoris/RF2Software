@@ -95,8 +95,17 @@ bool Servo::getMoveDirection(){
 158.75*60/1395*50=341.398 seconds per output shaft rotation @ 1Hz
 158.75*60/1395*50*1000=341398 milliseconds per output shaft rotation @ 1Hz
 */
+//const float Servo::MILLISECONDS_PER_ROTATION_AT_1HZ = 341398.0f;
 
-const float Servo::MILLISECONDS_PER_ROTATION_AT_1HZ = 341398.0f;
+/*
+1380 motor rotations per minute @ 50Hz
+1380/60=23.00 motor rotations per second @ 50Hz
+1395/60/339.41=0.06776465 output shaft rotations per second @ 50Hz
+339.41*60/1380=14.75695 seconds per output shaft rotation @ 50Hz
+339.41*60/1380*50=737.8478 seconds per output shaft rotation @ 1Hz
+339.41*60/1380*50*1000=737847.826 milliseconds per output shaft rotation @ 1Hz
+*/
+const float Servo::MILLISECONDS_PER_ROTATION_AT_1HZ = 737847.8f;
 
 //==================================================================================================================
 float Servo::rangeToFrequency(
