@@ -312,6 +312,7 @@ private:
 		3*sizeof(int32_t)+//temperatures
 		1*sizeof(int32_t)+//command
 		4*sizeof(uint32_t)+//bytes count to/from HMI/NFC
+		4 + //parkingBrakeState
 		0;
 		
 
@@ -325,6 +326,7 @@ private:
 	static const uint32_t MSGPOS_ReportServoMode_bytesCountFromHMI = MSGPOS_ReportServoMode_servoCommand+8;
 	static const uint32_t MSGPOS_ReportServoMode_bytesCountToNFC = MSGPOS_ReportServoMode_servoCommand+12;
 	static const uint32_t MSGPOS_ReportServoMode_bytesCountFromNFC = MSGPOS_ReportServoMode_servoCommand+16;
+	static const uint32_t MSGPOS_ReportServoMode_parkingBrakeState = MSGPOS_ReportServoMode_servoCommand+20;
 
 
 	//-----------------------------------------------------------

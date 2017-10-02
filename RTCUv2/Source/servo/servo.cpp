@@ -13,6 +13,7 @@ int32_t Servo::heatsinkTemperature = 0;
 int32_t Servo::internalTemperature = 0;
 int32_t Servo::motorTemperature = 0;
 
+bool Servo::parkingBrakeState = false;
 
 //==================================================================================================================
 void Servo::init(){
@@ -32,6 +33,11 @@ void Servo::parkingBrake(bool brake){
 		// GPIOB->BSRRH = (1<<2);
 		GPIOD->BSRRH = (1<<14);
 	}
+	parkingBrakeState = brake;
+}
+//==================================================================================================================
+bool Servo::getParkingBrakeState(void){
+	return parkingBrakeState;
 }
 //==================================================================================================================
 void Servo::enable(){

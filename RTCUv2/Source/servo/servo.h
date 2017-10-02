@@ -10,7 +10,7 @@ class Servo{
 private:
 
 	static bool actualMoveDirection;
-	
+	static bool parkingBrakeState;
 
 	// static void movePositive(bool move);
 	// static void moveNegative(bool move);
@@ -30,6 +30,7 @@ public:
 	static const bool NEGATIVE_DIRECTION = false;
 
 	static void parkingBrake(bool brake);	
+	static bool getParkingBrakeState(void);	
 
 	static void enable();
 	static void disable();

@@ -80,6 +80,12 @@ void MainTick::reportServoModeHeader(uint8_t *message){
 
 	}
 
+	{
+		uint32_t parkingBrakeState = (uint32_t)Servo::getParkingBrakeState();
+		memcpy(&message[MSGPOS_ReportServoMode_parkingBrakeState], &parkingBrakeState, sizeof(parkingBrakeState));
+
+	}
+
 }
 //==================================================================================================================
 void MainTick::reportServoMode(int32_t servoCommand){

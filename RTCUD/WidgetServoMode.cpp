@@ -77,7 +77,12 @@ WidgetServoMode::WidgetServoMode(
 		lblBytesCountNFC->setFont(QFont("Verdana",10,QFont::Normal,false));
 
 	}
+    {
+        lblParkingBrakeState = new QLabel("lblParkingBrakeState");
+        lblParkingBrakeState->setFont(QFont("Verdana",10,QFont::Normal,false));
 
+
+    }
 
 	{
 		plotPositionVsTime = new QCustomPlot;
@@ -114,7 +119,8 @@ WidgetServoMode::WidgetServoMode(
 	loMain->addWidget(lblServoCommand);
 
 	loMain->addWidget(lblBytesCountHMI);
-	loMain->addWidget(lblBytesCountNFC);
+    loMain->addWidget(lblBytesCountNFC);
+    loMain->addWidget(lblParkingBrakeState);
 
 
 
@@ -320,13 +326,18 @@ void WidgetServoMode::newMessageReceived(quint8 tag,quint32 msgID,QByteArray &va
 
 			lblBytesCountHMI->setText("HMI bytes count:" + bytesCountHMIStr);
 			lblBytesCountNFC->setText("NFC bytes count:" + bytesCountNFCStr);
-			(reportLogger->stream) << "HMI:" << bytesCountHMIStr <<";";
-			(reportLogger->stream) << "NFC:" << bytesCountNFCStr <<";";
+            (reportLogger->stream) << "HMI:" << bytesCountHMIStr << ";";
+            (reportLogger->stream) << "NFC:" << bytesCountNFCStr << ";";
 
 
 		}
 
+        {
+            quint32 parkingBrakeState = TLV::getUint32(value, 58);;
+            lblParkingBrakeState->setText("Parking brake: " + QString::number(parkingBrakeState));
+            (reportLogger->stream) << "ParkingBrake:" << parkingBrakeState   <<";";
 
+        }
 		(reportLogger->stream) << "\n";
         reportLogger->flush(false);
 	}

@@ -33,6 +33,7 @@ class WidgetServoMode : public QWidget{
     QLabel *lblBytesCountHMI;
     QLabel *lblBytesCountNFC;
 
+    QLabel *lblParkingBrakeState;
 
     QCustomPlot* plotPositionVsTime;
     QVector<double> plotPositionData,plotTimeData;

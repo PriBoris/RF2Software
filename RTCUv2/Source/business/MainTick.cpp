@@ -221,7 +221,7 @@ void MainTick::process(){ //called every 100ms
 					(message->valueLen==0)
 					){
 					setSubmode(WAITING_Waiting);
-					Servo::parkingBrake(false);
+					//Servo::parkingBrake(false);
 					Servo::enable();
 					DebugConsole::pushMessage(" #Servo enabled\0");
 
@@ -241,7 +241,7 @@ void MainTick::process(){ //called every 100ms
 	//--------------------------------------------------WAITING----------------------------------
 	case WAITING_Waiting:
 
-
+		Servo::parkingBrake(true);
 
 
 		{
@@ -280,6 +280,7 @@ void MainTick::process(){ //called every 100ms
 					if (MachineSettings::protocolStructExtendedValid==true){
 						setSubmode(PERSONAL_Waiting);//TODO:check message length
 						DebugConsole::pushMessage(" #Personal\0");
+						Servo::parkingBrake(false);
 					}
 					break;
 				//--------------------------------------------------------------------------
@@ -290,6 +291,7 @@ void MainTick::process(){ //called every 100ms
 					){
 						setSubmode(PARKING_Starting);//TODO:check message length
 						DebugConsole::pushMessage(" #Parking\0");
+						Servo::parkingBrake(false);
 					}
 					break;
 				//--------------------------------------------------------------------------
@@ -303,6 +305,7 @@ void MainTick::process(){ //called every 100ms
 					){
 						setSubmode(FTEST_DYNAMIC_Starting);
 						DebugConsole::pushMessage(" #ForceTestDynamic\0");
+						Servo::parkingBrake(false);
 					}
 					break;
 				//--------------------------------------------------------------------------
@@ -315,6 +318,7 @@ void MainTick::process(){ //called every 100ms
 					){
 						setSubmode(FTEST_STATIC_Starting);
 						DebugConsole::pushMessage(" #ForceTestStatic\0");
+						Servo::parkingBrake(false);
 					}
 					break;
 				//--------------------------------------------------------------------------
@@ -328,7 +332,7 @@ void MainTick::process(){ //called every 100ms
 						setSubmode(EXERCISE_Starting);
 						DebugConsole::pushMessage(" #ExcerciseIsokinetic\0");
 						AuxMonitor::setDataFromRxMessage(message->valueLen, message->value);
-						
+						//Servo::parkingBrake(false);
 
 					}
 					break;
@@ -341,6 +345,7 @@ void MainTick::process(){ //called every 100ms
 					){
 						setSubmode(GENERIC_SET_Starting);
 						DebugConsole::pushMessage(" #GenericSet\0");
+						Servo::parkingBrake(false);
 					}
 					break;
 				//--------------------------------------------------------------------------
@@ -1461,6 +1466,8 @@ void MainTick::process(){ //called every 100ms
 	//------------------------------------------------EXCERCISE----------------------------------
 	case EXERCISE_StartingSet:
 
+		Servo::parkingBrake(true);
+
 		Excercise::setStart();
 		setSubmode(EXERCISE_Homing_Preparing);
 
@@ -1487,6 +1494,7 @@ void MainTick::process(){ //called every 100ms
 
 			}else{
 
+				Servo::parkingBrake(false);
 				if (PositionTask::getDirection(Excercise::getPositionMainHoming())==Servo::POSITIVE_DIRECTION){
 
 					fmHoming.prepare(
@@ -1566,6 +1574,7 @@ void MainTick::process(){ //called every 100ms
 				//Servo::brake();				
 				setSubmode(EXERCISE_Pause);
 				reportServoModeStop();
+				Servo::parkingBrake(true);
 
 				Fieldbus::check(); 
 				Fieldbus::pushUSSRequest(USS::makeSetZeroFrequencyRequest());
@@ -1608,6 +1617,8 @@ void MainTick::process(){ //called every 100ms
 			Fieldbus::pushUSSRequest(USS::makeHeatsinkTemperatureRequest());
 
 		}else if (Excercise::isSetPauseDone()==true){
+
+			Servo::parkingBrake(false);
 
 			Excercise::recalculateServoFrequency();
 
