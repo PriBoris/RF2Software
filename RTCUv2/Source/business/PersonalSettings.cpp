@@ -84,15 +84,6 @@ void PersonalSettings::load(RxMessage *message){
 //=================================================================================================
 bool PersonalSettings::checkProtocolStruct(ProtocolStruct *protocolStruct){
 
-
-	// check parking position
-	if (protocolStruct->positionMainParking > MachineSettings::protocolStructExtended.positionMainMax){
-		protocolStruct->positionMainParking = MachineSettings::protocolStructExtended.positionMainMax;
-	}
-	if (protocolStruct->positionMainParking < MachineSettings::protocolStructExtended.positionMainMin){
-		protocolStruct->positionMainParking = MachineSettings::protocolStructExtended.positionMainMin;
-	}
-
 	//check position A
 	if (protocolStruct->positionMainA > MachineSettings::protocolStructExtended.positionMainMax){
 		protocolStruct->positionMainA = MachineSettings::protocolStructExtended.positionMainMax;
@@ -108,6 +99,16 @@ bool PersonalSettings::checkProtocolStruct(ProtocolStruct *protocolStruct){
 	if (protocolStruct->positionMainB < MachineSettings::protocolStructExtended.positionMainMin){
 		protocolStruct->positionMainB = MachineSettings::protocolStructExtended.positionMainMin;
 	}
+
+	// check parking position
+	protocolStruct->positionMainParking = (MachineSettings::protocolStructExtended.positionMainMax + MachineSettings::protocolStructExtended.positionMainMin) / 2;
+	if (protocolStruct->positionMainParking > MachineSettings::protocolStructExtended.positionMainMax){
+		protocolStruct->positionMainParking = MachineSettings::protocolStructExtended.positionMainMax;
+	}
+	if (protocolStruct->positionMainParking < MachineSettings::protocolStructExtended.positionMainMin){
+		protocolStruct->positionMainParking = MachineSettings::protocolStructExtended.positionMainMin;
+	}
+
 
 	//check AB distance
 	{
