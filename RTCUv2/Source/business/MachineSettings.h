@@ -67,7 +67,8 @@ public:
 	static int32_t moveDistanceToDegrees(int32_t moveDistance);
 
 
-
+private:
+	static void loadDefaultValues (void);
 
 };
 

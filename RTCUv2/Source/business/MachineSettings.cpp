@@ -57,6 +57,8 @@ void MachineSettings::init(){
 		
 		DebugConsole::pushMessage(" #MachineSettings INVALID");
 
+		loadDefaultValues();
+
 	}else{
 
 		memset(&protocolStructExtended,0,sizeof(protocolStructExtended));
@@ -265,7 +267,46 @@ int32_t MachineSettings::moveDistanceToDegrees(int32_t moveDistance){
 	return abs(moveDistance)*fullCircleDegrees/fullCircle;
 
 }
-//=================================================================================================
+//=================================================================================================	static void loadDefaultValues (void);
+void MachineSettings::loadDefaultValues(void){
+
+	memset(&protocolStructExtended,0,sizeof(protocolStructExtended));
+
+	protocolStructExtended.positionMainMax = 17200;
+	protocolStructExtended.positionMainMin = 2650;
+	protocolStructExtended.positionAux1Max = 800;
+	protocolStructExtended.positionAux1Min = 100;
+	protocolStructExtended.positionAux2Max = 3950;
+	protocolStructExtended.positionAux2Min = 1300;
+	protocolStructExtended.positionAux3Max = 2050;
+	protocolStructExtended.positionAux3Min = 500;
+	protocolStructExtended.speedAbsMainMax = 5000;
+	protocolStructExtended.speedAbsMainPersonal = 15000;
+
+	protocolStructExtended.encoderBitCount = 15;
+	protocolStructExtended.encoderDirection = 1;
+	protocolStructExtended.encoderOffset = -10000;
+	protocolStructExtended.forceSensorGain = 0.000651042;
+	protocolStructExtended.forceSensorOffset0 = 8000;
+	protocolStructExtended.forceSensorOffset1 = 0;
+	protocolStructExtended.forceSensorOffset2 = 0;
+
+	protocolStructExtended.minPositiveServoFrequency = 2;
+	protocolStructExtended.maxPositiveServoFrequency = 60;
+	protocolStructExtended.minNegativeServoFrequency = -2;
+	protocolStructExtended.maxNegativeServoFrequency = -60;
+
+	protocolStructExtended.concentricAccelerationLaw = 1;
+	protocolStructExtended.concentricDecelerationLaw = 4;
+	protocolStructExtended.eccentricAccelerationLaw = 1;
+	protocolStructExtended.eccentricDecelerationLaw = 4;
+
+	protocolStructExtendedValid = true;
+
+	DebugConsole::pushMessage(" #MachineSettings DEFAULTS loaded");
+
+}
+//=================================================================================================	static void loadDefaultValues (void);
 
 
 
