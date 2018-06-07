@@ -291,9 +291,9 @@ void MachineSettings::loadDefaultValues(void){
 	protocolStructExtended.forceSensorOffset1 = 0;
 	protocolStructExtended.forceSensorOffset2 = 0;
 
-	protocolStructExtended.minPositiveServoFrequency = 2;
+	protocolStructExtended.minPositiveServoFrequency = 5;
 	protocolStructExtended.maxPositiveServoFrequency = 60;
-	protocolStructExtended.minNegativeServoFrequency = -2;
+	protocolStructExtended.minNegativeServoFrequency = -5;
 	protocolStructExtended.maxNegativeServoFrequency = -60;
 
 	protocolStructExtended.concentricAccelerationLaw = 1;
